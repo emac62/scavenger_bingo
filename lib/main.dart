@@ -74,7 +74,7 @@ class _IntroPageState extends State<IntroPage> {
             children: [
               Expanded(
                 child: Container(
-                    child: Image.asset("assets/images/background.png")),
+                    child: Image.asset("assets/images/IntroImage.png")),
               ),
               SizedBox(
                 height: 10,
