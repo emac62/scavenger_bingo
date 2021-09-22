@@ -79,7 +79,7 @@ class Resources {
     "hinge",
     "picture",
     "painting",
-    "countertop",
+    "counter",
     "stove",
     "oven",
     "towel",
@@ -92,6 +92,7 @@ class Resources {
     "jacket",
     "pants",
     "t-shirt",
-    "shoes"
+    "shoes",
+    "fridge",
   ];
 }
