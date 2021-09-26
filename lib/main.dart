@@ -1,15 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(ScavengerBingo());
-  });
+  final initFuture = MobileAds.instance.initialize();
+  final adState = AdState(initFuture);
+  final RequestConfiguration requestConfiguration = RequestConfiguration(
+      tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes);
+  MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+
+  runApp(Provider.value(
+      value: adState, builder: (context, child) => ScavengerBingo()));
 }
 
 class ScavengerBingo extends StatefulWidget {
@@ -72,69 +78,89 @@ class _IntroPageState extends State<IntroPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Container(
-                    child: Image.asset("assets/images/IntroImage.png")),
-              ),
+              Container(child: Image.asset("assets/images/IntroImage.png")),
               SizedBox(
                 height: 10,
               ),
-              Text(
-                "Choose your game board:",
-                style: TextStyle(
-                    fontSize: 36,
-                    color: Colors.purple,
-                    fontFamily: 'CaveatBrush'),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "Choose your game board:",
+                  style: TextStyle(
+                      fontSize: 36,
+                      color: Colors.purple,
+                      fontFamily: 'CaveatBrush'),
+                ),
               ),
-              DropdownButton<String>(
-                value: selectedBoard,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedBoard = newValue!;
-                  });
-                },
-                items: <String>['City', 'Trail', 'Indoors']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(
-                          fontSize: 28,
-                          color: Colors.blue,
-                          fontFamily: 'CaveatBrush'),
-                    ),
-                  );
-                }).toList(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                    color: Colors.purple,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.blue, width: 4)),
+                child: DropdownButton<String>(
+                  dropdownColor: Colors.purple,
+                  iconEnabledColor: Colors.yellow.shade50,
+                  elevation: 10,
+                  value: selectedBoard,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedBoard = newValue!;
+                    });
+                  },
+                  items: <String>['City', 'Trail', 'Indoors']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                            fontSize: 28,
+                            color: Colors.yellow[50],
+                            fontFamily: 'CaveatBrush'),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
               SizedBox(height: 10),
               Text(
                 "Select a winning pattern:",
                 style: TextStyle(
                     fontSize: 36,
-                    color: Colors.purple,
+                    color: Colors.blue,
                     fontFamily: 'CaveatBrush'),
               ),
-              DropdownButton<String>(
-                value: selectedPattern,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedPattern = newValue!;
-                  });
-                },
-                items: <String>['One Line', 'Cross', 'Full Card']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(
-                          fontSize: 28,
-                          color: Colors.blue,
-                          fontFamily: 'CaveatBrush'),
-                    ),
-                  );
-                }).toList(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.purple, width: 4)),
+                child: DropdownButton<String>(
+                  dropdownColor: Colors.blue,
+                  iconEnabledColor: Colors.yellow.shade50,
+                  elevation: 10,
+                  value: selectedPattern,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedPattern = newValue!;
+                    });
+                  },
+                  items: <String>['One Line', 'Cross', 'Full Card']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                            fontSize: 28,
+                            color: Colors.yellow[50],
+                            fontFamily: 'CaveatBrush'),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
               SizedBox(
                 height: 10,

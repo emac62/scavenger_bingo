@@ -1,6 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
@@ -17,6 +20,27 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
+  late BannerAd banner;
+
+  bool _isBannerAdReady = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final adState = Provider.of<AdState>(context);
+    adState.initialization.then((status) {
+      setState(() {
+        banner = BannerAd(
+            adUnitId: adState.bannerAdUnitId,
+            size: AdSize.banner,
+            request: AdRequest(),
+            listener: adState.adListener)
+          ..load();
+      });
+      _isBannerAdReady = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -119,15 +143,18 @@ class _GameBoardState extends State<GameBoard> {
             ),
             bingoBanner(),
             Expanded(child: bingoBoard()),
-            SizedBox(
-              height: 50,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 10, 8, 25),
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text("Banner Ad goes here")),
-              ),
-            )
+            if (_isBannerAdReady)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Container(
+                  height: 50,
+                  child: AdWidget(
+                    ad: banner,
+                  ),
+                ),
+              )
+            else
+              SizedBox(height: 50)
           ]),
         ),
       ),
