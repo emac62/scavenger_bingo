@@ -78,9 +78,11 @@ class _IntroPageState extends State<IntroPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(child: Image.asset("assets/images/IntroImage.png")),
+              Flexible(
+                  child: Container(
+                      child: Image.asset("assets/images/IntroImage.png"))),
               SizedBox(
-                height: 10,
+                height: 5,
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -98,38 +100,43 @@ class _IntroPageState extends State<IntroPage> {
                     color: Colors.purple,
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: Colors.blue, width: 4)),
-                child: DropdownButton<String>(
-                  dropdownColor: Colors.purple,
-                  iconEnabledColor: Colors.yellow.shade50,
-                  elevation: 10,
-                  value: selectedBoard,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedBoard = newValue!;
-                    });
-                  },
-                  items: <String>['City', 'Trail', 'Indoors']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                            fontSize: 28,
-                            color: Colors.yellow[50],
-                            fontFamily: 'CaveatBrush'),
-                      ),
-                    );
-                  }).toList(),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    dropdownColor: Colors.purple,
+                    iconEnabledColor: Colors.yellow.shade50,
+                    elevation: 10,
+                    value: selectedBoard,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedBoard = newValue!;
+                      });
+                    },
+                    items: <String>['City', 'Trail', 'Indoors']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                              fontSize: 28,
+                              color: Colors.yellow[50],
+                              fontFamily: 'CaveatBrush'),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
-              Text(
-                "Select a winning pattern:",
-                style: TextStyle(
-                    fontSize: 36,
-                    color: Colors.blue,
-                    fontFamily: 'CaveatBrush'),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "Select a winning pattern:",
+                  style: TextStyle(
+                      fontSize: 36,
+                      color: Colors.blue,
+                      fontFamily: 'CaveatBrush'),
+                ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -137,36 +144,38 @@ class _IntroPageState extends State<IntroPage> {
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: Colors.purple, width: 4)),
-                child: DropdownButton<String>(
-                  dropdownColor: Colors.blue,
-                  iconEnabledColor: Colors.yellow.shade50,
-                  elevation: 10,
-                  value: selectedPattern,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedPattern = newValue!;
-                    });
-                  },
-                  items: <String>['One Line', 'Cross', 'Full Card']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                            fontSize: 28,
-                            color: Colors.yellow[50],
-                            fontFamily: 'CaveatBrush'),
-                      ),
-                    );
-                  }).toList(),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    dropdownColor: Colors.blue,
+                    iconEnabledColor: Colors.yellow.shade50,
+                    elevation: 10,
+                    value: selectedPattern,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedPattern = newValue!;
+                      });
+                    },
+                    items: <String>['One Line', 'Cross', 'Full Card']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                              fontSize: 28,
+                              color: Colors.yellow[50],
+                              fontFamily: 'CaveatBrush'),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
               SizedBox(
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
                 child: ElevatedButton(
                   onPressed: () {
                     print("play tapped");
@@ -179,7 +188,7 @@ class _IntroPageState extends State<IntroPage> {
                     );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(4.0),
                     child: Text("Play Bingo"),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -194,7 +203,7 @@ class _IntroPageState extends State<IntroPage> {
                       ),
                       elevation: 20,
                       textStyle:
-                          TextStyle(fontSize: 48, fontFamily: 'CaveatBrush')),
+                          TextStyle(fontSize: 36, fontFamily: 'CaveatBrush')),
                 ),
               )
             ]),
