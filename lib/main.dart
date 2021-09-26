@@ -183,6 +183,9 @@ class _IntroPageState extends State<IntroPage> {
                     child: Text("Play Bingo"),
                   ),
                   style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       primary: Colors.purple,
                       onPrimary: Colors.yellow[50],
                       side: BorderSide(
