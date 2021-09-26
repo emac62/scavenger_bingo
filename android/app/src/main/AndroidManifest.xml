@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.savenger_hunt_bingo">
    <application
-        android:label="Bingo"
+        android:label="Scavenger Hunt Bingo"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
@@ -37,5 +37,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+          android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1618980018345182/1905213342"/>
     </application>
 </manifest>

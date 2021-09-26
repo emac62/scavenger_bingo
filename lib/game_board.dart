@@ -118,8 +118,9 @@ class _GameBoardState extends State<GameBoard> {
               ),
             ),
             bingoBanner(),
-            bingoBoard(),
-            Expanded(
+            Expanded(child: bingoBoard()),
+            SizedBox(
+              height: 50,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8, 10, 8, 25),
                 child: Align(
