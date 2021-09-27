@@ -3,6 +3,7 @@ import 'package:material_dialogs/material_dialogs.dart';
 
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
+import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 
 showWinningDialog(context) {
   Dialogs.materialDialog(
@@ -14,6 +15,7 @@ showWinningDialog(context) {
     actions: [
       IconsButton(
         onPressed: () {
+          stopSound();
           Navigator.of(context).pop();
         },
         text: 'Close',
@@ -24,6 +26,7 @@ showWinningDialog(context) {
       ),
       IconsButton(
         onPressed: () {
+          stopSound();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => IntroPage()),

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -41,6 +42,13 @@ class _GameBoardState extends State<GameBoard> {
     });
   }
 
+  Future<AudioPlayer> playLocalAsset() async {
+    AudioCache cache = new AudioCache();
+    //At the next line, DO NOT pass the entire reference such as assets/yes.mp3. This will not work.
+    //Just pass the file name only.
+    return await cache.play("Yes!.m4a");
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -68,6 +76,7 @@ class _GameBoardState extends State<GameBoard> {
             tooltip: 'Restart Game',
             onPressed: () {
               result.clear();
+              playLocalAsset();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => IntroPage()),

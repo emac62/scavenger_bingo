@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/arrays.dart';
+import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/winning_patterns.dart';
 
@@ -74,6 +75,7 @@ findOneLineWinner(context) {
     if (result.isEmpty) {
       result.clear();
       selectedTiles.clear();
+      playSound('fireworks.mp3');
       showWinningDialog(context);
       break;
     }
@@ -128,6 +130,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
             } else {
               widget.isSelected = !widget.isSelected;
               addToSelectedTiles(widget.index);
+              playSound("whoosh.mp3");
             }
           });
           if (selectedPattern == "One Line") {

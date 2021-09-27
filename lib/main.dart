@@ -5,6 +5,7 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
+import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -179,6 +180,7 @@ class _IntroPageState extends State<IntroPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     print("play tapped");
+                    playSound('Yes!.m4a');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
