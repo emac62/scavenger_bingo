@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -6,6 +5,7 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
+import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
@@ -43,11 +43,6 @@ class _GameBoardState extends State<GameBoard> {
     });
   }
 
-  Future<AudioPlayer> playLocalAsset() async {
-    AudioCache cache = new AudioCache();
-    return await cache.play("Yes!.m4a");
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -75,7 +70,7 @@ class _GameBoardState extends State<GameBoard> {
             tooltip: 'Restart Game',
             onPressed: () {
               result.clear();
-              playLocalAsset();
+              playSound('Yes!.m4a');
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => IntroPage()),

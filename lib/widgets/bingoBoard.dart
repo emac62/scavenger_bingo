@@ -89,6 +89,7 @@ findCrossWinner(context) {
   if (result.isEmpty) {
     result.clear();
     selectedTiles.clear();
+    playSound('fireworks.mp3');
     showWinningDialog(context);
   }
 }
@@ -100,6 +101,7 @@ findFullCardWinner(context) {
   if (result.isEmpty) {
     result.clear();
     selectedTiles.clear();
+    playSound('fireworks.mp3');
     showWinningDialog(context);
   }
 }
@@ -129,8 +131,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
               removeFromSelectedTiles(widget.index);
             } else {
               widget.isSelected = !widget.isSelected;
+              playSound("woosh.mp3");
               addToSelectedTiles(widget.index);
-              playSound("whoosh.mp3");
             }
           });
           if (selectedPattern == "One Line") {
