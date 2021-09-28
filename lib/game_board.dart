@@ -8,6 +8,7 @@ import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
+import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 
 class GameBoard extends StatefulWidget {
   final String selectedBoard;
@@ -44,8 +45,6 @@ class _GameBoardState extends State<GameBoard> {
 
   Future<AudioPlayer> playLocalAsset() async {
     AudioCache cache = new AudioCache();
-    //At the next line, DO NOT pass the entire reference such as assets/yes.mp3. This will not work.
-    //Just pass the file name only.
     return await cache.play("Yes!.m4a");
   }
 
@@ -139,6 +138,19 @@ class _GameBoardState extends State<GameBoard> {
                                     fontFamily: 'CaveatBrush',
                                     fontSize: size.width * 0.05,
                                     color: Colors.purple),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  await showDialog(
+                                      context: context,
+                                      builder: (_) => ImageDialog(
+                                            selectedPattern: selectedPattern,
+                                          ));
+                                },
+                                icon: const Icon(
+                                  Icons.help,
+                                  color: Colors.purple,
+                                ),
                               )
                             ],
                           ),

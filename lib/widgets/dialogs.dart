@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 
@@ -40,4 +41,63 @@ showWinningDialog(context) {
       ),
     ],
   );
+}
+
+showWinningPattern(context, String pattern) {
+  AlertDialog(
+    title: Text(pattern),
+    content: Image.asset('OneLineWinners.png'),
+    actions: <Widget>[
+      TextButton(
+        child: Text("OK"),
+        onPressed: () {
+          //Put your code here which you want to execute on Yes button click.
+          Navigator.of(context).pop();
+        },
+      ),
+    ],
+  );
+}
+
+class ImageDialog extends StatefulWidget {
+  final String selectedPattern;
+
+  const ImageDialog({Key? key, required this.selectedPattern})
+      : super(key: key);
+  @override
+  _ImageDialogState createState() => _ImageDialogState();
+}
+
+class _ImageDialogState extends State<ImageDialog> {
+  var winningImage;
+
+  getSelectedPatternImage(String selectedPattern) {
+    switch (selectedPattern) {
+      case "One Line":
+        winningImage = 'assets/images/OneLineWinners.png';
+        break;
+      case "Cross":
+        winningImage = 'assets/images/Cross.png';
+        break;
+      case "Full Card":
+        winningImage = 'assets/images/Full.png';
+        break;
+      default:
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    getSelectedPatternImage(selectedPattern);
+    return Dialog(
+      child: Container(
+        width: size.width,
+        height: size.width / 2,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: ExactAssetImage(winningImage), fit: BoxFit.contain)),
+      ),
+    );
+  }
 }

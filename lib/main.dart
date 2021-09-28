@@ -179,7 +179,7 @@ class _IntroPageState extends State<IntroPage> {
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
                 child: ElevatedButton(
                   onPressed: () {
-                    print("play tapped");
+                    print(selectedPattern);
                     playSound('Yes!.m4a');
                     Navigator.push(
                       context,
