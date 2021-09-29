@@ -118,14 +118,15 @@ class _GameBoardState extends State<GameBoard> {
                       child: Column(
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Find this pattern ->",
-                                style: TextStyle(
-                                    fontFamily: 'CaveatBrush',
-                                    fontSize: size.width * 0.05,
-                                    color: Colors.blue),
+                              Expanded(
+                                child: Text(
+                                  "Find this pattern ->",
+                                  style: TextStyle(
+                                      fontFamily: 'CaveatBrush',
+                                      fontSize: size.width * 0.05,
+                                      color: Colors.blue),
+                                ),
                               ),
                               Text(
                                 widget.selectedPattern,
