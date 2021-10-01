@@ -10,42 +10,149 @@ List<Widget> listTileWidgets(selectedBoard) {
   List<Widget> _widget = [];
 
   var _buttonName = [];
+  var _array = [];
+  var _iconData = [];
+  var selectedList = [];
 
   if (selectedBoard == "City") {
-    selectedBoard = Resources.city;
+    _array = Resources.city;
+    _array.shuffle();
+    selectedList = _array.sublist(0, 25);
+
+    selectedList.forEach((item) {
+      _buttonName.add(item.toString());
+    });
+
+    for (var i = 0; i < _buttonName.length; i++) {
+      _widget.add(ListTileWidget(
+        name: _buttonName[i],
+        icon: IconData(i),
+        index: i,
+        isSelected: false,
+      ));
+    }
+    return _widget;
   } else if (selectedBoard == "Trail") {
-    selectedBoard = Resources.trail;
+    _array = Resources.trail;
+    _array.shuffle();
+    selectedList = _array.sublist(0, 25);
+
+    selectedList.forEach((item) {
+      _buttonName.add(item.toString());
+    });
+
+    for (var i = 0; i < _buttonName.length; i++) {
+      _widget.add(ListTileWidget(
+        name: _buttonName[i],
+        icon: IconData(i),
+        index: i,
+        isSelected: false,
+      ));
+    }
+    return _widget;
+  } else if (selectedBoard == "Indoor") {
+    _array = Resources.indoors;
+    _array.shuffle();
+    selectedList = _array.sublist(0, 25);
+
+    selectedList.forEach((item) {
+      _buttonName.add(item.toString());
+    });
+
+    for (var i = 0; i < _buttonName.length; i++) {
+      _widget.add(ListTileWidget(
+        name: _buttonName[i],
+        icon: IconData(i),
+        index: i,
+        isSelected: false,
+      ));
+    }
+    return _widget;
+  } else if (selectedBoard == "City Icons") {
+    _iconData = Resources.cityIcons;
+    _iconData.shuffle();
+    selectedList = _iconData.sublist(0, 25);
+
+    for (var i = 0; i < selectedList.length; i++) {
+      _widget.add(ListTileWidget(
+          name: selectedList[i].name,
+          index: i,
+          isSelected: false,
+          icon: selectedList[i].icon));
+    }
+    return _widget;
+  } else if (selectedBoard == "Trail Icons") {
+    _iconData = Resources.trailIcons;
+    _iconData.shuffle();
+    selectedList = _iconData.sublist(0, 25);
+
+    for (var i = 0; i < selectedList.length; i++) {
+      _widget.add(ListTileWidget(
+          name: selectedList[i].name,
+          index: i,
+          isSelected: false,
+          icon: selectedList[i].icon));
+    }
+    return _widget;
   } else {
-    selectedBoard = Resources.indoors;
-  }
-  selectedBoard.shuffle();
-  var selectedList = selectedBoard.sublist(0, 25);
+    _iconData = Resources.indoorIcons;
+    _iconData.shuffle();
+    selectedList = _iconData.sublist(0, 25);
 
-  selectedList.forEach((item) {
-    _buttonName.add(item.toString());
-  });
-
-  for (var i = 0; i < _buttonName.length; i++) {
-    _widget.add(ListTileWidget(
-      name: _buttonName[i],
-      index: i,
-      isSelected: false,
-    ));
+    for (var i = 0; i < selectedList.length; i++) {
+      _widget.add(ListTileWidget(
+          name: selectedList[i].name,
+          index: i,
+          isSelected: false,
+          icon: selectedList[i].icon));
+    }
+    return _widget;
   }
 
-  return _widget;
+  // if ((selectedBoard != "Indoor Icons") ||
+  //     (selectedBoard != "City Icons") ||
+  //     (selectedBoard != "Trail Icons")) {
+  //   _array.shuffle();
+  //   selectedList = _array.sublist(0, 25);
+
+  //   selectedList.forEach((item) {
+  //     _buttonName.add(item.toString());
+  //   });
+
+  //   for (var i = 0; i < _buttonName.length; i++) {
+  //     _widget.add(ListTileWidget(
+  //       name: _buttonName[i],
+  //       icon: IconData(i),
+  //       index: i,
+  //       isSelected: false,
+  //     ));
+  //   }
+  //   return _widget;
+  // } else {
+  //   _iconData.shuffle();
+  //   selectedList = _iconData.sublist(0, 25);
+
+  //   for (var i = 0; i < selectedList.length; i++) {
+  //     _widget.add(ListTileWidget(
+  //         name: selectedList[i].name,
+  //         index: i,
+  //         isSelected: false,
+  //         icon: selectedList[i].icon));
+  //   }
+  //   return _widget;
+  // }
 }
 
 Widget bingoBoard() {
   return Builder(builder: (context) {
     var size = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0.0, 10, 10),
+      padding: const EdgeInsets.fromLTRB(10, 0.0, 10, 0),
       child: Container(
         child: GridView.count(
             shrinkWrap: true,
             crossAxisCount: 5,
-            childAspectRatio: (size.width / size.height) * 2,
+            childAspectRatio: (size.width / size.height) * 1.8,
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
             children: listTileWidgets(selectedBoard)),
@@ -109,11 +216,15 @@ findFullCardWinner(context) {
 // ignore: must_be_immutable
 class ListTileWidget extends StatefulWidget {
   final String name;
+  final IconData icon;
   final int index;
   bool isSelected;
 
   ListTileWidget(
-      {required this.name, required this.index, required this.isSelected});
+      {required this.name,
+      required this.index,
+      required this.isSelected,
+      required this.icon});
 
   @override
   ListTileWidgetState createState() => ListTileWidgetState();
@@ -155,23 +266,58 @@ class ListTileWidgetState extends State<ListTileWidget> {
                   color: widget.isSelected ? Colors.blue : null,
                 ),
                 child: Center(
-                  child: ListTile(
-                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                      dense: true,
-                      title: AutoSizeText(
-                        widget.index == 12 ? "FREE" : widget.name.toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: (widget.index != 12)
-                            ? TextStyle(
-                                fontFamily: 'CaveatBrush',
-                                fontSize: size.width * 0.025,
-                                color: Colors.purple)
-                            : TextStyle(
-                                fontFamily: 'CaveatBrush',
-                                fontSize: size.width * 0.1,
-                                color: Colors.blue[100]),
-                      )),
-                )),
+                    child: (selectedBoard == "Indoor" ||
+                            selectedBoard == "City" ||
+                            selectedBoard == "Trail")
+                        ? ListTile(
+                            contentPadding:
+                                EdgeInsets.only(left: 0.0, right: 0.0),
+                            dense: true,
+                            title: AutoSizeText(
+                              widget.index == 12
+                                  ? "FREE"
+                                  : widget.name.toUpperCase(),
+                              textAlign: TextAlign.center,
+                              style: (widget.index != 12)
+                                  ? TextStyle(
+                                      fontFamily: 'CaveatBrush',
+                                      fontSize: size.width * 0.025,
+                                      color: Colors.purple)
+                                  : TextStyle(
+                                      fontFamily: 'CaveatBrush',
+                                      fontSize: size.width * 0.1,
+                                      color: Colors.blue[100]),
+                            ))
+                        : (widget.index == 12)
+                            ? AutoSizeText(
+                                "FREE",
+                                style: TextStyle(
+                                    color: Colors.blue[100],
+                                    fontFamily: 'CaveatBrush',
+                                    fontSize: size.width * 0.1),
+                                textAlign: TextAlign.center,
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    widget.icon,
+                                    color: Colors.purple,
+                                  ),
+                                  Flexible(
+                                    child: AutoSizeText(
+                                      widget.name.toUpperCase(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'CaveatBrush',
+                                        fontSize: size.width * 0.025,
+                                        color: Colors.purple,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ))),
           ),
         ));
   }

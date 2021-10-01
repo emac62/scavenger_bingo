@@ -5,10 +5,12 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
-import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
+
+const int maxFailedLoadAttempts = 3;
 
 class GameBoard extends StatefulWidget {
   final String selectedBoard;
@@ -26,9 +28,55 @@ class _GameBoardState extends State<GameBoard> {
 
   bool _isBannerAdReady = false;
 
+  InterstitialAd? _interstitialAd;
+  int _interstitialLoadAttempts = 0;
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+          _interstitialLoadAttempts = 0;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialLoadAttempts += 1;
+          _interstitialAd = null;
+          if (_interstitialLoadAttempts <= maxFailedLoadAttempts) {
+            _createInterstitialAd();
+          }
+        },
+      ),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _interstitialAd?.dispose();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _createInterstitialAd();
     final adState = Provider.of<AdState>(context);
     adState.initialization.then((status) {
       setState(() {
@@ -70,7 +118,8 @@ class _GameBoardState extends State<GameBoard> {
             tooltip: 'Restart Game',
             onPressed: () {
               result.clear();
-              playSound('Yes!.m4a');
+              _showInterstitialAd();
+
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => IntroPage()),
@@ -112,7 +161,7 @@ class _GameBoardState extends State<GameBoard> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
                       child: Column(
@@ -159,10 +208,10 @@ class _GameBoardState extends State<GameBoard> {
               ),
             ),
             bingoBanner(),
-            Expanded(child: bingoBoard()),
+            Flexible(child: bingoBoard()),
             if (_isBannerAdReady)
               Padding(
-                padding: const EdgeInsets.only(bottom: 15),
+                padding: const EdgeInsets.only(bottom: 5),
                 child: Container(
                   height: 50,
                   child: AdWidget(

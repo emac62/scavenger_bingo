@@ -5,7 +5,7 @@ Widget bingoBanner() {
   return Builder(builder: (context) {
     var size = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Container(
         color: Colors.blue[100],
         child: Row(children: [

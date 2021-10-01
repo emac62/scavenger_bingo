@@ -8,8 +8,8 @@ class AdState {
   AdState(this.initialization);
 
   String get bannerAdUnitId => Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/6300978111'
-      : 'ca-app-pub-3940256099942544/2934735716';
+      ? 'ca-app-pub-1618980018345182/1905213342'
+      : 'ca-app-pub-1618980018345182/1761743112';
 
   BannerAdListener get adListener => _adListener;
 
@@ -29,4 +29,8 @@ class AdState {
     // Called when an impression occurs on the ad.
     onAdImpression: (Ad ad) => print('Ad impression.'),
   );
+
+  String get interstitialAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/1033173712'
+      : 'ca-app-pub-3940256099942544/4411468910';
 }

@@ -31,6 +31,10 @@ class _ScavengerBingoState extends State<ScavengerBingo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch:
+            Colors.purple, //i am set brown colour,you can set your colour here
+      ),
       home: IntroPage(),
     );
   }
@@ -64,13 +68,35 @@ class _IntroPageState extends State<IntroPage> {
               fontSize: size.width,
               letterSpacing: 2.0),
         ),
-        gradient: LinearGradient(colors: [
-          // Colors.red,
-          // Colors.orange,
-          Colors.purple,
-          //Colors.green,
-          Colors.blue
-        ]),
+        gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+                child: Icon(Icons.info),
+                onTap: () {
+                  showAboutDialog(
+                    context: context,
+                    applicationIcon: Image.asset(
+                      'assets/images/IntroImage.png',
+                      height: 60,
+                      width: 60,
+                    ),
+                    applicationName: "Scavenger Hunt Bingo",
+                    applicationVersion: "1.1.1",
+                    applicationLegalese: '©2021 borderlineBoomer',
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text(
+                            'A bingo like game that can be played pretty much anywhere!',
+                            style: TextStyle(color: Colors.blue),
+                          ))
+                    ],
+                  );
+                }),
+          )
+        ],
       ),
       body: Container(
         width: double.infinity,
@@ -104,16 +130,24 @@ class _IntroPageState extends State<IntroPage> {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     dropdownColor: Colors.purple,
+                    borderRadius: BorderRadius.circular(15),
+                    icon: const Icon(Icons.arrow_downward),
                     iconEnabledColor: Colors.yellow.shade50,
-                    elevation: 10,
+                    elevation: 24,
                     value: selectedBoard,
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedBoard = newValue!;
                       });
                     },
-                    items: <String>['City', 'Trail', 'Indoors']
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: <String>[
+                      'City',
+                      'Trail',
+                      'Indoor',
+                      'City Icons',
+                      'Trail Icons',
+                      'Indoor Icons',
+                    ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(
@@ -148,8 +182,10 @@ class _IntroPageState extends State<IntroPage> {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     dropdownColor: Colors.blue,
+                    borderRadius: BorderRadius.circular(15),
+                    icon: const Icon(Icons.arrow_downward),
                     iconEnabledColor: Colors.yellow.shade50,
-                    elevation: 10,
+                    elevation: 24,
                     value: selectedPattern,
                     onChanged: (String? newValue) {
                       setState(() {
@@ -179,8 +215,7 @@ class _IntroPageState extends State<IntroPage> {
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
                 child: ElevatedButton(
                   onPressed: () {
-                    print(selectedPattern);
-                    playSound('Yes!.m4a');
+                    playSound('magicalSlice2.mp3');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
