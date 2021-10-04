@@ -3,10 +3,6 @@ import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdState {
-  Future<InitializationStatus> initialization;
-
-  AdState(this.initialization);
-
   String get bannerAdUnitId => Platform.isAndroid
       ? 'ca-app-pub-1618980018345182/1905213342'
       : 'ca-app-pub-1618980018345182/1761743112';
@@ -29,8 +25,4 @@ class AdState {
     // Called when an impression occurs on the ad.
     onAdImpression: (Ad ad) => print('Ad impression.'),
   );
-
-  String get interstitialAdUnitId => Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/1033173712'
-      : 'ca-app-pub-3940256099942544/4411468910';
 }

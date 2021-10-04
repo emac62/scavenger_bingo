@@ -2,21 +2,19 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:scavenger_hunt_bingo/ad_state.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final initFuture = MobileAds.instance.initialize();
-  final adState = AdState(initFuture);
+  MobileAds.instance.initialize();
+
   final RequestConfiguration requestConfiguration = RequestConfiguration(
       tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes);
   MobileAds.instance.updateRequestConfiguration(requestConfiguration);
 
-  runApp(Provider.value(
-      value: adState, builder: (context, child) => ScavengerBingo()));
+  runApp(ScavengerBingo());
 }
 
 class ScavengerBingo extends StatefulWidget {
@@ -51,6 +49,7 @@ class IntroPage extends StatefulWidget {
 
 String selectedBoard = 'City';
 String selectedPattern = 'One Line';
+BannerAdContainer bannerAdContainer = BannerAdContainer();
 
 class _IntroPageState extends State<IntroPage> {
   @override
@@ -88,9 +87,20 @@ class _IntroPageState extends State<IntroPage> {
                     children: <Widget>[
                       Padding(
                           padding: EdgeInsets.only(top: 15),
-                          child: Text(
-                            'A bingo like game that can be played pretty much anywhere!',
-                            style: TextStyle(color: Colors.blue),
+                          child: Column(
+                            children: [
+                              Text(
+                                'A bingo like game that can be played pretty much anywhere!',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Please do not play this game while driving or operating machinery.',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ],
                           ))
                     ],
                   );
@@ -144,9 +154,9 @@ class _IntroPageState extends State<IntroPage> {
                       'City',
                       'Trail',
                       'Indoor',
-                      'City Icons',
-                      'Trail Icons',
-                      'Indoor Icons',
+                      'City Images',
+                      'Trail Images',
+                      'Indoor Images',
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -220,8 +230,10 @@ class _IntroPageState extends State<IntroPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => GameBoard(
-                              selectedBoard: selectedBoard,
-                              selectedPattern: selectedPattern)),
+                                selectedBoard: selectedBoard,
+                                selectedPattern: selectedPattern,
+                                bannerAdContainer: bannerAdContainer,
+                              )),
                     );
                   },
                   child: Padding(

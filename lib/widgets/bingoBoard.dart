@@ -68,7 +68,7 @@ List<Widget> listTileWidgets(selectedBoard) {
       ));
     }
     return _widget;
-  } else if (selectedBoard == "City Icons") {
+  } else if (selectedBoard == "City Images") {
     _iconData = Resources.cityIcons;
     _iconData.shuffle();
     selectedList = _iconData.sublist(0, 25);
@@ -81,7 +81,7 @@ List<Widget> listTileWidgets(selectedBoard) {
           icon: selectedList[i].icon));
     }
     return _widget;
-  } else if (selectedBoard == "Trail Icons") {
+  } else if (selectedBoard == "Trail Images") {
     _iconData = Resources.trailIcons;
     _iconData.shuffle();
     selectedList = _iconData.sublist(0, 25);
@@ -108,39 +108,6 @@ List<Widget> listTileWidgets(selectedBoard) {
     }
     return _widget;
   }
-
-  // if ((selectedBoard != "Indoor Icons") ||
-  //     (selectedBoard != "City Icons") ||
-  //     (selectedBoard != "Trail Icons")) {
-  //   _array.shuffle();
-  //   selectedList = _array.sublist(0, 25);
-
-  //   selectedList.forEach((item) {
-  //     _buttonName.add(item.toString());
-  //   });
-
-  //   for (var i = 0; i < _buttonName.length; i++) {
-  //     _widget.add(ListTileWidget(
-  //       name: _buttonName[i],
-  //       icon: IconData(i),
-  //       index: i,
-  //       isSelected: false,
-  //     ));
-  //   }
-  //   return _widget;
-  // } else {
-  //   _iconData.shuffle();
-  //   selectedList = _iconData.sublist(0, 25);
-
-  //   for (var i = 0; i < selectedList.length; i++) {
-  //     _widget.add(ListTileWidget(
-  //         name: selectedList[i].name,
-  //         index: i,
-  //         isSelected: false,
-  //         icon: selectedList[i].icon));
-  //   }
-  //   return _widget;
-  // }
 }
 
 Widget bingoBoard() {
