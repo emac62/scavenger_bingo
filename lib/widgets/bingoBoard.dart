@@ -258,10 +258,11 @@ class ListTileWidgetState extends State<ListTileWidget> {
                         : (widget.index == 12)
                             ? AutoSizeText(
                                 "FREE",
+                                minFontSize: 30,
                                 style: TextStyle(
-                                    color: Colors.blue[100],
-                                    fontFamily: 'CaveatBrush',
-                                    fontSize: size.width * 0.1),
+                                  color: Colors.blue[100],
+                                  fontFamily: 'CaveatBrush',
+                                ),
                                 textAlign: TextAlign.center,
                               )
                             : Column(
@@ -276,9 +277,12 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                     child: AutoSizeText(
                                       widget.name.toUpperCase(),
                                       textAlign: TextAlign.center,
+                                      minFontSize: 0,
+                                      stepGranularity: 0.1,
+                                      wrapWords: false,
                                       style: TextStyle(
                                         fontFamily: 'CaveatBrush',
-                                        fontSize: size.width * 0.025,
+                                        fontSize: 14,
                                         color: Colors.purple,
                                       ),
                                     ),

@@ -203,6 +203,6 @@ class _GameBoardState extends State<GameBoard> {
             ]),
           ),
         ),
-        bottomNavigationBar: widget.bannerAdContainer);
+        bottomNavigationBar: bannerAdContainer);
   }
 }
