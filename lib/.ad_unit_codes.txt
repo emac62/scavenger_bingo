@@ -1,0 +1,52 @@
+from ad_state.dart
+
+Live Ad units
+
+String get bannerAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-1618980018345182/1905213342'
+      : 'ca-app-pub-1618980018345182/1761743112';
+
+Test ad units
+
+String get bannerAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/6300978111'
+      : 'ca-app-pub-3940256099942544/2934735716';
+
+
+
+
+
+from ad_helper.dart
+
+Live Ad units
+
+static String get interstitialAdUnitId {
+    if (Platform.isAndroid) {
+      return "ca-app-pub-1618980018345182/4274573426";
+    } else if (Platform.isIOS) {
+      return "ca-app-pub-1618980018345182/6214341050";
+    } else {
+      throw new UnsupportedError("Unsupported platform");
+    }
+  }
+
+  Test ad units
+
+  static String get interstitialAdUnitId {
+    if (Platform.isAndroid) {
+      return "ca-app-pub-3940256099942544/1033173712";
+    } else if (Platform.isIOS) {
+      return "ca-app-pub-3940256099942544/4411468910";
+    } else {
+      throw new UnsupportedError("Unsupported platform");
+    }
+  }
+
+
+
+Android App ID
+  ca-app-pub-1618980018345182~8412278922
+
+
+iOS App ID
+ca-app-pub-1618980018345182~9512773452

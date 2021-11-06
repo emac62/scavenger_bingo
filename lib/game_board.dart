@@ -2,9 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
-import 'package:scavenger_hunt_bingo/main.dart';
+import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
-import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
@@ -14,72 +13,58 @@ const int maxFailedLoadAttempts = 3;
 class GameBoard extends StatefulWidget {
   final String selectedBoard;
   final String selectedPattern;
-  final BannerAdContainer bannerAdContainer;
 
-  const GameBoard(
-      {Key? key,
-      required this.selectedBoard,
-      required this.selectedPattern,
-      required this.bannerAdContainer})
-      : super(key: key);
+  const GameBoard({
+    Key? key,
+    required this.selectedBoard,
+    required this.selectedPattern,
+  }) : super(key: key);
 
   @override
   _GameBoardState createState() => _GameBoardState();
 }
 
 class _GameBoardState extends State<GameBoard> {
-  InterstitialAd? _interstitialAd;
-  int _interstitialLoadAttempts = 0;
-
-  BannerAdContainer bannerAdContainer = BannerAdContainer();
-
-  void _createInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: AdHelper.interstitialAdUnitId,
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (InterstitialAd ad) {
-          _interstitialAd = ad;
-          _interstitialLoadAttempts = 0;
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          _interstitialLoadAttempts += 1;
-          _interstitialAd = null;
-          if (_interstitialLoadAttempts <= maxFailedLoadAttempts) {
-            _createInterstitialAd();
-          }
-        },
-      ),
-    );
-  }
-
-  void _showInterstitialAd() {
-    if (_interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (InterstitialAd ad) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-      );
-      _interstitialAd!.show();
-    }
-  }
+  late BannerAd _bannerAd;
+  bool _isBannerAdReady = false;
+  late InterstitialAd _interstitialAd;
+  bool _isInterstitialAdReady = false;
 
   @override
   void initState() {
     super.initState();
-    _createInterstitialAd();
+    _bannerAd = BannerAd(
+        // Change Banner Size According to Ur Need
+        size: AdSize.banner,
+        adUnitId: AdHelper.bannerAdUnitId,
+        listener: BannerAdListener(onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        }, onAdFailedToLoad: (ad, LoadAdError error) {
+          print("Failed to Load Banner Ad: ${error.message}");
+          _isBannerAdReady = false;
+          ad.dispose();
+        }),
+        request: AdRequest())
+      ..load();
+    //Interstitial Ads
+    InterstitialAd.load(
+        adUnitId: AdHelper.interstitialAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          this._interstitialAd = ad;
+          _isInterstitialAdReady = true;
+        }, onAdFailedToLoad: (LoadAdError error) {
+          print("Failed to Load Interstitial Ad ${error.message}");
+        }));
   }
 
   @override
   void dispose() {
     super.dispose();
-
-    _interstitialAd?.dispose();
+    _bannerAd.dispose();
+    _interstitialAd.dispose();
   }
 
   @override
@@ -109,11 +94,11 @@ class _GameBoardState extends State<GameBoard> {
               tooltip: 'Restart Game',
               onPressed: () {
                 result.clear();
-                _showInterstitialAd();
+                if (_isInterstitialAdReady) _interstitialAd.show();
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => IntroPage()),
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
               },
             ),
@@ -134,17 +119,20 @@ class _GameBoardState extends State<GameBoard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "The card shows things found here ->",
+                              "Things found here->",
                               style: TextStyle(
                                   fontFamily: 'CaveatBrush',
                                   fontSize: size.width * 0.05,
                                   color: Colors.blue),
                             ),
-                            Text(
+                            AutoSizeText(
                               widget.selectedBoard,
+                              minFontSize: 0,
+                              stepGranularity: 0.1,
+                              maxLines: 1,
                               style: TextStyle(
                                   fontFamily: 'CaveatBrush',
-                                  fontSize: size.width * 0.05,
+                                  fontSize: 16,
                                   color: Colors.purple),
                             )
                           ],
@@ -180,7 +168,8 @@ class _GameBoardState extends State<GameBoard> {
                                     await showDialog(
                                         context: context,
                                         builder: (_) => ImageDialog(
-                                              selectedPattern: selectedPattern,
+                                              selectedPattern:
+                                                  widget.selectedPattern,
                                             ));
                                   },
                                   icon: const Icon(
@@ -190,7 +179,6 @@ class _GameBoardState extends State<GameBoard> {
                                 )
                               ],
                             ),
-                            Row(),
                           ],
                         ),
                       ),
@@ -199,10 +187,19 @@ class _GameBoardState extends State<GameBoard> {
                 ),
               ),
               bingoBanner(),
-              bingoBoard(),
+              bingoBoard(widget.selectedBoard, widget.selectedPattern),
             ]),
           ),
         ),
-        bottomNavigationBar: bannerAdContainer);
+        bottomNavigationBar: (_isBannerAdReady)
+            ? Container(
+                height: _bannerAd.size.height.toDouble(),
+                width: _bannerAd.size.width.toDouble(),
+                child: AdWidget(ad: _bannerAd),
+              )
+            : Container(
+                height: 50,
+                color: Colors.yellow[50],
+              ));
   }
 }

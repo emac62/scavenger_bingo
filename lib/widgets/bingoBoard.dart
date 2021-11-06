@@ -1,21 +1,53 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/arrays.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/winning_patterns.dart';
 
-List<Widget> listTileWidgets(selectedBoard) {
+List<Widget> listTileWidgets(String selectedBoard, String selectedPattern) {
   List<Widget> _widget = [];
-
   var _buttonName = [];
   var _array = [];
   var _iconData = [];
   var selectedList = [];
 
-  if (selectedBoard == "City") {
-    _array = Resources.city;
+  switch (selectedBoard) {
+    case "City Walk":
+      _array = Resources.city;
+      _iconData = [];
+      break;
+    case "Trail Walk":
+      _array = Resources.trail;
+      _iconData = [];
+      break;
+    case "Stay Indoors":
+      _array = Resources.indoors;
+      _iconData = [];
+      break;
+    case "City Walk with Images":
+      _array = [];
+      _iconData = Resources.cityIcons;
+      break;
+    case "Trail Walk with Images":
+      _array = [];
+      _iconData = Resources.cityIcons;
+      break;
+    case "Stay Indoors with Images":
+      _array = [];
+      _iconData = Resources.indoorIcons;
+      break;
+    case "Grocery Store with Images":
+      _array = [];
+      _iconData = Resources.grocery;
+      break;
+    case "Classroom with Images":
+      _array = [];
+      _iconData = Resources.classroom;
+      break;
+  }
+
+  if (!selectedBoard.contains("Images")) {
     _array.shuffle();
     selectedList = _array.sublist(0, 25);
 
@@ -29,88 +61,30 @@ List<Widget> listTileWidgets(selectedBoard) {
         icon: IconData(i),
         index: i,
         isSelected: false,
+        pattern: selectedPattern,
       ));
     }
-    return _widget;
-  } else if (selectedBoard == "Trail") {
-    _array = Resources.trail;
-    _array.shuffle();
-    selectedList = _array.sublist(0, 25);
 
-    selectedList.forEach((item) {
-      _buttonName.add(item.toString());
-    });
-
-    for (var i = 0; i < _buttonName.length; i++) {
-      _widget.add(ListTileWidget(
-        name: _buttonName[i],
-        icon: IconData(i),
-        index: i,
-        isSelected: false,
-      ));
-    }
-    return _widget;
-  } else if (selectedBoard == "Indoor") {
-    _array = Resources.indoors;
-    _array.shuffle();
-    selectedList = _array.sublist(0, 25);
-
-    selectedList.forEach((item) {
-      _buttonName.add(item.toString());
-    });
-
-    for (var i = 0; i < _buttonName.length; i++) {
-      _widget.add(ListTileWidget(
-        name: _buttonName[i],
-        icon: IconData(i),
-        index: i,
-        isSelected: false,
-      ));
-    }
-    return _widget;
-  } else if (selectedBoard == "City Images") {
-    _iconData = Resources.cityIcons;
-    _iconData.shuffle();
-    selectedList = _iconData.sublist(0, 25);
-
-    for (var i = 0; i < selectedList.length; i++) {
-      _widget.add(ListTileWidget(
-          name: selectedList[i].name,
-          index: i,
-          isSelected: false,
-          icon: selectedList[i].icon));
-    }
-    return _widget;
-  } else if (selectedBoard == "Trail Images") {
-    _iconData = Resources.trailIcons;
-    _iconData.shuffle();
-    selectedList = _iconData.sublist(0, 25);
-
-    for (var i = 0; i < selectedList.length; i++) {
-      _widget.add(ListTileWidget(
-          name: selectedList[i].name,
-          index: i,
-          isSelected: false,
-          icon: selectedList[i].icon));
-    }
     return _widget;
   } else {
-    _iconData = Resources.indoorIcons;
     _iconData.shuffle();
     selectedList = _iconData.sublist(0, 25);
 
     for (var i = 0; i < selectedList.length; i++) {
       _widget.add(ListTileWidget(
-          name: selectedList[i].name,
-          index: i,
-          isSelected: false,
-          icon: selectedList[i].icon));
+        name: selectedList[i].name,
+        index: i,
+        isSelected: false,
+        icon: selectedList[i].icon,
+        pattern: selectedPattern,
+      ));
     }
+
     return _widget;
   }
 }
 
-Widget bingoBoard() {
+Widget bingoBoard(String selectedBoard, String selectedPattern) {
   return Builder(builder: (context) {
     var size = MediaQuery.of(context).size;
     return Padding(
@@ -122,7 +96,7 @@ Widget bingoBoard() {
             childAspectRatio: (size.width / size.height) * 1.8,
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            children: listTileWidgets(selectedBoard)),
+            children: listTileWidgets(selectedBoard, selectedPattern)),
       ),
     );
   });
@@ -180,18 +154,22 @@ findFullCardWinner(context) {
   }
 }
 
+checkForWinner(String selectedPattern) {}
+
 // ignore: must_be_immutable
 class ListTileWidget extends StatefulWidget {
   final String name;
   final IconData icon;
   final int index;
   bool isSelected;
+  final String pattern;
 
   ListTileWidget(
       {required this.name,
       required this.index,
       required this.isSelected,
-      required this.icon});
+      required this.icon,
+      required this.pattern});
 
   @override
   ListTileWidgetState createState() => ListTileWidgetState();
@@ -213,9 +191,10 @@ class ListTileWidgetState extends State<ListTileWidget> {
               addToSelectedTiles(widget.index);
             }
           });
-          if (selectedPattern == "One Line") {
+
+          if (widget.pattern == "One Line") {
             findOneLineWinner(context);
-          } else if (selectedPattern == "Cross") {
+          } else if (widget.pattern == "Cross") {
             findCrossWinner(context);
           } else {
             findFullCardWinner(context);
@@ -233,9 +212,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                   color: widget.isSelected ? Colors.blue : null,
                 ),
                 child: Center(
-                    child: (selectedBoard == "Indoor" ||
-                            selectedBoard == "City" ||
-                            selectedBoard == "Trail")
+                    child: (widget.icon == IconData(widget.index))
                         ? ListTile(
                             contentPadding:
                                 EdgeInsets.only(left: 0.0, right: 0.0),

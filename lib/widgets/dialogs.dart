@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
-
-import 'package:scavenger_hunt_bingo/main.dart';
+import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 
 showWinningDialog(context) {
   Dialogs.materialDialog(
     color: Colors.yellow.shade50,
-    msg: 'You got a BINGO!',
+    msg: 'BINGO!',
     title: 'Congratulations,',
     context: context,
     lottieBuilder: Lottie.asset('assets/32585-fireworks-display.json'),
@@ -30,7 +29,7 @@ showWinningDialog(context) {
           stopSound();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => IntroPage()),
+            MaterialPageRoute(builder: (context) => SettingsPage()),
           );
         },
         text: 'New Game',
@@ -51,7 +50,6 @@ showWinningPattern(context, String pattern) {
       TextButton(
         child: Text("OK"),
         onPressed: () {
-          //Put your code here which you want to execute on Yes button click.
           Navigator.of(context).pop();
         },
       ),
@@ -89,7 +87,7 @@ class _ImageDialogState extends State<ImageDialog> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    getSelectedPatternImage(selectedPattern);
+    getSelectedPatternImage(widget.selectedPattern);
     return Dialog(
       child: Container(
         width: size.width,
