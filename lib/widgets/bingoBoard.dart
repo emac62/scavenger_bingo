@@ -222,24 +222,26 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                   ? "FREE"
                                   : widget.name.toUpperCase(),
                               textAlign: TextAlign.center,
+                              wrapWords: false,
+                              minFontSize: 0,
+                              stepGranularity: 0.1,
                               style: (widget.index != 12)
                                   ? TextStyle(
                                       fontFamily: 'CaveatBrush',
-                                      fontSize: size.width * 0.025,
-                                      color: Colors.purple)
+                                      color: Colors.purple,
+                                      fontSize: size.width * 0.04)
                                   : TextStyle(
                                       fontFamily: 'CaveatBrush',
-                                      fontSize: size.width * 0.1,
-                                      color: Colors.blue[100]),
+                                      color: Colors.blue[100],
+                                      fontSize: size.width * 0.1),
                             ))
                         : (widget.index == 12)
                             ? AutoSizeText(
                                 "FREE",
-                                minFontSize: 30,
                                 style: TextStyle(
-                                  color: Colors.blue[100],
-                                  fontFamily: 'CaveatBrush',
-                                ),
+                                    color: Colors.blue[100],
+                                    fontFamily: 'CaveatBrush',
+                                    fontSize: size.width * 0.1),
                                 textAlign: TextAlign.center,
                               )
                             : Column(
@@ -249,17 +251,17 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                   Icon(
                                     widget.icon,
                                     color: Colors.purple,
+                                    size: size.width * 0.05,
                                   ),
                                   Flexible(
                                     child: AutoSizeText(
                                       widget.name.toUpperCase(),
                                       textAlign: TextAlign.center,
-                                      minFontSize: 0,
-                                      stepGranularity: 0.1,
                                       wrapWords: false,
+                                      minFontSize: 0,
                                       style: TextStyle(
                                         fontFamily: 'CaveatBrush',
-                                        fontSize: 14,
+                                        fontSize: size.width * 0.03,
                                         color: Colors.purple,
                                       ),
                                     ),

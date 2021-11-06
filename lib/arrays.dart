@@ -254,7 +254,7 @@ class Resources {
     IconImages(name: "lightbulb", icon: LineAwesomeIcons.lightbulb),
     IconImages(name: "cash register", icon: LineAwesomeIcons.cash_register),
     IconImages(name: "receipt", icon: LineAwesomeIcons.receipt),
-    IconImages(name: "bread_slice", icon: LineAwesomeIcons.bread_slice),
+    IconImages(name: "bread", icon: LineAwesomeIcons.bread_slice),
     IconImages(name: "carrot", icon: LineAwesomeIcons.carrot),
     IconImages(name: "cheese", icon: LineAwesomeIcons.cheese),
     IconImages(name: "egg", icon: LineAwesomeIcons.egg),

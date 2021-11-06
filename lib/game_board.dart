@@ -4,6 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
+import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
@@ -25,29 +26,14 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  late BannerAd _bannerAd;
-  bool _isBannerAdReady = false;
   late InterstitialAd _interstitialAd;
   bool _isInterstitialAdReady = false;
+  BannerAdContainer bannerAdContainer = BannerAdContainer();
 
   @override
   void initState() {
     super.initState();
-    _bannerAd = BannerAd(
-        // Change Banner Size According to Ur Need
-        size: AdSize.banner,
-        adUnitId: AdHelper.bannerAdUnitId,
-        listener: BannerAdListener(onAdLoaded: (_) {
-          setState(() {
-            _isBannerAdReady = true;
-          });
-        }, onAdFailedToLoad: (ad, LoadAdError error) {
-          print("Failed to Load Banner Ad: ${error.message}");
-          _isBannerAdReady = false;
-          ad.dispose();
-        }),
-        request: AdRequest())
-      ..load();
+
     //Interstitial Ads
     InterstitialAd.load(
         adUnitId: AdHelper.interstitialAdUnitId,
@@ -63,7 +49,7 @@ class _GameBoardState extends State<GameBoard> {
   @override
   void dispose() {
     super.dispose();
-    _bannerAd.dispose();
+
     _interstitialAd.dispose();
   }
 
@@ -125,14 +111,12 @@ class _GameBoardState extends State<GameBoard> {
                                   fontSize: size.width * 0.05,
                                   color: Colors.blue),
                             ),
-                            AutoSizeText(
+                            Text(
                               widget.selectedBoard,
-                              minFontSize: 0,
-                              stepGranularity: 0.1,
                               maxLines: 1,
                               style: TextStyle(
                                   fontFamily: 'CaveatBrush',
-                                  fontSize: 16,
+                                  fontSize: size.width * 0.05,
                                   color: Colors.purple),
                             )
                           ],
@@ -191,15 +175,6 @@ class _GameBoardState extends State<GameBoard> {
             ]),
           ),
         ),
-        bottomNavigationBar: (_isBannerAdReady)
-            ? Container(
-                height: _bannerAd.size.height.toDouble(),
-                width: _bannerAd.size.width.toDouble(),
-                child: AdWidget(ad: _bannerAd),
-              )
-            : Container(
-                height: 50,
-                color: Colors.yellow[50],
-              ));
+        bottomNavigationBar: bannerAdContainer);
   }
 }
