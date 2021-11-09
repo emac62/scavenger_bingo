@@ -4,12 +4,23 @@ import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
 
 showWinningDialog(context) {
   Dialogs.materialDialog(
-    color: Colors.yellow.shade50,
-    msg: 'BINGO!',
-    title: 'Congratulations,',
+    color: Colors.white,
+    // msg: 'Congratulations',
+    // msgStyle: TextStyle(
+    //   color: Colors.blue,
+    //   fontSize: SizeConfig.safeBlockHorizontal * 10,
+    //   fontFamily: 'CaveatBrush',
+    // ),
+    title: 'BINGO!',
+    titleStyle: TextStyle(
+      color: Colors.purple,
+      fontSize: SizeConfig.safeBlockHorizontal * 10,
+      fontFamily: 'CaveatBrush',
+    ),
     context: context,
     lottieBuilder: Lottie.asset('assets/32585-fireworks-display.json'),
     actions: [
@@ -19,10 +30,13 @@ showWinningDialog(context) {
           Navigator.of(context).pop();
         },
         text: 'Close',
-        iconData: Icons.exit_to_app,
         color: Colors.blue,
-        textStyle: TextStyle(color: Colors.white),
-        iconColor: Colors.white,
+        textStyle: TextStyle(
+          color: Colors.yellow[50],
+          fontSize: SizeConfig.safeBlockHorizontal * 3,
+        ),
+        iconData: Icons.exit_to_app,
+        iconColor: Colors.yellow[50],
       ),
       IconsButton(
         onPressed: () {
@@ -33,10 +47,13 @@ showWinningDialog(context) {
           );
         },
         text: 'New Game',
-        iconData: Icons.auto_awesome,
         color: Colors.purple,
-        textStyle: TextStyle(color: Colors.white),
-        iconColor: Colors.white,
+        textStyle: TextStyle(
+          color: Colors.yellow[50],
+          fontSize: SizeConfig.safeBlockHorizontal * 3,
+        ),
+        iconData: Icons.auto_awesome,
+        iconColor: Colors.yellow[50],
       ),
     ],
   );
@@ -74,7 +91,7 @@ class _ImageDialogState extends State<ImageDialog> {
       case "One Line":
         winningImage = 'assets/images/OneLineWinners.png';
         break;
-      case "Cross":
+      case "Letter X":
         winningImage = 'assets/images/Cross.png';
         break;
       case "Full Card":

@@ -25,15 +25,15 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern) {
       _array = Resources.indoors;
       _iconData = [];
       break;
-    case "City Walk with Images":
+    case "City with Images":
       _array = [];
       _iconData = Resources.cityIcons;
       break;
-    case "Trail Walk with Images":
+    case "Trail with Images":
       _array = [];
       _iconData = Resources.cityIcons;
       break;
-    case "Stay Indoors with Images":
+    case "Indoors with Images":
       _array = [];
       _iconData = Resources.indoorIcons;
       break;
@@ -194,7 +194,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
 
           if (widget.pattern == "One Line") {
             findOneLineWinner(context);
-          } else if (widget.pattern == "Cross") {
+          } else if (widget.pattern == "Letter X") {
             findCrossWinner(context);
           } else {
             findFullCardWinner(context);

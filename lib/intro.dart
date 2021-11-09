@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({
@@ -17,7 +18,7 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
+    SizeConfig().init(context);
     return Scaffold(
       appBar: NewGradientAppBar(
         automaticallyImplyLeading: false,

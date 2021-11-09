@@ -35,6 +35,7 @@ dependencies:
   audioplayers: ^0.20.1
   line_awesome_flutter: ^2.0.0
   chips_choice_null_safety: ^2.0.2
+  sizer: ^2.0.15
 
 dev_dependencies:
   flutter_test:

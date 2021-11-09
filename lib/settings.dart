@@ -4,6 +4,7 @@ import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
+import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -27,24 +28,24 @@ class _SettingsPageState extends State<SettingsPage> {
 
   List<String> cards = [
     "City Walk",
-    "City Walk with Images",
     "Trail Walk",
-    "Trail Walk with Images",
     "Stay Indoors",
-    "Stay Indoors with Images",
+    "City with Images",
+    "Trail with Images",
+    "Indoors with Images",
     "Grocery Store with Images",
     "Classroom with Images",
   ];
 
   List<String> toWin = [
     "One Line",
-    "Cross",
+    "Letter X",
     "Full Card",
   ];
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    SizeConfig().init(context);
     return Scaffold(
       key: _key,
       appBar: NewGradientAppBar(
@@ -54,8 +55,8 @@ class _SettingsPageState extends State<SettingsPage> {
           style: TextStyle(
               color: Colors.yellow[50],
               fontFamily: 'CaveatBrush',
-              fontSize: size.width,
-              letterSpacing: 2.0),
+              fontSize: SizeConfig.safeBlockHorizontal * 12,
+              letterSpacing: 2.5),
         ),
         gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
         actions: [],
@@ -65,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.yellow[50],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
               height: 5,
@@ -75,13 +76,18 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Text(
                 "Where are you playing?",
                 style: TextStyle(
-                    color: Colors.purple,
-                    fontFamily: 'CaveatBrush',
-                    fontSize: size.width * 0.075),
+                  color: Colors.purple,
+                  fontFamily: 'CaveatBrush',
+                  fontSize: SizeConfig.safeBlockHorizontal * 10,
+                ),
                 maxLines: 1,
               ),
             ),
-            Wrap(spacing: 3, direction: Axis.horizontal, children: cardChips()),
+            Wrap(
+                spacing: 3,
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.center,
+                children: cardChips()),
             SizedBox(
               height: 5,
             ),
@@ -90,45 +96,58 @@ class _SettingsPageState extends State<SettingsPage> {
               child: AutoSizeText(
                 "How would you like to win?",
                 style: TextStyle(
-                    color: Colors.purple,
-                    fontFamily: 'CaveatBrush',
-                    fontSize: size.width * 0.075),
+                  color: Colors.purple,
+                  fontFamily: 'CaveatBrush',
+                  fontSize: SizeConfig.safeBlockHorizontal * 9,
+                ),
                 maxLines: 1,
               ),
             ),
-            Wrap(spacing: 3, direction: Axis.horizontal, children: winChips()),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-              child: ElevatedButton(
-                  onPressed: () {
-                    playSound('magicalSlice2.mp3');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GameBoard(
-                                selectedBoard: selectedBoard,
-                                selectedPattern: selectedPattern,
-                              )),
-                    );
-                  },
+            Wrap(
+                spacing: 3,
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.center,
+                children: winChips()),
+            Expanded(
+              child: Container(
+                child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text("Play Bingo"),
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          playSound('magicalSlice2.mp3');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GameBoard(
+                                      selectedBoard: selectedBoard,
+                                      selectedPattern: selectedPattern,
+                                    )),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text("Play Bingo"),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          primary: Colors.purple,
+                          onPrimary: Colors.yellow[50],
+                          side: BorderSide(
+                            color: Colors.blue,
+                            width: 3.0,
+                          ),
+                          elevation: 20,
+                          textStyle: TextStyle(
+                            fontFamily: 'CaveatBrush',
+                            fontSize: SizeConfig.safeBlockHorizontal * 10,
+                          ),
+                        )),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    primary: Colors.purple,
-                    onPrimary: Colors.yellow[50],
-                    side: BorderSide(
-                      color: Colors.blue,
-                      width: 3.0,
-                    ),
-                    elevation: 20,
-                    textStyle: TextStyle(
-                        fontFamily: 'CaveatBrush', fontSize: size.width * 0.1),
-                  )),
+                ),
+              ),
             ),
           ],
         ),
@@ -138,18 +157,21 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   List<Widget> cardChips() {
-    var size = MediaQuery.of(context).size;
     List<Widget> chips = [];
     for (int i = 0; i < cards.length; i++) {
       Widget item = Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(2),
         child: ChoiceChip(
           label: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
             child: Text(cards[i]),
           ),
-          labelStyle:
-              TextStyle(color: Colors.yellow[50], fontSize: size.width * 0.04),
+          labelStyle: TextStyle(
+            color: Colors.yellow[50],
+            fontSize: SizeConfig.safeBlockHorizontal * 3.5,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
           backgroundColor: Colors.blue,
           selectedColor: Colors.purple,
           selected: cardIndex == i,
@@ -167,18 +189,19 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   List<Widget> winChips() {
-    var size = MediaQuery.of(context).size;
     List<Widget> chips = [];
     for (int i = 0; i < toWin.length; i++) {
       Widget item = Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
           label: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
             child: Text(toWin[i]),
           ),
-          labelStyle:
-              TextStyle(color: Colors.yellow[50], fontSize: size.width * 0.04),
+          labelStyle: TextStyle(
+              color: Colors.yellow[50],
+              fontSize: SizeConfig.safeBlockHorizontal * 4,
+              fontWeight: FontWeight.bold),
           backgroundColor: Colors.blue,
           selectedColor: Colors.purple,
           selected: winIndex == i,

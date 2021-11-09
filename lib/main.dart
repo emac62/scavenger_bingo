@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:scavenger_hunt_bingo/intro.dart';
+import 'package:sizer/sizer.dart';
 
 List<String> testDeviceIDs = [
   "8E3C44E0453B296DEDFBA106CDBB59CC", // Samsung S5
@@ -33,13 +34,16 @@ class ScavengerBingo extends StatefulWidget {
 class _ScavengerBingoState extends State<ScavengerBingo> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch:
-            Colors.purple, //i am set brown colour,you can set your colour here
-      ),
-      home: IntroPage(),
-    );
+    return Sizer(builder: (context, orientation, deviceType) {
+      // ignore: dead_code
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors
+              .purple, //i am set brown colour,you can set your colour here
+        ),
+        home: IntroPage(),
+      );
+    });
   }
 }
