@@ -9,12 +9,6 @@ import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
 showWinningDialog(context) {
   Dialogs.materialDialog(
     color: Colors.white,
-    // msg: 'Congratulations',
-    // msgStyle: TextStyle(
-    //   color: Colors.blue,
-    //   fontSize: SizeConfig.safeBlockHorizontal * 10,
-    //   fontFamily: 'CaveatBrush',
-    // ),
     title: 'BINGO!',
     titleStyle: TextStyle(
       color: Colors.purple,
@@ -103,15 +97,16 @@ class _ImageDialogState extends State<ImageDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     getSelectedPatternImage(widget.selectedPattern);
     return Dialog(
       child: Container(
-        width: size.width,
-        height: size.width / 2,
+        width: SizeConfig.blockSizeHorizontal * 100,
+        height: SizeConfig.blockSizeVertical * 60,
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: ExactAssetImage(winningImage), fit: BoxFit.contain)),
+          image: DecorationImage(
+              image: ExactAssetImage(winningImage), fit: BoxFit.contain),
+          color: Colors.yellow[50],
+        ),
       ),
     );
   }

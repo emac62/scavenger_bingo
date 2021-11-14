@@ -17,7 +17,6 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     SizeConfig().init(context);
     return Scaffold(
       appBar: NewGradientAppBar(
@@ -27,7 +26,7 @@ class _IntroPageState extends State<IntroPage> {
           style: TextStyle(
               color: Colors.yellow[50],
               fontFamily: 'CaveatBrush',
-              fontSize: size.width,
+              fontSize: SizeConfig.safeBlockHorizontal * 10,
               letterSpacing: 2.0),
         ),
         gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
@@ -72,18 +71,19 @@ class _IntroPageState extends State<IntroPage> {
         ],
       ),
       body: Container(
-        width: double.infinity,
+        width: SizeConfig.blockSizeHorizontal * 100,
+        height: SizeConfig.blockSizeVertical * 100,
         color: Colors.yellow[50],
         child: Padding(
-          padding: EdgeInsets.only(top: size.height * 0.08),
+          padding: EdgeInsets.only(top: 8.0),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Flexible(
                     child: Container(
-                        height: size.width / 2,
-                        width: size.width,
+                        height: SizeConfig.blockSizeVertical * 40,
+                        width: SizeConfig.blockSizeHorizontal * 100,
                         child: Image.asset(
                           "assets/images/IntroImage.png",
                           fit: BoxFit.contain,
@@ -94,11 +94,23 @@ class _IntroPageState extends State<IntroPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
                   child: Text(
-                    "A relaxing game to play with kids",
+                    "A relaxing game to play",
                     style: TextStyle(
                       color: Colors.purple,
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.05,
+                      fontSize: SizeConfig.blockSizeHorizontal * 8,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                  child: Text(
+                    "with kids",
+                    style: TextStyle(
+                      color: Colors.purple,
+                      fontFamily: 'CaveatBrush',
+                      fontSize: SizeConfig.blockSizeHorizontal * 8,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -110,7 +122,7 @@ class _IntroPageState extends State<IntroPage> {
                     style: TextStyle(
                       color: Colors.purple,
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.05,
+                      fontSize: SizeConfig.blockSizeHorizontal * 8,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -144,7 +156,7 @@ class _IntroPageState extends State<IntroPage> {
                         ),
                         elevation: 20,
                         textStyle: TextStyle(
-                            fontSize: size.width * 0.05,
+                            fontSize: SizeConfig.blockSizeHorizontal * 10,
                             fontFamily: 'CaveatBrush')),
                   ),
                 )

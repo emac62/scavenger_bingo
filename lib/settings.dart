@@ -55,101 +55,108 @@ class _SettingsPageState extends State<SettingsPage> {
           style: TextStyle(
               color: Colors.yellow[50],
               fontFamily: 'CaveatBrush',
-              fontSize: SizeConfig.safeBlockHorizontal * 12,
+              fontSize: SizeConfig.safeBlockHorizontal * 15,
               letterSpacing: 2.5),
         ),
         gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
         actions: [],
       ),
-      body: Container(
-        width: double.infinity,
-        color: Colors.yellow[50],
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                "Where are you playing?",
-                style: TextStyle(
-                  color: Colors.purple,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: SizeConfig.safeBlockHorizontal * 10,
-                ),
-                maxLines: 1,
-              ),
-            ),
-            Wrap(
-                spacing: 3,
-                direction: Axis.horizontal,
-                alignment: WrapAlignment.center,
-                children: cardChips()),
-            SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: AutoSizeText(
-                "How would you like to win?",
-                style: TextStyle(
-                  color: Colors.purple,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: SizeConfig.safeBlockHorizontal * 9,
-                ),
-                maxLines: 1,
-              ),
-            ),
-            Wrap(
-                spacing: 3,
-                direction: Axis.horizontal,
-                alignment: WrapAlignment.center,
-                children: winChips()),
-            Expanded(
-              child: Container(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          playSound('magicalSlice2.mp3');
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => GameBoard(
-                                      selectedBoard: selectedBoard,
-                                      selectedPattern: selectedPattern,
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Text("Play Bingo"),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          primary: Colors.purple,
-                          onPrimary: Colors.yellow[50],
-                          side: BorderSide(
-                            color: Colors.blue,
-                            width: 3.0,
-                          ),
-                          elevation: 20,
-                          textStyle: TextStyle(
-                            fontFamily: 'CaveatBrush',
-                            fontSize: SizeConfig.safeBlockHorizontal * 10,
-                          ),
-                        )),
+      body: SafeArea(
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: Container(
+              width: SizeConfig.safeBlockHorizontal * 100,
+              height: SizeConfig.safeBlockVertical * 100,
+              color: Colors.yellow[50],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 5,
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      "Where are you playing?",
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontFamily: 'CaveatBrush',
+                        fontSize: SizeConfig.safeBlockHorizontal * 10,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                  Wrap(
+                      spacing: 3,
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.center,
+                      children: cardChips()),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: AutoSizeText(
+                      "How would you like to win?",
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontFamily: 'CaveatBrush',
+                        fontSize: SizeConfig.safeBlockHorizontal * 9,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                  Wrap(
+                      spacing: 3,
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.center,
+                      children: winChips()),
+                  Expanded(
+                    child: Container(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                playSound('magicalSlice2.mp3');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => GameBoard(
+                                            selectedBoard: selectedBoard,
+                                            selectedPattern: selectedPattern,
+                                          )),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Play Bingo"),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                primary: Colors.purple,
+                                onPrimary: Colors.yellow[50],
+                                side: BorderSide(
+                                  color: Colors.blue,
+                                  width: 3.0,
+                                ),
+                                elevation: 20,
+                                textStyle: TextStyle(
+                                  fontFamily: 'CaveatBrush',
+                                  fontSize: SizeConfig.safeBlockHorizontal * 10,
+                                ),
+                              )),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: bannerAdContainer,
@@ -160,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
     List<Widget> chips = [];
     for (int i = 0; i < cards.length; i++) {
       Widget item = Padding(
-        padding: const EdgeInsets.all(2),
+        padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
         child: ChoiceChip(
           label: Padding(
             padding: const EdgeInsets.all(4.0),
@@ -192,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
     List<Widget> chips = [];
     for (int i = 0; i < toWin.length; i++) {
       Widget item = Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
         child: ChoiceChip(
           label: Padding(
             padding: const EdgeInsets.all(4.0),
