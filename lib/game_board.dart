@@ -15,11 +15,13 @@ const int maxFailedLoadAttempts = 3;
 class GameBoard extends StatefulWidget {
   final String selectedBoard;
   final String selectedPattern;
+  final bool withSound;
 
   const GameBoard({
     Key? key,
     required this.selectedBoard,
     required this.selectedPattern,
+    required this.withSound,
   }) : super(key: key);
 
   @override
@@ -116,7 +118,10 @@ class _GameBoardState extends State<GameBoard> {
 
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => SettingsPage(
+                              withSound: widget.withSound,
+                            )),
                   );
                 },
               ),
@@ -207,7 +212,8 @@ class _GameBoardState extends State<GameBoard> {
                 ),
               ),
               bingoBanner(),
-              bingoBoard(widget.selectedBoard, widget.selectedPattern),
+              bingoBoard(widget.selectedBoard, widget.selectedPattern,
+                  widget.withSound),
             ]),
           ),
         ),

@@ -15,6 +15,7 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> {
+  bool withSound = true;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -137,7 +138,10 @@ class _IntroPageState extends State<IntroPage> {
                       playSound('magicalSlice2.mp3');
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SettingsPage()),
+                        MaterialPageRoute(
+                            builder: (context) => SettingsPage(
+                                  withSound: withSound,
+                                )),
                       );
                     },
                     child: Padding(

@@ -6,7 +6,7 @@ import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
 
-showWinningDialog(context) {
+showWinningDialog(context, bool withSound) {
   Dialogs.materialDialog(
     color: Colors.white,
     title: 'BINGO!',
@@ -18,36 +18,59 @@ showWinningDialog(context) {
     context: context,
     lottieBuilder: Lottie.asset('assets/32585-fireworks-display.json'),
     actions: [
-      IconsButton(
-        onPressed: () {
-          stopSound();
-          Navigator.of(context).pop();
-        },
-        text: 'Close',
-        color: Colors.blue,
-        textStyle: TextStyle(
-          color: Colors.yellow[50],
-          fontSize: SizeConfig.safeBlockHorizontal * 3,
-        ),
-        iconData: Icons.exit_to_app,
-        iconColor: Colors.yellow[50],
-      ),
-      IconsButton(
-        onPressed: () {
-          stopSound();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SettingsPage()),
-          );
-        },
-        text: 'New Game',
-        color: Colors.purple,
-        textStyle: TextStyle(
-          color: Colors.yellow[50],
-          fontSize: SizeConfig.safeBlockHorizontal * 3,
-        ),
-        iconData: Icons.auto_awesome,
-        iconColor: Colors.yellow[50],
+      Column(
+        children: [
+          IconsButton(
+            onPressed: () {
+              stopSound();
+              Navigator.of(context).pop();
+            },
+            text: 'Close',
+            color: Colors.blue,
+            textStyle: TextStyle(
+              color: Colors.yellow[50],
+              fontSize: SizeConfig.safeBlockHorizontal * 3,
+            ),
+            iconData: Icons.exit_to_app,
+            iconColor: Colors.yellow[50],
+          ),
+          IconsButton(
+            onPressed: () {
+              stopSound();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(withSound: withSound)),
+              );
+            },
+            text: 'New Game',
+            color: Colors.purple,
+            textStyle: TextStyle(
+              color: Colors.yellow[50],
+              fontSize: SizeConfig.safeBlockHorizontal * 3,
+            ),
+            iconData: Icons.auto_awesome,
+            iconColor: Colors.yellow[50],
+          ),
+          IconsButton(
+            onPressed: () {
+              stopSound();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(withSound: withSound)),
+              );
+            },
+            text: 'Share',
+            color: Colors.blue,
+            textStyle: TextStyle(
+              color: Colors.yellow[50],
+              fontSize: SizeConfig.safeBlockHorizontal * 3,
+            ),
+            iconData: Icons.share,
+            iconColor: Colors.yellow[50],
+          ),
+        ],
       ),
     ],
   );

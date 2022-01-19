@@ -5,7 +5,8 @@ import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/winning_patterns.dart';
 
-List<Widget> listTileWidgets(String selectedBoard, String selectedPattern) {
+List<Widget> listTileWidgets(
+    String selectedBoard, String selectedPattern, bool withSound) {
   List<Widget> _widget = [];
   var _buttonName = [];
   var _array = [];
@@ -62,6 +63,7 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern) {
         index: i,
         isSelected: false,
         pattern: selectedPattern,
+        withSound: withSound,
       ));
     }
 
@@ -77,6 +79,7 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern) {
         isSelected: false,
         icon: selectedList[i].icon,
         pattern: selectedPattern,
+        withSound: withSound,
       ));
     }
 
@@ -84,7 +87,8 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern) {
   }
 }
 
-Widget bingoBoard(String selectedBoard, String selectedPattern) {
+Widget bingoBoard(
+    String selectedBoard, String selectedPattern, bool withSound) {
   return Builder(builder: (context) {
     var size = MediaQuery.of(context).size;
     return Padding(
@@ -96,7 +100,8 @@ Widget bingoBoard(String selectedBoard, String selectedPattern) {
             childAspectRatio: (size.width / size.height) * 1.8,
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            children: listTileWidgets(selectedBoard, selectedPattern)),
+            children:
+                listTileWidgets(selectedBoard, selectedPattern, withSound)),
       ),
     );
   });
@@ -114,7 +119,7 @@ removeFromSelectedTiles(int) {
 
 List result = [];
 
-findOneLineWinner(context) {
+findOneLineWinner(context, bool withSound) {
   for (var i = 0; i < Patterns.oneLine.length; i++) {
     result = Patterns.oneLine[i]
         .where((element) => !selectedTiles.contains(element))
@@ -123,34 +128,34 @@ findOneLineWinner(context) {
     if (result.isEmpty) {
       result.clear();
       selectedTiles.clear();
-      playSound('fireworks.mp3');
-      showWinningDialog(context);
+      if (withSound) playSound('fireworks.mp3');
+      showWinningDialog(context, withSound);
       break;
     }
   }
 }
 
-findCrossWinner(context) {
+findCrossWinner(context, bool withSound) {
   result = Patterns.cross
       .where((element) => !selectedTiles.contains(element))
       .toList();
   if (result.isEmpty) {
     result.clear();
     selectedTiles.clear();
-    playSound('fireworks.mp3');
-    showWinningDialog(context);
+    if (withSound) playSound('fireworks.mp3');
+    showWinningDialog(context, withSound);
   }
 }
 
-findFullCardWinner(context) {
+findFullCardWinner(context, bool withSound) {
   result = Patterns.full
       .where((element) => !selectedTiles.contains(element))
       .toList();
   if (result.isEmpty) {
     result.clear();
     selectedTiles.clear();
-    playSound('fireworks.mp3');
-    showWinningDialog(context);
+    if (withSound) playSound('fireworks.mp3');
+    showWinningDialog(context, withSound);
   }
 }
 
@@ -163,13 +168,15 @@ class ListTileWidget extends StatefulWidget {
   final int index;
   bool isSelected;
   final String pattern;
+  bool withSound;
 
   ListTileWidget(
       {required this.name,
       required this.index,
       required this.isSelected,
       required this.icon,
-      required this.pattern});
+      required this.pattern,
+      required this.withSound});
 
   @override
   ListTileWidgetState createState() => ListTileWidgetState();
@@ -187,17 +194,17 @@ class ListTileWidgetState extends State<ListTileWidget> {
               removeFromSelectedTiles(widget.index);
             } else {
               widget.isSelected = !widget.isSelected;
-              playSound("woosh.mp3");
+              if (widget.withSound) playSound("woosh.mp3");
               addToSelectedTiles(widget.index);
             }
           });
 
           if (widget.pattern == "One Line") {
-            findOneLineWinner(context);
+            findOneLineWinner(context, widget.withSound);
           } else if (widget.pattern == "Letter X") {
-            findCrossWinner(context);
+            findCrossWinner(context, widget.withSound);
           } else {
-            findFullCardWinner(context);
+            findFullCardWinner(context, widget.withSound);
           }
         },
         child: Container(
