@@ -1,12 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:scavenger_hunt_bingo/arrays.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/winning_patterns.dart';
+import 'package:screenshot/screenshot.dart';
 
-List<Widget> listTileWidgets(
-    String selectedBoard, String selectedPattern, bool withSound) {
+List<Widget> listTileWidgets(String selectedBoard, String selectedPattern,
+    bool withSound, ScreenshotController screenshotController) {
   List<Widget> _widget = [];
   var _buttonName = [];
   var _array = [];
@@ -24,6 +26,14 @@ List<Widget> listTileWidgets(
       break;
     case "Stay Indoors":
       _array = Resources.indoors;
+      _iconData = [];
+      break;
+    case "Waiting Room":
+      _array = Resources.waitingRoom;
+      _iconData = [];
+      break;
+    case "Virtual Meeting":
+      _array = Resources.virtual;
       _iconData = [];
       break;
     case "City with Images":
@@ -46,6 +56,10 @@ List<Widget> listTileWidgets(
       _array = [];
       _iconData = Resources.classroom;
       break;
+    case "Restaurant with Images":
+      _array = [];
+      _iconData = Resources.restaurant;
+      break;
   }
 
   if (!selectedBoard.contains("Images")) {
@@ -64,6 +78,7 @@ List<Widget> listTileWidgets(
         isSelected: false,
         pattern: selectedPattern,
         withSound: withSound,
+        screenshotController: screenshotController,
       ));
     }
 
@@ -80,6 +95,7 @@ List<Widget> listTileWidgets(
         icon: selectedList[i].icon,
         pattern: selectedPattern,
         withSound: withSound,
+        screenshotController: screenshotController,
       ));
     }
 
@@ -88,7 +104,11 @@ List<Widget> listTileWidgets(
 }
 
 Widget bingoBoard(
-    String selectedBoard, String selectedPattern, bool withSound) {
+  String selectedBoard,
+  String selectedPattern,
+  bool withSound,
+  ScreenshotController screenshotController,
+) {
   return Builder(builder: (context) {
     var size = MediaQuery.of(context).size;
     return Padding(
@@ -100,8 +120,8 @@ Widget bingoBoard(
             childAspectRatio: (size.width / size.height) * 1.8,
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            children:
-                listTileWidgets(selectedBoard, selectedPattern, withSound)),
+            children: listTileWidgets(selectedBoard, selectedPattern, withSound,
+                screenshotController)),
       ),
     );
   });
@@ -119,7 +139,8 @@ removeFromSelectedTiles(int) {
 
 List result = [];
 
-findOneLineWinner(context, bool withSound) {
+findOneLineWinner(
+    context, bool withSound, ScreenshotController screenshotController) {
   for (var i = 0; i < Patterns.oneLine.length; i++) {
     result = Patterns.oneLine[i]
         .where((element) => !selectedTiles.contains(element))
@@ -129,13 +150,14 @@ findOneLineWinner(context, bool withSound) {
       result.clear();
       selectedTiles.clear();
       if (withSound) playSound('fireworks.mp3');
-      showWinningDialog(context, withSound);
+      showWinningDialog(context, withSound, screenshotController);
       break;
     }
   }
 }
 
-findCrossWinner(context, bool withSound) {
+findCrossWinner(
+    context, bool withSound, ScreenshotController screenshotController) {
   result = Patterns.cross
       .where((element) => !selectedTiles.contains(element))
       .toList();
@@ -143,11 +165,12 @@ findCrossWinner(context, bool withSound) {
     result.clear();
     selectedTiles.clear();
     if (withSound) playSound('fireworks.mp3');
-    showWinningDialog(context, withSound);
+    showWinningDialog(context, withSound, screenshotController);
   }
 }
 
-findFullCardWinner(context, bool withSound) {
+findFullCardWinner(
+    context, bool withSound, ScreenshotController screenshotController) {
   result = Patterns.full
       .where((element) => !selectedTiles.contains(element))
       .toList();
@@ -155,11 +178,9 @@ findFullCardWinner(context, bool withSound) {
     result.clear();
     selectedTiles.clear();
     if (withSound) playSound('fireworks.mp3');
-    showWinningDialog(context, withSound);
+    showWinningDialog(context, withSound, screenshotController);
   }
 }
-
-checkForWinner(String selectedPattern) {}
 
 // ignore: must_be_immutable
 class ListTileWidget extends StatefulWidget {
@@ -169,14 +190,17 @@ class ListTileWidget extends StatefulWidget {
   bool isSelected;
   final String pattern;
   bool withSound;
+  ScreenshotController screenshotController;
 
-  ListTileWidget(
-      {required this.name,
-      required this.index,
-      required this.isSelected,
-      required this.icon,
-      required this.pattern,
-      required this.withSound});
+  ListTileWidget({
+    required this.name,
+    required this.index,
+    required this.isSelected,
+    required this.icon,
+    required this.pattern,
+    required this.withSound,
+    required this.screenshotController,
+  });
 
   @override
   ListTileWidgetState createState() => ListTileWidgetState();
@@ -200,11 +224,14 @@ class ListTileWidgetState extends State<ListTileWidget> {
           });
 
           if (widget.pattern == "One Line") {
-            findOneLineWinner(context, widget.withSound);
+            findOneLineWinner(
+                context, widget.withSound, widget.screenshotController);
           } else if (widget.pattern == "Letter X") {
-            findCrossWinner(context, widget.withSound);
+            findCrossWinner(
+                context, widget.withSound, widget.screenshotController);
           } else {
-            findFullCardWinner(context, widget.withSound);
+            findFullCardWinner(
+                context, widget.withSound, widget.screenshotController);
           }
         },
         child: Container(

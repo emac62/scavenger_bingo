@@ -84,6 +84,14 @@ class _SettingsPageState extends State<SettingsPage> {
           //Here we will build the content of the dialog
           return AlertDialog(
             backgroundColor: Colors.yellow[50],
+            scrollable: true,
+            titlePadding: EdgeInsets.only(top: 4),
+            contentPadding: EdgeInsets.symmetric(
+                vertical: SizeConfig.blockSizeVertical * 3,
+                horizontal: SizeConfig.blockSizeHorizontal * 4),
+            insetPadding: EdgeInsets.symmetric(
+                vertical: SizeConfig.blockSizeVertical * 3,
+                horizontal: SizeConfig.blockSizeHorizontal * 4),
             shape: RoundedRectangleBorder(
                 side: BorderSide(color: Colors.purple, width: 5.0),
                 borderRadius: BorderRadius.all(Radius.circular(25))),
@@ -93,21 +101,19 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(
                 color: Colors.purple,
                 fontFamily: 'CaveatBrush',
-                fontSize: SizeConfig.safeBlockHorizontal * 8,
+                fontSize: SizeConfig.safeBlockHorizontal * 10,
               ),
             ),
-            content: Container(
-              child: SingleChildScrollView(
-                child: CardSelectChip(
-                  cards: cards,
-                  cardIndex: cardIndex,
-                  selectedBoard: selectedBoard,
-                  onSelectionChanged: (choice) {
-                    setState(() {
-                      selectedBoard = choice;
-                    });
-                  },
-                ),
+            content: SingleChildScrollView(
+              child: CardSelectChip(
+                cards: cards,
+                cardIndex: cardIndex,
+                selectedBoard: selectedBoard,
+                onSelectionChanged: (choice) {
+                  setState(() {
+                    selectedBoard = choice;
+                  });
+                },
               ),
             ),
             actions: <Widget>[],
@@ -141,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
           shrinkWrap: true,
           children: <Widget>[
             SizedBox(
-              height: 15,
+              height: SizeConfig.blockSizeVertical / 10,
             ),
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -152,27 +158,36 @@ class _SettingsPageState extends State<SettingsPage> {
                     "Play with sound effects?",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.purple,
+                      color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: SizeConfig.safeBlockHorizontal * 8,
+                      fontSize: SizeConfig.safeBlockHorizontal * 7.5,
                     ),
                     maxLines: 1,
                   ),
-                  CupertinoSwitch(
-                    value: widget.withSound,
-                    activeColor: Colors.purple,
-                    thumbColor: Colors.blue,
-                    onChanged: (value) {
-                      setState(() {
-                        widget.withSound = value;
-                      });
-                    },
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: SizeConfig.blockSizeHorizontal * 3,
+                      top: SizeConfig.blockSizeVertical * 2,
+                    ),
+                    child: Transform.scale(
+                      scale: SizeConfig.blockSizeHorizontal * 0.2,
+                      child: CupertinoSwitch(
+                        value: widget.withSound,
+                        activeColor: Colors.purple,
+                        thumbColor: Colors.yellow[50],
+                        onChanged: (value) {
+                          setState(() {
+                            widget.withSound = value;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             SizedBox(
-              height: 15,
+              height: SizeConfig.blockSizeVertical / 10,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -180,64 +195,85 @@ class _SettingsPageState extends State<SettingsPage> {
                 "Where are you playing?",
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  color: Colors.purple,
+                  color: Colors.blue,
                   fontFamily: 'CaveatBrush',
                   fontSize: SizeConfig.safeBlockHorizontal * 8,
                 ),
                 maxLines: 1,
               ),
             ),
-            SizedBox(
-              height: 5,
-            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    _showCardDialog();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4.0, 10.0, 4.0, 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AutoSizeText(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.purple,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: SizeConfig.blockSizeVertical * 1,
+                            horizontal: SizeConfig.blockSizeHorizontal * 4),
+                        child: AutoSizeText(
                           selectedBoard,
-                          maxFontSize: 20,
+                          style: TextStyle(
+                            color: Colors.yellow[50],
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeConfig.safeBlockHorizontal * 4,
+                          ),
+                          minFontSize: 0,
+                          stepGranularity: 0.1,
+                          maxLines: 1,
                         ),
-                        Icon(
-                          Icons.read_more,
-                          color: Colors.yellow[50],
-                        )
-                      ],
+                      ),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    primary: Colors.purple,
-                    onPrimary: Colors.yellow[50],
-                    side: BorderSide(
-                      color: Colors.blue,
-                      width: 3.0,
-                    ),
-                    elevation: 10,
-                    textStyle: TextStyle(
-                        fontSize: SizeConfig.safeBlockHorizontal * 6,
-                        fontWeight: FontWeight.bold),
-                  )),
+                  ElevatedButton(
+                      onPressed: () {
+                        _showCardDialog();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: SizeConfig.blockSizeVertical * 1,
+                            horizontal: SizeConfig.blockSizeHorizontal * 4),
+                        child: Icon(
+                          Icons.read_more,
+                          color: Colors.yellow[50],
+                          size: SizeConfig.safeBlockHorizontal * 4,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        primary: Colors.purple,
+                        onPrimary: Colors.yellow[50],
+                        side: BorderSide(
+                          color: Colors.blue,
+                          width: 3.0,
+                        ),
+                        elevation: 10,
+                        textStyle: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 4,
+                            fontWeight: FontWeight.bold),
+                      )),
+                ],
+              ),
             ),
             SizedBox(
-              height: 25,
+              height: SizeConfig.blockSizeVertical / 10,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
               child: AutoSizeText(
                 "How would you like to win?",
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  color: Colors.purple,
+                  color: Colors.blue,
                   fontFamily: 'CaveatBrush',
                   fontSize: SizeConfig.safeBlockHorizontal * 8,
                 ),
@@ -250,15 +286,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 alignment: WrapAlignment.center,
                 children: winChips()),
             SizedBox(
-              height: 25,
+              height: SizeConfig.blockSizeVertical / 10,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
               child: AutoSizeText(
                 "Playing with others?",
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  color: Colors.purple,
+                  color: Colors.blue,
                   fontFamily: 'CaveatBrush',
                   fontSize: SizeConfig.safeBlockHorizontal * 8,
                 ),
@@ -266,13 +302,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
               child: AutoSizeText(
-                "If you get a winning BINGO, click the Share button to copy the game board to the device clipboard. It will be saved with the date and time in the title and can be pasted anywhere as an image.",
-                textAlign: TextAlign.left,
+                "Use the Share button!",
+                textAlign: TextAlign.right,
                 style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: SizeConfig.safeBlockHorizontal * 4,
+                  color: Colors.purple,
+                  fontWeight: FontWeight.bold,
+                  fontSize: SizeConfig.safeBlockHorizontal * 3,
                 ),
               ),
             ),

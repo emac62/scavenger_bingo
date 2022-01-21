@@ -8,6 +8,7 @@ List<String> testDeviceIDs = [
   "77D59CAC6A854490B6A389C9B5531A12", //iPhone13 mini 15.0
   "ea230aa9edfec099faea521e541b8502", //my phone
   "4520409bc3ffb536b6e203bf9d0b0007", //old SE
+  "8f4cb8307ba6019ca82bccc419afe5d0", // my iPad
 ];
 
 void main() async {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -9,6 +11,9 @@ import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 const int maxFailedLoadAttempts = 3;
 
@@ -60,6 +65,12 @@ class _GameBoardState extends State<GameBoard> {
       case "Classroom with Images":
         boardDisplay = "Classroom";
         break;
+      case "Restaurant with Images":
+        boardDisplay = "Restaurant";
+        break;
+      case "Waiting Room":
+        boardDisplay = "Waiting Room";
+        break;
       default:
         boardDisplay = widget.selectedBoard;
     }
@@ -88,6 +99,8 @@ class _GameBoardState extends State<GameBoard> {
     _interstitialAd.dispose();
   }
 
+  final screenshotController = ScreenshotController();
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -104,6 +117,17 @@ class _GameBoardState extends State<GameBoard> {
           ),
           gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
           actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: IconButton(
+                icon: Icon(
+                  Icons.share,
+                  size: SizeConfig.blockSizeHorizontal * 5,
+                ),
+                tooltip: 'Screenshot',
+                onPressed: takeScreenShot,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: IconButton(
@@ -130,93 +154,112 @@ class _GameBoardState extends State<GameBoard> {
         ),
         body: Container(
           color: Colors.yellow[50],
-          child: Center(
-            child: Column(children: [
-              Container(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 10, 8.0, 0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Things found here->",
-                              style: TextStyle(
-                                  fontFamily: 'CaveatBrush',
-                                  fontSize: SizeConfig.blockSizeHorizontal * 6,
-                                  color: Colors.blue),
-                            ),
-                            Text(
-                              boardDisplay,
-                              maxLines: 1,
-                              style: TextStyle(
-                                  fontFamily: 'CaveatBrush',
-                                  fontSize: SizeConfig.blockSizeHorizontal * 6,
-                                  color: Colors.purple),
-                            )
-                          ],
+          child: Screenshot(
+            controller: screenshotController,
+            child: Center(
+              child: Column(children: [
+                Container(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 10, 8.0, 0),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Things found here->",
+                                style: TextStyle(
+                                    fontFamily: 'CaveatBrush',
+                                    fontSize:
+                                        SizeConfig.blockSizeHorizontal * 6,
+                                    color: Colors.blue),
+                              ),
+                              Text(
+                                boardDisplay,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontFamily: 'CaveatBrush',
+                                    fontSize:
+                                        SizeConfig.blockSizeHorizontal * 6,
+                                    color: Colors.purple),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                      child: Padding(
+                      Padding(
                         padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    "Find this pattern ->",
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Find this pattern ->",
+                                      style: TextStyle(
+                                          fontFamily: 'CaveatBrush',
+                                          fontSize:
+                                              SizeConfig.blockSizeHorizontal *
+                                                  6,
+                                          color: Colors.blue),
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.selectedPattern,
                                     style: TextStyle(
                                         fontFamily: 'CaveatBrush',
                                         fontSize:
                                             SizeConfig.blockSizeHorizontal * 6,
-                                        color: Colors.blue),
+                                        color: Colors.purple),
                                   ),
-                                ),
-                                Text(
-                                  widget.selectedPattern,
-                                  style: TextStyle(
-                                      fontFamily: 'CaveatBrush',
-                                      fontSize:
-                                          SizeConfig.blockSizeHorizontal * 6,
-                                      color: Colors.purple),
-                                ),
-                                IconButton(
-                                  onPressed: () async {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (_) => ImageDialog(
-                                              selectedPattern:
-                                                  widget.selectedPattern,
-                                            ));
-                                  },
-                                  icon: Icon(
-                                    Icons.help,
-                                    color: Colors.purple,
-                                    size: SizeConfig.blockSizeHorizontal * 5,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
+                                  IconButton(
+                                    onPressed: () async {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (_) => ImageDialog(
+                                                selectedPattern:
+                                                    widget.selectedPattern,
+                                              ));
+                                    },
+                                    icon: Icon(
+                                      Icons.help,
+                                      color: Colors.purple,
+                                      size: SizeConfig.blockSizeHorizontal * 5,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              bingoBanner(),
-              bingoBoard(widget.selectedBoard, widget.selectedPattern,
-                  widget.withSound),
-            ]),
+                bingoBanner(),
+                bingoBoard(widget.selectedBoard, widget.selectedPattern,
+                    widget.withSound, screenshotController),
+              ]),
+            ),
           ),
         ),
         bottomNavigationBar: bannerAdContainer);
+  }
+
+  void takeScreenShot() async {
+    final Size size = MediaQuery.of(context).size;
+    final uint8List = await screenshotController.capture();
+    String tempPath = (await getTemporaryDirectory()).path;
+    File file = File('$tempPath/Bingo.png');
+    await file.writeAsBytes(uint8List!);
+    await Share.shareFiles(
+      [file.path],
+      text: "Shared from Scavenger Hunt Bingo!",
+      sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2),
+    );
   }
 }
