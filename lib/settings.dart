@@ -302,14 +302,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
+              padding: const EdgeInsets.fromLTRB(25, 0, 25, 8),
               child: AutoSizeText(
-                "Use the Share button!",
-                textAlign: TextAlign.right,
+                "Everyone chooses the same card and the same way to win. Every card is different! The first to get a BINGO can click Share to send an image of the card.",
+                textAlign: TextAlign.justify,
                 style: TextStyle(
                   color: Colors.purple,
                   fontWeight: FontWeight.bold,
-                  fontSize: SizeConfig.safeBlockHorizontal * 3,
+                  fontSize: SizeConfig.safeBlockHorizontal * 4,
                 ),
               ),
             ),
@@ -356,7 +356,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
         ),
       ),
-      bottomNavigationBar: bannerAdContainer,
+      // bottomNavigationBar: bannerAdContainer,
     );
   }
 }
