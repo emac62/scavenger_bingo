@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/intro.dart';
+import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 
 List<String> testDeviceIDs = [
   "8E3C44E0453B296DEDFBA106CDBB59CC", // Samsung S5
@@ -22,7 +24,9 @@ void main() async {
       testDeviceIds: testDeviceIDs);
   MobileAds.instance.updateRequestConfiguration(requestConfiguration);
 
-  runApp(ScavengerBingo());
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => SettingsProvider())],
+      child: ScavengerBingo()));
 }
 
 class ScavengerBingo extends StatefulWidget {

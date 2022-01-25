@@ -37,6 +37,8 @@ dependencies:
   screenshot: ^1.2.3
   path_provider: ^2.0.8
   share_plus: ^3.0.4
+  shared_preferences: ^2.0.12
+  provider: ^6.0.2
 
 dev_dependencies:
   flutter_test:

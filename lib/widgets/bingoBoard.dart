@@ -1,19 +1,23 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/arrays.dart';
+import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/winning_patterns.dart';
 import 'package:screenshot/screenshot.dart';
 
-List<Widget> listTileWidgets(String selectedBoard, String selectedPattern,
-    bool withSound, ScreenshotController screenshotController) {
+List<Widget> listTileWidgets(ScreenshotController screenshotController) {
   List<Widget> _widget = [];
   var _buttonName = [];
   var _array = [];
   var _iconData = [];
   var selectedList = [];
+
+  var settingsProvider = SettingsProvider();
+  late String selectedBoard = settingsProvider.selectedBoard;
 
   switch (selectedBoard) {
     case "City Walk":
@@ -76,8 +80,6 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern,
         icon: IconData(i),
         index: i,
         isSelected: false,
-        pattern: selectedPattern,
-        withSound: withSound,
         screenshotController: screenshotController,
       ));
     }
@@ -93,8 +95,6 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern,
         index: i,
         isSelected: false,
         icon: selectedList[i].icon,
-        pattern: selectedPattern,
-        withSound: withSound,
         screenshotController: screenshotController,
       ));
     }
@@ -104,9 +104,6 @@ List<Widget> listTileWidgets(String selectedBoard, String selectedPattern,
 }
 
 Widget bingoBoard(
-  String selectedBoard,
-  String selectedPattern,
-  bool withSound,
   ScreenshotController screenshotController,
 ) {
   return Builder(builder: (context) {
@@ -120,8 +117,7 @@ Widget bingoBoard(
             childAspectRatio: (size.width / size.height) * 1.8,
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            children: listTileWidgets(selectedBoard, selectedPattern, withSound,
-                screenshotController)),
+            children: listTileWidgets(screenshotController)),
       ),
     );
   });
@@ -188,8 +184,7 @@ class ListTileWidget extends StatefulWidget {
   final IconData icon;
   final int index;
   bool isSelected;
-  final String pattern;
-  bool withSound;
+
   ScreenshotController screenshotController;
 
   ListTileWidget({
@@ -197,8 +192,6 @@ class ListTileWidget extends StatefulWidget {
     required this.index,
     required this.isSelected,
     required this.icon,
-    required this.pattern,
-    required this.withSound,
     required this.screenshotController,
   });
 
@@ -210,6 +203,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -218,20 +212,20 @@ class ListTileWidgetState extends State<ListTileWidget> {
               removeFromSelectedTiles(widget.index);
             } else {
               widget.isSelected = !widget.isSelected;
-              if (widget.withSound) playSound("woosh.mp3");
+              if (settingsProvider.withSound) playSound("woosh.mp3");
               addToSelectedTiles(widget.index);
             }
           });
 
-          if (widget.pattern == "One Line") {
-            findOneLineWinner(
-                context, widget.withSound, widget.screenshotController);
-          } else if (widget.pattern == "Letter X") {
-            findCrossWinner(
-                context, widget.withSound, widget.screenshotController);
+          if (settingsProvider.selectedPattern == "One Line") {
+            findOneLineWinner(context, settingsProvider.withSound,
+                widget.screenshotController);
+          } else if (settingsProvider.selectedPattern == "Letter X") {
+            findCrossWinner(context, settingsProvider.withSound,
+                widget.screenshotController);
           } else {
-            findFullCardWinner(
-                context, widget.withSound, widget.screenshotController);
+            findFullCardWinner(context, settingsProvider.withSound,
+                widget.screenshotController);
           }
         },
         child: Container(

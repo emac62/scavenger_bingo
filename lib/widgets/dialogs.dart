@@ -46,8 +46,7 @@ showWinningDialog(
               stopSound();
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => SettingsPage(withSound: withSound)),
+                MaterialPageRoute(builder: (context) => SettingsPage()),
               );
             },
             text: 'New Game',

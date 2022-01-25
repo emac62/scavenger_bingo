@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
@@ -16,9 +18,11 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   bool withSound = true;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: NewGradientAppBar(
         automaticallyImplyLeading: false,
@@ -135,13 +139,11 @@ class _IntroPageState extends State<IntroPage> {
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
                   child: ElevatedButton(
                     onPressed: () {
-                      playSound('magicalSlice2.mp3');
+                      if (settingsProvider.withSound)
+                        playSound('magicalSlice2.mp3');
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => SettingsPage(
-                                  withSound: withSound,
-                                )),
+                        MaterialPageRoute(builder: (context) => SettingsPage()),
                       );
                     },
                     child: Padding(

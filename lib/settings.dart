@@ -2,27 +2,49 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
+import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends StatefulWidget {
-  bool withSound;
-  SettingsPage({Key? key, required this.withSound}) : super(key: key);
-
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
   GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-
-  String selectedBoard = 'City Walk';
-  String selectedPattern = 'One Line';
+  var settingsProvider = SettingsProvider();
+  late String selectedBoard;
+  late String selectedPattern;
+  late bool withSound;
 
   BannerAdContainer bannerAdContainer = BannerAdContainer();
+
+  @override
+  void initState() {
+    super.initState();
+    loadPrefs().then((_) {
+      setState(() {
+        withSound = withSound;
+        selectedBoard = selectedBoard;
+        selectedPattern = selectedPattern;
+      });
+    });
+  }
+
+  loadPrefs() async {
+    SharedPreferences savedPref = await SharedPreferences.getInstance();
+    setState(() {
+      withSound = (savedPref.getBool('withSound') ?? true);
+      selectedBoard = (savedPref.getString('selectedBoard') ?? "City Walk");
+      selectedPattern = (savedPref.getString('selectedPattern') ?? "One Line");
+    });
+  }
 
   int cardIndex = 0;
   int winIndex = 0;
@@ -48,6 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
   ];
 
   List<Widget> winChips() {
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     List<Widget> chips = [];
     for (int i = 0; i < toWin.length; i++) {
       Widget item = Padding(
@@ -63,11 +86,12 @@ class _SettingsPageState extends State<SettingsPage> {
               fontWeight: FontWeight.bold),
           backgroundColor: Colors.blue,
           selectedColor: Colors.purple,
-          selected: winIndex == i,
+          selected: settingsProvider.selectedPattern == toWin[i],
           onSelected: (bool value) {
             setState(() {
               winIndex = i;
               selectedPattern = toWin[i];
+              settingsProvider.setPattern(selectedPattern);
             });
           },
         ),
@@ -81,6 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
+          var settingsProvider = Provider.of<SettingsProvider>(context);
           //Here we will build the content of the dialog
           return AlertDialog(
             backgroundColor: Colors.yellow[50],
@@ -112,6 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onSelectionChanged: (choice) {
                   setState(() {
                     selectedBoard = choice;
+                    settingsProvider.setBoard(selectedBoard);
                   });
                 },
               ),
@@ -124,6 +150,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
       key: _key,
       appBar: NewGradientAppBar(
@@ -143,96 +170,72 @@ class _SettingsPageState extends State<SettingsPage> {
         width: SizeConfig.safeBlockHorizontal * 100,
         height: SizeConfig.safeBlockVertical * 100,
         color: Colors.yellow[50],
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            SizedBox(
-              height: SizeConfig.blockSizeVertical / 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Play with sound effects?",
-                    textAlign: TextAlign.center,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: SizeConfig.blockSizeHorizontal * 8),
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Play sound effects?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontFamily: 'CaveatBrush',
+                          fontSize: SizeConfig.safeBlockHorizontal * 7,
+                        ),
+                        maxLines: 1,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: SizeConfig.blockSizeHorizontal * 3,
+                          top: SizeConfig.blockSizeVertical * 2,
+                        ),
+                        child: Transform.scale(
+                          scale: SizeConfig.blockSizeHorizontal * 0.2,
+                          child: CupertinoSwitch(
+                            value: settingsProvider.withSound,
+                            activeColor: Colors.purple,
+                            thumbColor: Colors.yellow[50],
+                            onChanged: (value) {
+                              setState(() {
+                                withSound = value;
+                                settingsProvider.setWithSound(withSound);
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical / 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Where are you playing?",
+                    textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: SizeConfig.safeBlockHorizontal * 7.5,
+                      fontSize: SizeConfig.safeBlockHorizontal * 7,
                     ),
                     maxLines: 1,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: SizeConfig.blockSizeHorizontal * 3,
-                      top: SizeConfig.blockSizeVertical * 2,
-                    ),
-                    child: Transform.scale(
-                      scale: SizeConfig.blockSizeHorizontal * 0.2,
-                      child: CupertinoSwitch(
-                        value: widget.withSound,
-                        activeColor: Colors.purple,
-                        thumbColor: Colors.yellow[50],
-                        onChanged: (value) {
-                          setState(() {
-                            widget.withSound = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical / 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Where are you playing?",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: SizeConfig.safeBlockHorizontal * 8,
                 ),
-                maxLines: 1,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.purple,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: SizeConfig.blockSizeVertical * 1,
-                            horizontal: SizeConfig.blockSizeHorizontal * 4),
-                        child: AutoSizeText(
-                          selectedBoard,
-                          style: TextStyle(
-                            color: Colors.yellow[50],
-                            fontWeight: FontWeight.bold,
-                            fontSize: SizeConfig.safeBlockHorizontal * 4,
-                          ),
-                          minFontSize: 0,
-                          stepGranularity: 0.1,
-                          maxLines: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.blockSizeVertical * 1,
+                      horizontal: SizeConfig.blockSizeHorizontal * 5),
+                  child: ElevatedButton(
                       onPressed: () {
                         _showCardDialog();
                       },
@@ -240,10 +243,26 @@ class _SettingsPageState extends State<SettingsPage> {
                         padding: EdgeInsets.symmetric(
                             vertical: SizeConfig.blockSizeVertical * 1,
                             horizontal: SizeConfig.blockSizeHorizontal * 4),
-                        child: Icon(
-                          Icons.read_more,
-                          color: Colors.yellow[50],
-                          size: SizeConfig.safeBlockHorizontal * 4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AutoSizeText(
+                              settingsProvider.selectedBoard,
+                              style: TextStyle(
+                                color: Colors.yellow[50],
+                                fontWeight: FontWeight.w600,
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.5,
+                              ),
+                              minFontSize: 0,
+                              stepGranularity: 0.1,
+                              maxLines: 1,
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.yellow[50],
+                              size: SizeConfig.safeBlockHorizontal * 6,
+                            ),
+                          ],
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -261,102 +280,100 @@ class _SettingsPageState extends State<SettingsPage> {
                             fontSize: SizeConfig.safeBlockHorizontal * 4,
                             fontWeight: FontWeight.bold),
                       )),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical / 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: AutoSizeText(
-                "How would you like to win?",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: SizeConfig.safeBlockHorizontal * 8,
                 ),
-                maxLines: 1,
-              ),
-            ),
-            Wrap(
-                spacing: 3,
-                direction: Axis.horizontal,
-                alignment: WrapAlignment.center,
-                children: winChips()),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical / 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: AutoSizeText(
-                "Playing with others?",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: SizeConfig.safeBlockHorizontal * 8,
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical / 10,
                 ),
-                maxLines: 1,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(25, 0, 25, 8),
-              child: AutoSizeText(
-                "Everyone chooses the same card and the same way to win. Every card is different! The first to get a BINGO can click Share to send an image of the card.",
-                textAlign: TextAlign.justify,
-                style: TextStyle(
-                  color: Colors.purple,
-                  fontWeight: FontWeight.bold,
-                  fontSize: SizeConfig.safeBlockHorizontal * 4,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: AutoSizeText(
+                    "How would you like to win?",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontFamily: 'CaveatBrush',
+                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                    ),
+                    maxLines: 1,
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        if (widget.withSound) playSound('magicalSlice2.mp3');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GameBoard(
-                                    selectedBoard: selectedBoard,
-                                    selectedPattern: selectedPattern,
-                                    withSound: widget.withSound,
-                                  )),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text("Play Bingo"),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        primary: Colors.purple,
-                        onPrimary: Colors.yellow[50],
-                        side: BorderSide(
-                          color: Colors.blue,
-                          width: 3.0,
-                        ),
-                        elevation: 20,
-                        textStyle: TextStyle(
-                          fontFamily: 'CaveatBrush',
-                          fontSize: SizeConfig.safeBlockHorizontal * 10,
-                        ),
-                      )),
+                Wrap(
+                    spacing: 3,
+                    direction: Axis.horizontal,
+                    alignment: WrapAlignment.center,
+                    children: winChips()),
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical / 10,
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: AutoSizeText(
+                    "Playing with others?",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontFamily: 'CaveatBrush',
+                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 0, 25, 8),
+                  child: AutoSizeText(
+                    "Everyone chooses the same card and the same way to win. Every card is different! The first to get a BINGO can click Share to send an image of the winning card.",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: Colors.purple,
+                      fontWeight: FontWeight.bold,
+                      fontSize: SizeConfig.safeBlockHorizontal * 2.5,
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.blockSizeVertical * 5),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if (withSound) playSound('magicalSlice2.mp3');
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => GameBoard()),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text("Play Bingo"),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            primary: Colors.purple,
+                            onPrimary: Colors.yellow[50],
+                            side: BorderSide(
+                              color: Colors.blue,
+                              width: 3.0,
+                            ),
+                            elevation: 20,
+                            textStyle: TextStyle(
+                              fontFamily: 'CaveatBrush',
+                              fontSize: SizeConfig.safeBlockHorizontal * 10,
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      // bottomNavigationBar: bannerAdContainer,
+      bottomNavigationBar: bannerAdContainer,
     );
   }
 }
