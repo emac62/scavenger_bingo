@@ -163,7 +163,8 @@ class Resources {
     "no one in camera view",
     "someone stands up",
     "over the ear headphones",
-    "ear buds"
+    "ear buds",
+    "child crying off camera",
   ];
 
   static final indoorIcons = [
@@ -335,7 +336,6 @@ class Resources {
     IconImages(name: "mug", icon: LineAwesomeIcons.mug_hot),
     IconImages(name: "utensils", icon: LineAwesomeIcons.utensils),
     IconImages(name: "glass", icon: LineAwesomeIcons.glass_whiskey),
-    IconImages(name: "table", icon: LineAwesomeIcons.table),
     IconImages(name: "chair", icon: LineAwesomeIcons.chair),
     IconImages(name: "TV", icon: LineAwesomeIcons.television),
     IconImages(name: "window", icon: LineAwesomeIcons.window_close),

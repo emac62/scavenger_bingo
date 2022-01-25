@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
@@ -33,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
         withSound = withSound;
         selectedBoard = selectedBoard;
         selectedPattern = selectedPattern;
+        print('Settings init: $selectedBoard');
       });
     });
   }
@@ -77,13 +79,15 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
         child: ChoiceChip(
           label: Padding(
-            padding: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(2.0),
             child: Text(toWin[i]),
           ),
           labelStyle: TextStyle(
-              color: Colors.yellow[50],
-              fontSize: SizeConfig.safeBlockHorizontal * 4,
-              fontWeight: FontWeight.bold),
+            color: Colors.yellow[50],
+            fontSize: SizeConfig.safeBlockHorizontal * 3.5,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
           backgroundColor: Colors.blue,
           selectedColor: Colors.purple,
           selected: settingsProvider.selectedPattern == toWin[i],
@@ -234,7 +238,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(
                       vertical: SizeConfig.blockSizeVertical * 1,
-                      horizontal: SizeConfig.blockSizeHorizontal * 5),
+                      horizontal: SizeConfig.blockSizeHorizontal * 3),
                   child: ElevatedButton(
                       onPressed: () {
                         _showCardDialog();
@@ -258,7 +262,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               maxLines: 1,
                             ),
                             Icon(
-                              Icons.keyboard_arrow_down,
+                              LineAwesomeIcons.angle_double_down,
                               color: Colors.yellow[50],
                               size: SizeConfig.safeBlockHorizontal * 6,
                             ),
@@ -319,14 +323,15 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 0, 25, 8),
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
                   child: AutoSizeText(
-                    "Everyone chooses the same card and the same way to win. Every card is different! The first to get a BINGO can click Share to send an image of the winning card.",
+                    "Choose the same card and the same way to win. Click 'Share' to send an image of your winning card.",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Colors.purple,
                       fontWeight: FontWeight.bold,
                       fontSize: SizeConfig.safeBlockHorizontal * 2.5,
+                      letterSpacing: -0.8,
                     ),
                   ),
                 ),
@@ -334,11 +339,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          vertical: SizeConfig.blockSizeVertical * 5),
+                          vertical: SizeConfig.blockSizeVertical * 3),
                       child: ElevatedButton(
                           onPressed: () {
                             if (withSound) playSound('magicalSlice2.mp3');
-
+                            print(
+                                'Play Bingo: ${settingsProvider.selectedBoard}');
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -398,6 +404,7 @@ class CardSelectChip extends StatefulWidget {
 }
 
 class _CardSelectChipState extends State<CardSelectChip> {
+  var settingsProvider = SettingsProvider();
   List<Widget> cardChips() {
     List<Widget> chips = [];
     var choice = widget.selectedBoard;
@@ -423,6 +430,8 @@ class _CardSelectChipState extends State<CardSelectChip> {
               widget.cardIndex = i;
               choice = widget.cards[i];
               widget.onSelectionChanged(choice);
+              settingsProvider.setBoard(widget.cards[i]);
+              print('Chips: ${settingsProvider.selectedBoard}');
               Navigator.of(context).pop();
             });
           },

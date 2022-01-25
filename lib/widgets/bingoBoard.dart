@@ -9,16 +9,92 @@ import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
 import 'package:scavenger_hunt_bingo/winning_patterns.dart';
 import 'package:screenshot/screenshot.dart';
 
-List<Widget> listTileWidgets(ScreenshotController screenshotController) {
+Widget bingoBoard(
+  String selectedBoard,
+  ScreenshotController screenshotController,
+) {
+  return Builder(builder: (context) {
+    var size = MediaQuery.of(context).size;
+
+    print('bingoBoard widget: $selectedBoard');
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0.0, 10, 0),
+      child: Container(
+        child: GridView.count(
+            shrinkWrap: true,
+            crossAxisCount: 5,
+            childAspectRatio: (size.width / size.height) * 1.8,
+            crossAxisSpacing: 0,
+            mainAxisSpacing: 0,
+            children: listTileWidgets(selectedBoard, screenshotController)),
+      ),
+    );
+  });
+}
+
+List<int> selectedTiles = [];
+
+addToSelectedTiles(int) {
+  selectedTiles.add(int);
+}
+
+removeFromSelectedTiles(int) {
+  selectedTiles.removeWhere((element) => element == int);
+}
+
+List result = [];
+
+findOneLineWinner(
+    context, bool withSound, ScreenshotController screenshotController) {
+  for (var i = 0; i < Patterns.oneLine.length; i++) {
+    result = Patterns.oneLine[i]
+        .where((element) => !selectedTiles.contains(element))
+        .toList();
+
+    if (result.isEmpty) {
+      result.clear();
+      selectedTiles.clear();
+      if (withSound) playSound('fireworks.mp3');
+      showWinningDialog(context, withSound, screenshotController);
+      break;
+    }
+  }
+}
+
+findCrossWinner(
+    context, bool withSound, ScreenshotController screenshotController) {
+  result = Patterns.cross
+      .where((element) => !selectedTiles.contains(element))
+      .toList();
+  if (result.isEmpty) {
+    result.clear();
+    selectedTiles.clear();
+    if (withSound) playSound('fireworks.mp3');
+    showWinningDialog(context, withSound, screenshotController);
+  }
+}
+
+findFullCardWinner(
+    context, bool withSound, ScreenshotController screenshotController) {
+  result = Patterns.full
+      .where((element) => !selectedTiles.contains(element))
+      .toList();
+  if (result.isEmpty) {
+    result.clear();
+    selectedTiles.clear();
+    if (withSound) playSound('fireworks.mp3');
+    showWinningDialog(context, withSound, screenshotController);
+  }
+}
+
+List<Widget> listTileWidgets(
+    String selectedBoard, ScreenshotController screenshotController) {
   List<Widget> _widget = [];
   var _buttonName = [];
   var _array = [];
   var _iconData = [];
   var selectedList = [];
-
-  var settingsProvider = SettingsProvider();
-  late String selectedBoard = settingsProvider.selectedBoard;
-
+  print('listTileWidgets: $selectedBoard');
   switch (selectedBoard) {
     case "City Walk":
       _array = Resources.city;
@@ -100,81 +176,6 @@ List<Widget> listTileWidgets(ScreenshotController screenshotController) {
     }
 
     return _widget;
-  }
-}
-
-Widget bingoBoard(
-  ScreenshotController screenshotController,
-) {
-  return Builder(builder: (context) {
-    var size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0.0, 10, 0),
-      child: Container(
-        child: GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 5,
-            childAspectRatio: (size.width / size.height) * 1.8,
-            crossAxisSpacing: 0,
-            mainAxisSpacing: 0,
-            children: listTileWidgets(screenshotController)),
-      ),
-    );
-  });
-}
-
-List<int> selectedTiles = [];
-
-addToSelectedTiles(int) {
-  selectedTiles.add(int);
-}
-
-removeFromSelectedTiles(int) {
-  selectedTiles.removeWhere((element) => element == int);
-}
-
-List result = [];
-
-findOneLineWinner(
-    context, bool withSound, ScreenshotController screenshotController) {
-  for (var i = 0; i < Patterns.oneLine.length; i++) {
-    result = Patterns.oneLine[i]
-        .where((element) => !selectedTiles.contains(element))
-        .toList();
-
-    if (result.isEmpty) {
-      result.clear();
-      selectedTiles.clear();
-      if (withSound) playSound('fireworks.mp3');
-      showWinningDialog(context, withSound, screenshotController);
-      break;
-    }
-  }
-}
-
-findCrossWinner(
-    context, bool withSound, ScreenshotController screenshotController) {
-  result = Patterns.cross
-      .where((element) => !selectedTiles.contains(element))
-      .toList();
-  if (result.isEmpty) {
-    result.clear();
-    selectedTiles.clear();
-    if (withSound) playSound('fireworks.mp3');
-    showWinningDialog(context, withSound, screenshotController);
-  }
-}
-
-findFullCardWinner(
-    context, bool withSound, ScreenshotController screenshotController) {
-  result = Patterns.full
-      .where((element) => !selectedTiles.contains(element))
-      .toList();
-  if (result.isEmpty) {
-    result.clear();
-    selectedTiles.clear();
-    if (withSound) playSound('fireworks.mp3');
-    showWinningDialog(context, withSound, screenshotController);
   }
 }
 
