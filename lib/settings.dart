@@ -379,7 +379,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: bannerAdContainer,
+      // bottomNavigationBar: bannerAdContainer,
     );
   }
 }
