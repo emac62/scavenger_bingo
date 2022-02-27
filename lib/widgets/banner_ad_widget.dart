@@ -50,7 +50,6 @@ class _BannerAdContainerState extends State<BannerAdContainer> {
     return Container(
       child: _isBottomBannerAdLoaded
           ? Container(
-              color: Colors.yellow[50],
               height: _bottomBannerAd.size.height.toDouble(),
               width: _bottomBannerAd.size.width.toDouble(),
               child: AdWidget(ad: _bottomBannerAd),

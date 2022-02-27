@@ -18,7 +18,7 @@ Widget bingoBanner() {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.1,
+                      fontSize: size.width * 0.08,
                       color: Colors.blue),
                 )),
           ),
@@ -31,7 +31,7 @@ Widget bingoBanner() {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.1,
+                      fontSize: size.width * 0.08,
                       color: Colors.blue),
                 )),
           ),
@@ -44,7 +44,7 @@ Widget bingoBanner() {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.1,
+                      fontSize: size.width * 0.08,
                       color: Colors.blue),
                 )),
           ),
@@ -57,7 +57,7 @@ Widget bingoBanner() {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.1,
+                      fontSize: size.width * 0.08,
                       color: Colors.blue),
                 )),
           ),
@@ -70,7 +70,7 @@ Widget bingoBanner() {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'CaveatBrush',
-                      fontSize: size.width * 0.1,
+                      fontSize: size.width * 0.08,
                       color: Colors.blue),
                 )),
           ),

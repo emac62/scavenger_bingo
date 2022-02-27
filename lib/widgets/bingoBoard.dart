@@ -14,11 +14,10 @@ Widget bingoBoard(
 ) {
   return Builder(builder: (context) {
     var size = MediaQuery.of(context).size;
-
-    print('bingoBoard widget: $selectedBoard');
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0.0, 10, 0),
       child: Container(
+        color: Colors.yellow[50],
         child: GridView.count(
             shrinkWrap: true,
             crossAxisCount: 5,
@@ -93,7 +92,7 @@ List<Widget> listTileWidgets(
   var _array = [];
   var _iconData = [];
   var selectedList = [];
-  print('listTileWidgets: $selectedBoard');
+
   switch (selectedBoard) {
     case "City Walk":
       _array = Resources.city;
