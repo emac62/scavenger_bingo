@@ -6,7 +6,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
-import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
@@ -34,17 +33,21 @@ class _GameBoardState extends State<GameBoard> {
   late String selectedBoard;
   late String selectedPattern;
   late bool withSound;
+  bool canShare = false;
 
   getBoardDisplay() {
     switch (settingsProvider.selectedBoard) {
       case "City Walk":
         boardDisplay = "City Walk";
+        canShare = true;
         break;
       case "Trail Walk":
         boardDisplay = "Trail Walk";
+        canShare = true;
         break;
       case "Stay Indoors":
         boardDisplay = "Stay Indoors";
+        canShare = true;
         break;
       case "City with Images":
         boardDisplay = "City";
@@ -66,6 +69,11 @@ class _GameBoardState extends State<GameBoard> {
         break;
       case "Waiting Room":
         boardDisplay = "Waiting Room";
+        canShare = true;
+        break;
+      case "Virtual Meeting":
+        boardDisplay = "Virtual Meeting";
+        canShare = true;
         break;
       default:
         boardDisplay = settingsProvider.selectedBoard;
@@ -128,17 +136,80 @@ class _GameBoardState extends State<GameBoard> {
           gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
           actions: <Widget>[
             Padding(
-              padding:
-                  EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
-              child: IconButton(
-                icon: Icon(
-                  Icons.share,
-                  size: SizeConfig.blockSizeHorizontal * 4,
-                ),
-                tooltip: 'Screenshot',
-                onPressed: takeScreenShot,
-              ),
-            ),
+                padding:
+                    EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
+                child: canShare
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.share,
+                          size: SizeConfig.blockSizeHorizontal * 4,
+                        ),
+                        tooltip: 'Screenshot',
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    backgroundColor: Colors.yellow[50],
+                                    title: Text(
+                                      "Share your card?",
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontFamily: 'CaveatBrush',
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal * 6,
+                                      ),
+                                    ),
+                                    content: Text(
+                                      "If sharing content online please do so safely and respectfully. Click Cancel to return to the card, OK to take a screenshot and share.",
+                                      style: TextStyle(
+                                        color: Colors.purple,
+                                        fontFamily: 'CaveatBrush',
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal * 4,
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontFamily: 'CaveatBrush',
+                                            fontSize:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    6,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    3),
+                                        child: TextButton(
+                                          child: Text(
+                                            "OK",
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontFamily: 'CaveatBrush',
+                                              fontSize: SizeConfig
+                                                      .blockSizeHorizontal *
+                                                  6,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            takeScreenShot();
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ));
+                        })
+                    : null),
             Padding(
               padding:
                   EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
@@ -149,125 +220,137 @@ class _GameBoardState extends State<GameBoard> {
                 ),
                 tooltip: 'Restart Game',
                 onPressed: () {
-                  result.clear();
-                  if (_isInterstitialAdReady) _interstitialAd.show();
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
-                  );
+                  debugPrint("Restart pressed");
+                  showRestartAlertDialog(
+                      context, result, _isInterstitialAdReady, _interstitialAd);
                 },
               ),
             ),
           ],
         ),
-        body: Container(
-          width: SizeConfig.safeBlockHorizontal * 100,
-          height: (SizeConfig.safeBlockVertical * 100 - 110),
-          decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.purple,
-                width: 3,
-              ),
-              color: Colors.yellow[50],
-              borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(30),
-                  bottomLeft: Radius.circular(30))),
-          child: Screenshot(
-            controller: screenshotController,
-            child: Column(children: [
-              Container(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: SizeConfig.blockSizeVertical * 0.5),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: SizeConfig.blockSizeHorizontal * 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Things found here->",
-                                style: TextStyle(
-                                    fontFamily: 'CaveatBrush',
-                                    fontSize:
-                                        SizeConfig.blockSizeHorizontal * 5,
-                                    color: Colors.blue),
-                              ),
-                              Text(
-                                boardDisplay,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    fontFamily: 'CaveatBrush',
-                                    fontSize:
-                                        SizeConfig.blockSizeHorizontal * 5,
-                                    color: Colors.purple),
-                              )
-                            ],
+        body: Column(
+          children: [
+            Container(
+              width: SizeConfig.safeBlockHorizontal * 100,
+              height: (SizeConfig.safeBlockVertical * 100 - 130),
+              decoration: BoxDecoration(
+                  color: Colors.yellow[50],
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.purple,
+                      width: 3,
+                    ),
+                  )),
+              child: Screenshot(
+                controller: screenshotController,
+                child: Column(children: [
+                  Container(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.blockSizeVertical * 0.5),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: SizeConfig.blockSizeHorizontal * 5),
-                          child: Column(
-                            children: [
-                              Row(
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      SizeConfig.blockSizeHorizontal * 5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Find this pattern ->",
-                                      style: TextStyle(
-                                          fontFamily: 'CaveatBrush',
-                                          fontSize:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  5,
-                                          color: Colors.blue),
-                                    ),
+                                  Text(
+                                    "Things found here->",
+                                    style: TextStyle(
+                                        fontFamily: 'CaveatBrush',
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal * 5,
+                                        color: Colors.blue),
                                   ),
                                   Text(
-                                    settingsProvider.selectedPattern,
+                                    boardDisplay,
+                                    maxLines: 1,
                                     style: TextStyle(
                                         fontFamily: 'CaveatBrush',
                                         fontSize:
                                             SizeConfig.blockSizeHorizontal * 5,
                                         color: Colors.purple),
-                                  ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      await showDialog(
-                                          context: context,
-                                          builder: (_) => ImageDialog(
-                                                selectedPattern:
-                                                    selectedPattern,
-                                              ));
-                                    },
-                                    icon: Icon(
-                                      Icons.help,
-                                      color: Colors.purple,
-                                      size: SizeConfig.blockSizeHorizontal * 5,
-                                    ),
                                   )
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      SizeConfig.blockSizeHorizontal * 5),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "Find this pattern ->",
+                                          style: TextStyle(
+                                              fontFamily: 'CaveatBrush',
+                                              fontSize: SizeConfig
+                                                      .blockSizeHorizontal *
+                                                  5,
+                                              color: Colors.blue),
+                                        ),
+                                      ),
+                                      Text(
+                                        settingsProvider.selectedPattern,
+                                        style: TextStyle(
+                                            fontFamily: 'CaveatBrush',
+                                            fontSize:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    5,
+                                            color: Colors.purple),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          await showDialog(
+                                              context: context,
+                                              builder: (_) => ImageDialog(
+                                                    selectedPattern:
+                                                        selectedPattern,
+                                                  ));
+                                        },
+                                        icon: Icon(
+                                          Icons.help,
+                                          color: Colors.purple,
+                                          size: SizeConfig.blockSizeHorizontal *
+                                              5,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  bingoBanner(),
+                  bingoBoard(selectedBoard, screenshotController),
+                ]),
               ),
-              bingoBanner(),
-              bingoBoard(selectedBoard, screenshotController),
-            ]),
-          ),
+            ),
+            Text(
+              "Advertisement",
+              style: TextStyle(letterSpacing: 2),
+            ),
+          ],
         ),
         bottomNavigationBar: bannerAdContainer);
   }

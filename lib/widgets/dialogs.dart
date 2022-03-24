@@ -89,6 +89,80 @@ showWinningDialog(
   );
 }
 
+showRestartAlertDialog(
+    context, result, _isInterstitialAdReady, _interstitialAd) {
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: Text(
+      "Cancel",
+      style: TextStyle(
+        color: Colors.blue,
+        fontFamily: 'CaveatBrush',
+        fontSize: SizeConfig.blockSizeHorizontal * 6,
+      ),
+    ),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: Text(
+      "OK",
+      style: TextStyle(
+        color: Colors.blue,
+        fontFamily: 'CaveatBrush',
+        fontSize: SizeConfig.blockSizeHorizontal * 6,
+      ),
+    ),
+    onPressed: () {
+      result.clear();
+      if (_isInterstitialAdReady) _interstitialAd.show();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SettingsPage()),
+      );
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    backgroundColor: Colors.yellow[50],
+    title: Text(
+      "Restart the Game?",
+      style: TextStyle(
+        color: Colors.blue,
+        fontFamily: 'CaveatBrush',
+        fontSize: SizeConfig.blockSizeHorizontal * 6,
+      ),
+    ),
+    content: Text(
+      "Restarting the game will display a video ad. You will be able to close the ad after 5 seconds. Thank you.",
+      style: TextStyle(
+        color: Colors.purple,
+        fontFamily: 'CaveatBrush',
+        fontSize: SizeConfig.blockSizeHorizontal * 4,
+      ),
+    ),
+    actions: [
+      cancelButton,
+      Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.blockSizeHorizontal * 3),
+        child: continueButton,
+      ),
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 showWinningPattern(context, String pattern) {
   AlertDialog(
     title: Text(pattern),

@@ -48,6 +48,7 @@ class _BannerAdContainerState extends State<BannerAdContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: 5),
       child: _isBottomBannerAdLoaded
           ? Container(
               height: _bottomBannerAd.size.height.toDouble(),
