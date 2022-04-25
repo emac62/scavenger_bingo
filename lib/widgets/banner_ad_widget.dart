@@ -47,15 +47,25 @@ class _BannerAdContainerState extends State<BannerAdContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 5),
-      child: _isBottomBannerAdLoaded
-          ? Container(
-              height: _bottomBannerAd.size.height.toDouble(),
-              width: _bottomBannerAd.size.width.toDouble(),
-              child: AdWidget(ad: _bottomBannerAd),
-            )
-          : Container(height: 50, color: Colors.yellow[50]),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text("Advertisement",
+            style: TextStyle(
+              letterSpacing: 2,
+            )),
+        Container(
+          child: _isBottomBannerAdLoaded
+              ? SizedBox(
+                  height: _bottomBannerAd.size.height.toDouble(),
+                  width: _bottomBannerAd.size.width.toDouble(),
+                  child: AdWidget(ad: _bottomBannerAd),
+                )
+              : const SizedBox(
+                  height: 60,
+                ),
+        ),
+      ],
     );
   }
 }

@@ -121,7 +121,6 @@ class Resources {
     "Curtain",
     "Bench",
     "Coat hook",
-    "Coat rack",
     "Coat hanger",
     "Boot tray",
     "Area carpet",

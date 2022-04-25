@@ -228,129 +228,115 @@ class _GameBoardState extends State<GameBoard> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Container(
-              width: SizeConfig.safeBlockHorizontal * 100,
-              height: (SizeConfig.safeBlockVertical * 100 - 130),
-              decoration: BoxDecoration(
-                  color: Colors.yellow[50],
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.purple,
-                      width: 3,
-                    ),
-                  )),
-              child: Screenshot(
-                controller: screenshotController,
-                child: Column(children: [
-                  Container(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: SizeConfig.blockSizeVertical * 0.5),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
+        body: Container(
+          width: SizeConfig.safeBlockHorizontal * 100,
+          height: (SizeConfig.safeBlockVertical * 100),
+          decoration: BoxDecoration(
+              color: Colors.yellow[50],
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.purple,
+                  width: 3,
+                ),
+              )),
+          child: Screenshot(
+            controller: screenshotController,
+            child: Column(children: [
+              Container(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.blockSizeVertical * 0.5),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: SizeConfig.blockSizeHorizontal * 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Things found here->",
+                                style: TextStyle(
+                                    fontFamily: 'CaveatBrush',
+                                    fontSize:
+                                        SizeConfig.blockSizeHorizontal * 5,
+                                    color: Colors.blue),
+                              ),
+                              Text(
+                                boardDisplay,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontFamily: 'CaveatBrush',
+                                    fontSize:
+                                        SizeConfig.blockSizeHorizontal * 5,
+                                    color: Colors.purple),
+                              )
+                            ],
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      SizeConfig.blockSizeHorizontal * 5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: SizeConfig.blockSizeHorizontal * 5),
+                          child: Column(
+                            children: [
+                              Row(
                                 children: [
-                                  Text(
-                                    "Things found here->",
-                                    style: TextStyle(
-                                        fontFamily: 'CaveatBrush',
-                                        fontSize:
-                                            SizeConfig.blockSizeHorizontal * 5,
-                                        color: Colors.blue),
+                                  Expanded(
+                                    child: Text(
+                                      "Find this pattern ->",
+                                      style: TextStyle(
+                                          fontFamily: 'CaveatBrush',
+                                          fontSize:
+                                              SizeConfig.blockSizeHorizontal *
+                                                  5,
+                                          color: Colors.blue),
+                                    ),
                                   ),
                                   Text(
-                                    boardDisplay,
-                                    maxLines: 1,
+                                    settingsProvider.selectedPattern,
                                     style: TextStyle(
                                         fontFamily: 'CaveatBrush',
                                         fontSize:
                                             SizeConfig.blockSizeHorizontal * 5,
                                         color: Colors.purple),
+                                  ),
+                                  IconButton(
+                                    onPressed: () async {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (_) => ImageDialog(
+                                                selectedPattern:
+                                                    selectedPattern,
+                                              ));
+                                    },
+                                    icon: Icon(
+                                      Icons.help,
+                                      color: Colors.purple,
+                                      size: SizeConfig.blockSizeHorizontal * 5,
+                                    ),
                                   )
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      SizeConfig.blockSizeHorizontal * 5),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "Find this pattern ->",
-                                          style: TextStyle(
-                                              fontFamily: 'CaveatBrush',
-                                              fontSize: SizeConfig
-                                                      .blockSizeHorizontal *
-                                                  5,
-                                              color: Colors.blue),
-                                        ),
-                                      ),
-                                      Text(
-                                        settingsProvider.selectedPattern,
-                                        style: TextStyle(
-                                            fontFamily: 'CaveatBrush',
-                                            fontSize:
-                                                SizeConfig.blockSizeHorizontal *
-                                                    5,
-                                            color: Colors.purple),
-                                      ),
-                                      IconButton(
-                                        onPressed: () async {
-                                          await showDialog(
-                                              context: context,
-                                              builder: (_) => ImageDialog(
-                                                    selectedPattern:
-                                                        selectedPattern,
-                                                  ));
-                                        },
-                                        icon: Icon(
-                                          Icons.help,
-                                          color: Colors.purple,
-                                          size: SizeConfig.blockSizeHorizontal *
-                                              5,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                        ),
+                      )
+                    ],
                   ),
-                  bingoBanner(),
-                  bingoBoard(selectedBoard, screenshotController),
-                ]),
+                ),
               ),
-            ),
-            Text(
-              "Advertisement",
-              style: TextStyle(letterSpacing: 2),
-            ),
-          ],
+              bingoBanner(),
+              bingoBoard(selectedBoard, screenshotController),
+            ]),
+          ),
         ),
         bottomNavigationBar: bannerAdContainer);
   }
