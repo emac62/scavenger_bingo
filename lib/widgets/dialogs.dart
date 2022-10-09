@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 
@@ -66,9 +67,9 @@ showWinningDialog(
               String tempPath = (await getTemporaryDirectory()).path;
               File file = File('$tempPath/Bingo.png');
               await file.writeAsBytes(uint8List!);
-              await Share.shareFiles(
-                [file.path],
-                text: "Shared from Scavenger Hunt Bingo!",
+              await Share.shareXFiles(
+                [XFile(file.path)],
+                subject: "Shared from Scavenger Hunt Bingo!",
                 sharePositionOrigin:
                     Rect.fromLTWH(0, 0, size.width, size.height / 2),
               );
