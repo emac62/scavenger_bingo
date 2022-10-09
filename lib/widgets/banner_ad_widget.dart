@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
 
 class BannerAdContainer extends StatefulWidget {
@@ -16,7 +17,8 @@ class _BannerAdContainerState extends State<BannerAdContainer> {
 
   void _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
+      adUnitId:
+          useTestAds ? AdHelper.testBannerAdUnitID : AdHelper.bannerAdUnitId,
       size: AdSize.banner,
       request: AdRequest(),
       listener: BannerAdListener(

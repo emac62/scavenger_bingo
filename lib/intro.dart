@@ -47,8 +47,8 @@ class _IntroPageState extends State<IntroPage> {
                       width: 60,
                     ),
                     applicationName: "Scavenger Hunt Bingo",
-                    applicationVersion: "1.1.2",
-                    applicationLegalese: '©2021 borderlineBoomer',
+                    applicationVersion: "1.5.0",
+                    applicationLegalese: '©2022 borderlineBoomer',
                     children: <Widget>[
                       Padding(
                           padding: EdgeInsets.only(top: 15),
@@ -150,11 +150,11 @@ class _IntroPageState extends State<IntroPage> {
                       child: Text("Start"),
                     ),
                     style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.yellow[50],
+                        backgroundColor: Colors.purple,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        primary: Colors.purple,
-                        onPrimary: Colors.yellow[50],
                         side: BorderSide(
                           color: Colors.blue,
                           width: 3.0,

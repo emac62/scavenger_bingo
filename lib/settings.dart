@@ -54,6 +54,8 @@ class _SettingsPageState extends State<SettingsPage> {
     "City Walk",
     "Trail Walk",
     "Stay Indoors",
+    "Family Room",
+    "Bedroom",
     "Waiting Room",
     "Virtual Meeting",
     "City with Images",
@@ -62,6 +64,8 @@ class _SettingsPageState extends State<SettingsPage> {
     "Grocery Store with Images",
     "Classroom with Images",
     "Restaurant with Images",
+    "Halloween",
+    "Christmas",
   ];
 
   List<String> toWin = [
@@ -278,11 +282,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.yellow[50],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        primary: Colors.purple,
-                        onPrimary: Colors.yellow[50],
+                        backgroundColor: Colors.purple,
                         side: BorderSide(
                           color: Colors.blue,
                           width: 3.0,
@@ -363,11 +367,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             child: Text("Play Bingo"),
                           ),
                           style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.yellow[50],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            primary: Colors.purple,
-                            onPrimary: Colors.yellow[50],
+                            backgroundColor: Colors.purple,
                             side: BorderSide(
                               color: Colors.blue,
                               width: 3.0,

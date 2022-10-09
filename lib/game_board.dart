@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
@@ -49,6 +50,14 @@ class _GameBoardState extends State<GameBoard> {
         boardDisplay = "Stay Indoors";
         canShare = true;
         break;
+      case "Family Room":
+        boardDisplay = "Family Room";
+        canShare = true;
+        break;
+      case "Bedroom":
+        boardDisplay = "Bedroom";
+        canShare = true;
+        break;
       case "City with Images":
         boardDisplay = "City";
         break;
@@ -75,6 +84,14 @@ class _GameBoardState extends State<GameBoard> {
         boardDisplay = "Virtual Meeting";
         canShare = true;
         break;
+      case "Halloween":
+        boardDisplay = "Halloween";
+        canShare = true;
+        break;
+      case "Christmas":
+        boardDisplay = "Christmas";
+        canShare = true;
+        break;
       default:
         boardDisplay = settingsProvider.selectedBoard;
     }
@@ -97,7 +114,9 @@ class _GameBoardState extends State<GameBoard> {
       getBoardDisplay();
 
       InterstitialAd.load(
-          adUnitId: AdHelper.interstitialAdUnitId,
+          adUnitId: useTestAds
+              ? AdHelper.testInterstitialAdUnitId
+              : AdHelper.interstitialAdUnitId,
           request: AdRequest(),
           adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
             this._interstitialAd = ad;

@@ -114,6 +114,22 @@ List<Widget> listTileWidgets(
       _array = Resources.virtual;
       _iconData = [];
       break;
+    case "Family Room":
+      _array = Resources.familyRoom;
+      _iconData = [];
+      break;
+    case "Bedroom":
+      _array = Resources.bedroom;
+      _iconData = [];
+      break;
+    case "Halloween":
+      _array = Resources.halloween;
+      _iconData = [];
+      break;
+    case "Christmas":
+      _array = Resources.christmas;
+      _iconData = [];
+      break;
     case "City with Images":
       _array = [];
       _iconData = Resources.cityIcons;
