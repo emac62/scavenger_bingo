@@ -13,7 +13,7 @@ List<String> testDeviceIDs = [
   "8f4cb8307ba6019ca82bccc419afe5d0", // my iPad
 ];
 
-bool useTestAds = true;
+bool useTestAds = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
