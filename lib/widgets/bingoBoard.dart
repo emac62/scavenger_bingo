@@ -228,6 +228,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
             } else {
               widget.isSelected = !widget.isSelected;
               if (settingsProvider.withSound) playSound("woosh.mp3");
+              debugPrint("After playSound: ${settingsProvider.withSound}");
               addToSelectedTiles(widget.index);
             }
           });

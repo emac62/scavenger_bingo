@@ -105,6 +105,7 @@ class _GameBoardState extends State<GameBoard> {
       selectedBoard = savedPref.getString('selectedBoard') ?? "City Walk";
       selectedPattern = savedPref.getString('selectedPattern') ?? "One Line";
     });
+    debugPrint("withSound: $withSound");
   }
 
   @override
@@ -142,75 +143,59 @@ class _GameBoardState extends State<GameBoard> {
     var settingsProvider = Provider.of<SettingsProvider>(context);
     var selectedBoard = settingsProvider.selectedBoard;
     return Scaffold(
-        appBar: NewGradientAppBar(
-          automaticallyImplyLeading: false,
-          title: AutoSizeText(
-            "Scavenger Bingo",
-            style: TextStyle(
-              color: Colors.yellow[50],
-              fontFamily: 'CaveatBrush',
-              fontSize: SizeConfig.blockSizeHorizontal * 10,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
+          child: NewGradientAppBar(
+            automaticallyImplyLeading: false,
+            title: AutoSizeText(
+              "Scavenger Bingo",
+              style: TextStyle(
+                color: Colors.yellow[50],
+                fontFamily: 'CaveatBrush',
+                fontSize: SizeConfig.blockSizeHorizontal * 8,
+              ),
             ),
-          ),
-          gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
-          actions: <Widget>[
-            Padding(
-                padding:
-                    EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
-                child: canShare
-                    ? IconButton(
-                        icon: Icon(
-                          Icons.share,
-                          size: SizeConfig.blockSizeHorizontal * 4,
-                        ),
-                        tooltip: 'Screenshot',
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    backgroundColor: Colors.yellow[50],
-                                    title: Text(
-                                      "Share your card?",
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontFamily: 'CaveatBrush',
-                                        fontSize:
-                                            SizeConfig.blockSizeHorizontal * 6,
-                                      ),
-                                    ),
-                                    content: Text(
-                                      "If sharing content online please do so safely and respectfully. Click Cancel to return to the card, OK to take a screenshot and share.",
-                                      style: TextStyle(
-                                        color: Colors.purple,
-                                        fontFamily: 'CaveatBrush',
-                                        fontSize:
-                                            SizeConfig.blockSizeHorizontal * 4,
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(
-                                          "Cancel",
-                                          style: TextStyle(
-                                            color: Colors.blue,
-                                            fontFamily: 'CaveatBrush',
-                                            fontSize:
-                                                SizeConfig.blockSizeHorizontal *
-                                                    6,
-                                          ),
+            gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
+            actions: <Widget>[
+              Padding(
+                  padding:
+                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
+                  child: canShare
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            size: SizeConfig.blockSizeHorizontal * 4,
+                          ),
+                          tooltip: 'Screenshot',
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      backgroundColor: Colors.yellow[50],
+                                      title: Text(
+                                        "Share your card?",
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontFamily: 'CaveatBrush',
+                                          fontSize:
+                                              SizeConfig.blockSizeHorizontal *
+                                                  6,
                                         ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal:
-                                                SizeConfig.blockSizeHorizontal *
-                                                    3),
-                                        child: TextButton(
+                                      content: Text(
+                                        "If sharing content online please do so safely and respectfully. Click Cancel to return to the card, OK to take a screenshot and share.",
+                                        style: TextStyle(
+                                          color: Colors.purple,
+                                          fontFamily: 'CaveatBrush',
+                                          fontSize:
+                                              SizeConfig.blockSizeHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
                                           child: Text(
-                                            "OK",
+                                            "Cancel",
                                             style: TextStyle(
                                               color: Colors.blue,
                                               fontFamily: 'CaveatBrush',
@@ -220,32 +205,53 @@ class _GameBoardState extends State<GameBoard> {
                                             ),
                                           ),
                                           onPressed: () {
-                                            takeScreenShot();
                                             Navigator.of(context).pop();
                                           },
                                         ),
-                                      )
-                                    ],
-                                  ));
-                        })
-                    : null),
-            Padding(
-              padding:
-                  EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
-              child: IconButton(
-                icon: Icon(
-                  Icons.refresh,
-                  size: SizeConfig.blockSizeHorizontal * 4,
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: SizeConfig
+                                                      .blockSizeHorizontal *
+                                                  3),
+                                          child: TextButton(
+                                            child: Text(
+                                              "OK",
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                                fontFamily: 'CaveatBrush',
+                                                fontSize: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    6,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              takeScreenShot();
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    ));
+                          })
+                      : null),
+              Padding(
+                padding:
+                    EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    size: SizeConfig.blockSizeHorizontal * 4,
+                  ),
+                  tooltip: 'Restart Game',
+                  onPressed: () {
+                    debugPrint("Restart pressed");
+                    showRestartAlertDialog(context, result,
+                        _isInterstitialAdReady, _interstitialAd);
+                  },
                 ),
-                tooltip: 'Restart Game',
-                onPressed: () {
-                  debugPrint("Restart pressed");
-                  showRestartAlertDialog(
-                      context, result, _isInterstitialAdReady, _interstitialAd);
-                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         body: Container(
           width: SizeConfig.safeBlockHorizontal * 100,
@@ -271,7 +277,7 @@ class _GameBoardState extends State<GameBoard> {
                         height: 10,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: SizeConfig.blockSizeHorizontal * 5),

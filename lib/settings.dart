@@ -160,18 +160,21 @@ class _SettingsPageState extends State<SettingsPage> {
     var settingsProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
       key: _key,
-      appBar: NewGradientAppBar(
-        automaticallyImplyLeading: false,
-        title: AutoSizeText(
-          "Settings",
-          style: TextStyle(
-              color: Colors.yellow[50],
-              fontFamily: 'CaveatBrush',
-              fontSize: SizeConfig.safeBlockHorizontal * 15,
-              letterSpacing: 2.5),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
+        child: NewGradientAppBar(
+          automaticallyImplyLeading: false,
+          title: AutoSizeText(
+            "Settings",
+            style: TextStyle(
+                color: Colors.yellow[50],
+                fontFamily: 'CaveatBrush',
+                fontSize: SizeConfig.safeBlockHorizontal * 10,
+                letterSpacing: 2.5),
+          ),
+          gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
+          actions: [],
         ),
-        gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
-        actions: [],
       ),
       body: Container(
         width: SizeConfig.safeBlockHorizontal * 100,

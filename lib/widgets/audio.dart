@@ -1,10 +1,15 @@
 import 'package:audioplayers/audioplayers.dart';
 
-AudioCache cache = new AudioCache();
-AudioPlayer player = new AudioPlayer();
+AudioPlayer player = AudioPlayer();
 
 void playSound(String fileName) async {
-  player = await cache.play(fileName);
+  await player.setSource(AssetSource(fileName));
+  await player.play(AssetSource(fileName));
+  if (fileName != "fireworks.mp3") {
+    Future.delayed(const Duration(milliseconds: 1250), () {
+      player.stop();
+    });
+  }
 }
 
 void stopSound() async {
