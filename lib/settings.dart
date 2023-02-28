@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
-import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
+import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -23,6 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late String selectedBoard;
   late String selectedPattern;
   late bool withSound;
+  late List<String> selectedList;
 
   BannerAdContainer bannerAdContainer = BannerAdContainer();
 
@@ -158,6 +160,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context);
+    int gamesStarted = settingsProvider.gamesStarted;
     return Scaffold(
       key: _key,
       appBar: PreferredSize(
@@ -359,6 +362,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           onPressed: () {
                             if (withSound) playSound('magicalSlice2.mp3');
 
+                            settingsProvider.setGamesStarted(gamesStarted++);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -418,8 +422,9 @@ class CardSelectChip extends StatefulWidget {
 }
 
 class _CardSelectChipState extends State<CardSelectChip> {
-  var settingsProvider = SettingsProvider();
   List<Widget> cardChips() {
+    var settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
     List<Widget> chips = [];
     var choice = widget.selectedBoard;
     for (int i = 0; i < widget.cards.length; i++) {
@@ -444,6 +449,7 @@ class _CardSelectChipState extends State<CardSelectChip> {
               widget.cardIndex = i;
               choice = widget.cards[i];
               widget.onSelectionChanged(choice);
+
               settingsProvider.setBoard(widget.cards[i]);
 
               Navigator.of(context).pop();

@@ -32,6 +32,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     return GestureDetector(
         onTap: () {
           setState(() {

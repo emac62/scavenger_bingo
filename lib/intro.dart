@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
-import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
+import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({
@@ -139,7 +139,7 @@ class _IntroPageState extends State<IntroPage> {
                     onPressed: () {
                       if (settingsProvider.withSound)
                         playSound('magicalSlice2.mp3');
-                      print('Start: ${settingsProvider.selectedBoard}');
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => SettingsPage()),

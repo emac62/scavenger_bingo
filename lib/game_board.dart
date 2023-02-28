@@ -1,22 +1,23 @@
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
+import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
-import 'package:scavenger_hunt_bingo/widgets/bingoBoard.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
+import 'package:scavenger_hunt_bingo/widgets/bingo_grid.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialogs.dart';
-import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
+import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'widgets/game_state.dart';
 
 const int maxFailedLoadAttempts = 3;
 
@@ -26,18 +27,18 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  late InterstitialAd _interstitialAd;
-  bool _isInterstitialAdReady = false;
+  late InterstitialAd interstitialAd;
+  bool isInterstitialAdReady = false;
   BannerAdContainer bannerAdContainer = BannerAdContainer();
   String boardDisplay = "";
-  var settingsProvider = SettingsProvider();
+
   late String selectedBoard;
   late String selectedPattern;
   late bool withSound;
   bool canShare = false;
 
-  getBoardDisplay() {
-    switch (settingsProvider.selectedBoard) {
+  getBoardDisplay(selectedBoard) {
+    switch (selectedBoard) {
       case "City Walk":
         boardDisplay = "City Walk";
         canShare = true;
@@ -93,46 +94,42 @@ class _GameBoardState extends State<GameBoard> {
         canShare = true;
         break;
       default:
-        boardDisplay = settingsProvider.selectedBoard;
+        boardDisplay = selectedBoard;
     }
   }
 
-  loadPrefs() async {
-    SharedPreferences savedPref = await SharedPreferences.getInstance();
-
+  loadPrefs() {
+    var settings = Provider.of<SettingsProvider>(context, listen: false);
     setState(() {
-      withSound = savedPref.getBool('withSound') ?? true;
-      selectedBoard = savedPref.getString('selectedBoard') ?? "City Walk";
-      selectedPattern = savedPref.getString('selectedPattern') ?? "One Line";
+      withSound = settings.withSound;
+      selectedBoard = settings.selectedBoard;
+      debugPrint("game board init: $selectedBoard");
+      selectedPattern = settings.selectedPattern;
     });
-    debugPrint("withSound: $withSound");
   }
 
   @override
   void initState() {
     super.initState();
-    loadPrefs().then((_) {
-      getBoardDisplay();
-
-      InterstitialAd.load(
-          adUnitId: useTestAds
-              ? AdHelper.testInterstitialAdUnitId
-              : AdHelper.interstitialAdUnitId,
-          request: AdRequest(),
-          adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
-            this._interstitialAd = ad;
-            _isInterstitialAdReady = true;
-          }, onAdFailedToLoad: (LoadAdError error) {
-            debugPrint("Failed to Load Interstitial Ad ${error.message}");
-          })); //Interstitial Ads
-    });
+    loadPrefs();
+    InterstitialAd.load(
+        adUnitId: useTestAds
+            ? AdHelper.testInterstitialAdUnitId
+            : AdHelper.interstitialAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          this.interstitialAd = ad;
+          isInterstitialAdReady = true;
+        }, onAdFailedToLoad: (LoadAdError error) {
+          debugPrint("Failed to Load Interstitial Ad ${error.message}");
+        })); //Interstitial Ads
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    _interstitialAd.dispose();
+    interstitialAd.dispose();
   }
 
   final screenshotController = ScreenshotController();
@@ -140,8 +137,10 @@ class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+
     var settingsProvider = Provider.of<SettingsProvider>(context);
     var selectedBoard = settingsProvider.selectedBoard;
+    getBoardDisplay(selectedBoard);
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
@@ -244,9 +243,20 @@ class _GameBoardState extends State<GameBoard> {
                   ),
                   tooltip: 'Restart Game',
                   onPressed: () {
-                    debugPrint("Restart pressed");
-                    showRestartAlertDialog(context, result,
-                        _isInterstitialAdReady, _interstitialAd);
+                    result.clear();
+                    selectedTiles.clear();
+                    if ((settingsProvider.gamesWon +
+                                settingsProvider.gamesStarted) %
+                            2 ==
+                        0) {
+                      if (isInterstitialAdReady) interstitialAd.show();
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
+                    // showRestartAlertDialog(context, result,
+                    //     _isInterstitialAdReady, _interstitialAd);
                   },
                 ),
               ),
@@ -359,7 +369,10 @@ class _GameBoardState extends State<GameBoard> {
                 ),
               ),
               bingoBanner(),
-              bingoBoard(selectedBoard, screenshotController),
+              BingoGrid(
+                  selectedBoard: selectedBoard,
+                  screenshotController: screenshotController)
+              // bingoBoard(selectedBoard, screenshotController),
             ]),
           ),
         ),

@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
@@ -9,12 +10,14 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
-import 'package:scavenger_hunt_bingo/widgets/size_config.dart';
+import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-showWinningDialog(
-    context, bool withSound, ScreenshotController screenshotController) {
+import 'game_state.dart';
+
+showWinningDialog(context, bool withSound,
+    ScreenshotController screenshotController, int gamesForAd) {
   Dialogs.materialDialog(
     color: Colors.white,
     title: 'BINGO!',
@@ -24,7 +27,7 @@ showWinningDialog(
       fontFamily: 'CaveatBrush',
     ),
     context: context,
-    lottieBuilder: Lottie.asset('assets/32585-fireworks-display.json'),
+    lottieBuilder: Lottie.asset('assets/1370-confetti.json'),
     actions: [
       Column(
         children: [
@@ -45,6 +48,10 @@ showWinningDialog(
           IconsButton(
             onPressed: () {
               stopSound();
+              selectedTiles.clear();
+              // if (gamesForAd % 3 == 0) {
+              //   if (isInterstitialAdReady) interstitialAd.show();
+              // }
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SettingsPage()),
