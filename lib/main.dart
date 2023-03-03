@@ -31,13 +31,9 @@ void main() async {
   if (kReleaseMode) {
     debugPrint = (String? message, {int? wrapWidth}) {};
   }
-  final double screenWidth =
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
-  debugPrint(screenWidth.toString());
-  if (screenWidth <= 600) {
-    await SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  }
+
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => SettingsProvider())],

@@ -13,5 +13,5 @@ void playSound(String fileName) async {
 }
 
 void stopSound() async {
-  player.stop();
+  await player.stop();
 }
