@@ -58,7 +58,7 @@ class SettingsProvider with ChangeNotifier {
 
   setCurrentGame(List<String> currentGame) {
     _currentGame = currentGame;
-
+    notifyListeners();
     savePreferences();
   }
 

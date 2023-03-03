@@ -1,4 +1,3 @@
-
 class Patterns {
   static final oneLine = [
     [0, 1, 2, 3, 4],
@@ -14,7 +13,7 @@ class Patterns {
     [0, 6, 12, 18, 24],
     [4, 8, 12, 16, 20],
   ];
-  static final cross = [0, 4, 6, 12, 16, 18, 20, 24];
+  static final cross = [0, 4, 6, 8, 12, 16, 18, 20, 24];
   static final bigBox = [0, 1, 2, 3, 4, 5, 10, 14, 15, 19, 20, 21, 22, 23, 24];
   static final full = [
     0,

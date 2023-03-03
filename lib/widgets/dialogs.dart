@@ -1,11 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:lottie/lottie.dart';
-import 'package:material_dialogs/material_dialogs.dart';
 
-import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:scavenger_hunt_bingo/settings.dart';
@@ -14,176 +13,220 @@ import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../main.dart';
+import 'ad_helper.dart';
 import 'game_state.dart';
 
-showWinningDialog(context, bool withSound,
-    ScreenshotController screenshotController, int gamesForAd) {
-  Dialogs.materialDialog(
-    color: Colors.white,
-    title: 'BINGO!',
-    titleStyle: TextStyle(
-      color: Colors.purple,
-      fontSize: SizeConfig.safeBlockHorizontal * 10,
-      fontFamily: 'CaveatBrush',
-    ),
-    context: context,
-    lottieBuilder: Lottie.asset('assets/1370-confetti.json'),
-    actions: [
-      Column(
-        children: [
-          IconsButton(
-            onPressed: () {
-              stopSound();
-              Navigator.of(context).pop();
-            },
-            text: 'Close',
-            color: Colors.blue,
-            textStyle: TextStyle(
-              color: Colors.yellow[50],
-              fontSize: SizeConfig.safeBlockHorizontal * 3,
-            ),
-            iconData: Icons.exit_to_app,
-            iconColor: Colors.yellow[50],
-          ),
-          IconsButton(
-            onPressed: () {
-              stopSound();
-              selectedTiles.clear();
-              // if (gamesForAd % 3 == 0) {
-              //   if (isInterstitialAdReady) interstitialAd.show();
-              // }
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
-              );
-            },
-            text: 'New Game',
-            color: Colors.purple,
-            textStyle: TextStyle(
-              color: Colors.yellow[50],
-              fontSize: SizeConfig.safeBlockHorizontal * 3,
-            ),
-            iconData: Icons.auto_awesome,
-            iconColor: Colors.yellow[50],
-          ),
-          IconsButton(
-            onPressed: () async {
-              stopSound();
-              final Size size = MediaQuery.of(context).size;
-              final uint8List = await screenshotController.capture();
-              String tempPath = (await getTemporaryDirectory()).path;
-              File file = File('$tempPath/Bingo.png');
-              await file.writeAsBytes(uint8List!);
-              await Share.shareXFiles(
-                [XFile(file.path)],
-                subject: "Shared from Scavenger Hunt Bingo!",
-                sharePositionOrigin:
-                    Rect.fromLTWH(0, 0, size.width, size.height / 2),
-              );
-              Navigator.of(context).pop();
-            },
-            text: 'Share',
-            color: Colors.blue,
-            textStyle: TextStyle(
-              color: Colors.yellow[50],
-              fontSize: SizeConfig.safeBlockHorizontal * 3,
-            ),
-            iconData: Icons.share,
-            iconColor: Colors.yellow[50],
-          ),
-        ],
-      ),
-    ],
-  );
+class WinningDialog extends StatefulWidget {
+  WinningDialog({
+    Key? key,
+    required this.withSound,
+    required this.screenshotController,
+    required this.gamesForAd,
+  }) : super(key: key);
+  final bool withSound;
+  final ScreenshotController screenshotController;
+  final int gamesForAd;
+
+  @override
+  State<WinningDialog> createState() => _WinningDialogState();
 }
 
-showRestartAlertDialog(
-    context, result, _isInterstitialAdReady, _interstitialAd) {
-  // set up the buttons
-  Widget cancelButton = TextButton(
-    child: Text(
-      "Cancel",
-      style: TextStyle(
-        color: Colors.blue,
-        fontFamily: 'CaveatBrush',
-        fontSize: SizeConfig.blockSizeHorizontal * 6,
-      ),
-    ),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
-  Widget continueButton = TextButton(
-    child: Text(
-      "OK",
-      style: TextStyle(
-        color: Colors.blue,
-        fontFamily: 'CaveatBrush',
-        fontSize: SizeConfig.blockSizeHorizontal * 6,
-      ),
-    ),
-    onPressed: () {
-      result.clear();
-      if (_isInterstitialAdReady) _interstitialAd.show();
+class _WinningDialogState extends State<WinningDialog> {
+  late InterstitialAd interstitialAd;
+  bool isInterstitialAdReady = false;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SettingsPage()),
-      );
-    },
-  );
+  late ConfettiController _controllerCenter;
 
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    backgroundColor: Colors.yellow[50],
-    title: Text(
-      "Restart the Game?",
-      style: TextStyle(
-        color: Colors.blue,
-        fontFamily: 'CaveatBrush',
-        fontSize: SizeConfig.blockSizeHorizontal * 6,
-      ),
-    ),
-    content: Text(
-      "Restarting the game will display a video ad. You will be able to close the ad after 5 seconds. Thank you.",
-      style: TextStyle(
-        color: Colors.purple,
-        fontFamily: 'CaveatBrush',
-        fontSize: SizeConfig.blockSizeHorizontal * 4,
-      ),
-    ),
-    actions: [
-      cancelButton,
-      Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.blockSizeHorizontal * 3),
-        child: continueButton,
-      ),
-    ],
-  );
+  void loadInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: useTestAds
+            ? AdHelper.testInterstitialAdUnitId
+            : AdHelper.interstitialAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          this.interstitialAd = ad;
+          isInterstitialAdReady = true;
+        }, onAdFailedToLoad: (LoadAdError error) {
+          debugPrint("Failed to Load Interstitial Ad ${error.message}");
+        })); //Interstitial Ads
+  }
 
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
+  @override
+  void initState() {
+    super.initState();
+    _controllerCenter =
+        ConfettiController(duration: const Duration(seconds: 5));
+    loadInterstitialAd();
+  }
+
+  /// A custom Path to paint stars.
+  Path drawStar(Size size) {
+    // Method to convert degree to radians
+    double degToRad(double deg) => deg * (pi / 180.0);
+
+    const numberOfPoints = 5;
+    final halfWidth = size.width / 2;
+    final externalRadius = halfWidth;
+    final internalRadius = halfWidth / 2.5;
+    final degreesPerStep = degToRad(360 / numberOfPoints);
+    final halfDegreesPerStep = degreesPerStep / 2;
+    final path = Path();
+    final fullAngle = degToRad(360);
+    path.moveTo(size.width, halfWidth);
+
+    for (double step = 0; step < fullAngle; step += degreesPerStep) {
+      path.lineTo(halfWidth + externalRadius * cos(step),
+          halfWidth + externalRadius * sin(step));
+      path.lineTo(halfWidth + internalRadius * cos(step + halfDegreesPerStep),
+          halfWidth + internalRadius * sin(step + halfDegreesPerStep));
+    }
+    path.close();
+    return path;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controllerCenter.dispose();
+    interstitialAd.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _controllerCenter.play();
+    if (widget.withSound) playSound('fireworks.mp3');
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Dialog(
+        child: Container(
+          width: SizeConfig.screenWidth < 600
+              ? SizeConfig.blockSizeHorizontal * 100
+              : SizeConfig.blockSizeHorizontal * 80,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                Colors.purple,
+                Colors.blue,
+              ])),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Image.asset(
+              'assets/images/winningImg.png',
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: ConfettiWidget(
+                confettiController: _controllerCenter,
+                blastDirectionality: BlastDirectionality
+                    .explosive, // don't specify a direction, blast randomly
+                shouldLoop:
+                    true, // start again as soon as the animation is finished
+                colors: const [
+                  Colors.blue,
+                  Colors.purple
+                ], // manually specify the colors to be used
+                createParticlePath: drawStar,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: SizeConfig.blockSizeVertical * 3),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  DialogButton(
+                    onPressed: () {
+                      stopSound();
+                      Navigator.of(context).pop();
+                    },
+                    title: 'Close',
+                  ),
+                  DialogButton(
+                      onPressed: () {
+                        stopSound();
+                        selectedTiles.clear();
+                        winningPattern = null;
+                        gameWon = false;
+                        debugPrint("gamesForAd: ${widget.gamesForAd}");
+                        if (widget.gamesForAd % 3 == 0) {
+                          debugPrint("gamesForAd divisible by 3");
+                          debugPrint("ad ready? : $isInterstitialAdReady");
+                          if (isInterstitialAdReady) interstitialAd.show();
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsPage()),
+                        );
+                      },
+                      title: "New Game")
+                ],
+              ),
+            ),
+            Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeVertical * 3),
+                child: DialogButton(
+                  onPressed: () async {
+                    stopSound();
+                    final Size size = MediaQuery.of(context).size;
+                    final uint8List =
+                        await widget.screenshotController.capture();
+                    String tempPath = (await getTemporaryDirectory()).path;
+                    File file = File('$tempPath/Bingo.png');
+                    await file.writeAsBytes(uint8List!);
+                    await Share.shareXFiles(
+                      [XFile(file.path)],
+                      subject: "Shared from Scavenger Hunt Bingo!",
+                      sharePositionOrigin:
+                          Rect.fromLTWH(0, 0, size.width, size.height / 2),
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  title: "Share",
+                )),
+            const SizedBox(
+              height: 25,
+            )
+          ]),
+        ),
+      ),
+    );
+  }
 }
 
-showWinningPattern(context, String pattern) {
-  AlertDialog(
-    title: Text(pattern),
-    content: Image.asset('OneLineWinners.png'),
-    actions: <Widget>[
-      TextButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-    ],
-  );
+class DialogButton extends StatelessWidget {
+  const DialogButton({
+    Key? key,
+    required this.onPressed,
+    required this.title,
+  }) : super(key: key);
+  final VoidCallback onPressed;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          minimumSize: SizeConfig.screenWidth < 600
+              ? Size(SizeConfig.blockSizeHorizontal * 30,
+                  SizeConfig.blockSizeVertical * 4)
+              : Size(SizeConfig.blockSizeHorizontal * 35,
+                  SizeConfig.blockSizeVertical * 4),
+          backgroundColor: Colors.yellow[50],
+          foregroundColor: Colors.purple,
+          elevation: 10,
+          textStyle: TextStyle(
+              fontSize: SizeConfig.screenWidth < 600
+                  ? SizeConfig.blockSizeVertical * 3
+                  : SizeConfig.blockSizeVertical * 4,
+              fontFamily: "CaveatBrush")),
+      onPressed: onPressed,
+      child: Text(title),
+    );
+  }
 }
 
 class ImageDialog extends StatefulWidget {
@@ -201,7 +244,7 @@ class _ImageDialogState extends State<ImageDialog> {
   getSelectedPatternImage(String selectedPattern) {
     switch (selectedPattern) {
       case "One Line":
-        winningImage = 'assets/images/OneLineWinners.png';
+        winningImage = 'assets/images/OneLinePort.png';
         break;
       case "Letter X":
         winningImage = 'assets/images/Cross.png';

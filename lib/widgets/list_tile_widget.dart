@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../data/winning_patterns.dart';
 import '../providers/settings_provider.dart';
 import 'audio.dart';
 
@@ -12,7 +13,6 @@ class ListTileWidget extends StatefulWidget {
   final String name;
   final IconData icon;
   final int index;
-  // late bool isSelected;
   final ScreenshotController screenshotController;
 
   ListTileWidget({
@@ -20,6 +20,7 @@ class ListTileWidget extends StatefulWidget {
     required this.index,
     required this.icon,
     required this.screenshotController,
+
     // required this.isSelected,
   });
 
@@ -29,6 +30,7 @@ class ListTileWidget extends StatefulWidget {
 
 class ListTileWidgetState extends State<ListTileWidget> {
   bool isSelected = false;
+  List winPattern = [];
 
   addToSelectedTiles(int) {
     selectedTiles.add(int);
@@ -38,41 +40,54 @@ class ListTileWidgetState extends State<ListTileWidget> {
     selectedTiles.removeWhere((element) => element == int);
   }
 
+  getWinPattern(pattern) {
+    if (pattern == "One Line" && winningPattern != null) {
+      winPattern = Patterns.oneLine[winningPattern];
+    } else if (pattern == "Letter X") {
+      winPattern = Patterns.cross;
+    } else if (pattern == "Full Card") {
+      winPattern = Patterns.full;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var settingsProvider = Provider.of<SettingsProvider>(context);
-
+    if (gameWon) getWinPattern(settingsProvider.selectedPattern);
+    var fontColor = gameWon && winPattern.contains(widget.index)
+        ? Colors.blue[50]
+        : Colors.purple;
     return GestureDetector(
         onTap: () {
-          setState(() {
-            if (isSelected) {
-              isSelected = !isSelected;
-              removeFromSelectedTiles(widget.index);
-            } else {
-              isSelected = !isSelected;
-              if (settingsProvider.withSound) playSound("woosh.mp3");
-              addToSelectedTiles(widget.index);
-            }
-          });
+          if (!disableTiles) {
+            setState(() {
+              debugPrint("ListTileWidget onTap setState");
+              if (isSelected) {
+                isSelected = !isSelected;
+                removeFromSelectedTiles(widget.index);
+              } else {
+                isSelected = !isSelected;
+                if (settingsProvider.withSound) playSound("woosh.mp3");
+                addToSelectedTiles(widget.index);
+              }
+            });
 
-          if (settingsProvider.selectedPattern == "One Line") {
-            findOneLineWinner(
-              context,
-              settingsProvider.withSound,
-              widget.screenshotController,
-            );
-          }
-          if (settingsProvider.selectedPattern == "Letter X") {
-            findCrossWinner(context, settingsProvider.withSound,
-                widget.screenshotController);
-          }
-          if (settingsProvider.selectedPattern == "Full Card") {
-            findFullCardWinner(
-              context,
-              settingsProvider.withSound,
-              widget.screenshotController,
-            );
+            if (settingsProvider.selectedPattern == "One Line" &&
+                selectedTiles.length > 4) {
+              findOneLineWinner(context, settingsProvider.withSound,
+                  widget.screenshotController);
+            }
+            if (settingsProvider.selectedPattern == "Letter X" &&
+                selectedTiles.length > 8) {
+              findCrossWinner(context, settingsProvider.withSound,
+                  widget.screenshotController);
+            }
+            if (settingsProvider.selectedPattern == "Full Card" &&
+                selectedTiles.length == 25) {
+              findFullCardWinner(context, settingsProvider.withSound,
+                  widget.screenshotController);
+            }
           }
         },
         child: Container(
@@ -83,6 +98,10 @@ class ListTileWidgetState extends State<ListTileWidget> {
             padding: const EdgeInsets.all(4.0),
             child: Container(
                 decoration: BoxDecoration(
+                  image: gameWon && winPattern.contains(widget.index)
+                      ? DecorationImage(
+                          image: AssetImage("assets/images/selectedImage.png"))
+                      : null,
                   // shape: BoxShape.circle,
                   color: isSelected ? Colors.blue : null,
                 ),
@@ -103,7 +122,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                               style: (widget.index != 12)
                                   ? TextStyle(
                                       fontFamily: 'CaveatBrush',
-                                      color: Colors.purple,
+                                      color: fontColor,
                                       fontSize: size.width * 0.0375)
                                   : TextStyle(
                                       fontFamily: 'CaveatBrush',
@@ -137,7 +156,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                       style: TextStyle(
                                         fontFamily: 'CaveatBrush',
                                         fontSize: size.width * 0.03,
-                                        color: Colors.purple,
+                                        color: fontColor,
                                       ),
                                     ),
                                   )

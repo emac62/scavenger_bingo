@@ -59,6 +59,14 @@ class _GameBoardState extends State<GameBoard> {
         boardDisplay = "Bedroom";
         canShare = true;
         break;
+      case "Backyard":
+        boardDisplay = "Backyard";
+        canShare = true;
+        break;
+      case "Car Ride":
+        boardDisplay = "Car Ride";
+        canShare = true;
+        break;
       case "City with Images":
         boardDisplay = "City";
         break;
@@ -101,9 +109,9 @@ class _GameBoardState extends State<GameBoard> {
   loadPrefs() {
     var settings = Provider.of<SettingsProvider>(context, listen: false);
     setState(() {
+      debugPrint("game_board loadPrefs setState");
       withSound = settings.withSound;
       selectedBoard = settings.selectedBoard;
-      debugPrint("game board init: $selectedBoard");
       selectedPattern = settings.selectedPattern;
     });
   }
@@ -112,6 +120,9 @@ class _GameBoardState extends State<GameBoard> {
   void initState() {
     super.initState();
     loadPrefs();
+  }
+
+  void loadInterstitialAd() {
     InterstitialAd.load(
         adUnitId: useTestAds
             ? AdHelper.testInterstitialAdUnitId
@@ -123,6 +134,12 @@ class _GameBoardState extends State<GameBoard> {
         }, onAdFailedToLoad: (LoadAdError error) {
           debugPrint("Failed to Load Interstitial Ad ${error.message}");
         })); //Interstitial Ads
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadInterstitialAd();
   }
 
   @override
@@ -138,7 +155,7 @@ class _GameBoardState extends State<GameBoard> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    var settingsProvider = Provider.of<SettingsProvider>(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     var selectedBoard = settingsProvider.selectedBoard;
     getBoardDisplay(selectedBoard);
     return Scaffold(
@@ -182,7 +199,7 @@ class _GameBoardState extends State<GameBoard> {
                                         ),
                                       ),
                                       content: Text(
-                                        "If sharing content online please do so safely and respectfully. Click Cancel to return to the card, OK to take a screenshot and share.",
+                                        "Choose how you want to share the image of the card or just save it to your device. Click OK to take a screenshot.",
                                         style: TextStyle(
                                           color: Colors.purple,
                                           fontFamily: 'CaveatBrush',
@@ -244,7 +261,12 @@ class _GameBoardState extends State<GameBoard> {
                   tooltip: 'Restart Game',
                   onPressed: () {
                     result.clear();
+                    gameWon = false;
                     selectedTiles.clear();
+                    winningPattern = null;
+                    debugPrint((settingsProvider.gamesWon +
+                            settingsProvider.gamesStarted)
+                        .toString());
                     if ((settingsProvider.gamesWon +
                                 settingsProvider.gamesStarted) %
                             2 ==
@@ -255,8 +277,6 @@ class _GameBoardState extends State<GameBoard> {
                       context,
                       MaterialPageRoute(builder: (context) => SettingsPage()),
                     );
-                    // showRestartAlertDialog(context, result,
-                    //     _isInterstitialAdReady, _interstitialAd);
                   },
                 ),
               ),
@@ -370,8 +390,9 @@ class _GameBoardState extends State<GameBoard> {
               ),
               bingoBanner(),
               BingoGrid(
-                  selectedBoard: selectedBoard,
-                  screenshotController: screenshotController)
+                selectedBoard: selectedBoard,
+                screenshotController: screenshotController,
+              )
               // bingoBoard(selectedBoard, screenshotController),
             ]),
           ),

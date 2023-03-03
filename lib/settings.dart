@@ -10,6 +10,7 @@ import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
+import 'package:scavenger_hunt_bingo/widgets/game_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -33,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     loadPrefs().then((_) {
       setState(() {
+        debugPrint("settings init setState");
         withSound = withSound;
         selectedBoard = selectedBoard;
         selectedPattern = selectedPattern;
@@ -43,6 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   loadPrefs() async {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     setState(() {
+      debugPrint("settings loadPrefs setState");
       withSound = (savedPref.getBool('withSound') ?? true);
       selectedBoard = (savedPref.getString('selectedBoard') ?? "City Walk");
       selectedPattern = (savedPref.getString('selectedPattern') ?? "One Line");
@@ -59,6 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
     "Family Room",
     "Bedroom",
     "Waiting Room",
+    "Backyard",
+    "Car Ride",
     "Virtual Meeting",
     "City with Images",
     "Trail with Images",
@@ -98,6 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
           selected: settingsProvider.selectedPattern == toWin[i],
           onSelected: (bool value) {
             setState(() {
+              debugPrint("settings choice chip pattern setState");
               winIndex = i;
               selectedPattern = toWin[i];
               settingsProvider.setPattern(selectedPattern);
@@ -145,6 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 selectedBoard: selectedBoard,
                 onSelectionChanged: (choice) {
                   setState(() {
+                    debugPrint("settings Card setState");
                     selectedBoard = choice;
                     settingsProvider.setBoard(selectedBoard);
                   });
@@ -159,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var settingsProvider = Provider.of<SettingsProvider>(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     int gamesStarted = settingsProvider.gamesStarted;
     return Scaffold(
       key: _key,
@@ -226,6 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               thumbColor: Colors.yellow[50],
                               onChanged: (value) {
                                 setState(() {
+                                  debugPrint("settings sound setState");
                                   withSound = value;
                                   settingsProvider.setWithSound(withSound);
                                 });
@@ -361,8 +369,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: ElevatedButton(
                           onPressed: () {
                             if (withSound) playSound('magicalSlice2.mp3');
-
-                            settingsProvider.setGamesStarted(gamesStarted++);
+                            setState(() {
+                              debugPrint("settings Play setState");
+                              gamesStarted++;
+                              settingsProvider.setGamesStarted(gamesStarted);
+                              winningPattern = null;
+                              selectedList = [];
+                              disableTiles = false;
+                              setRandomList(context, selectedBoard);
+                            });
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -451,7 +466,7 @@ class _CardSelectChipState extends State<CardSelectChip> {
               widget.onSelectionChanged(choice);
 
               settingsProvider.setBoard(widget.cards[i]);
-
+              debugPrint("settings ChoiceChip setState");
               Navigator.of(context).pop();
             });
           },

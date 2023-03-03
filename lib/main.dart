@@ -15,7 +15,7 @@ List<String> testDeviceIDs = [
   "8f4cb8307ba6019ca82bccc419afe5d0", // my iPad
 ];
 
-bool useTestAds = true;
+bool useTestAds = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ void main() async {
   }
   final double screenWidth =
       MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
-
+  debugPrint(screenWidth.toString());
   if (screenWidth <= 600) {
     await SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

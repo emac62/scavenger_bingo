@@ -26,6 +26,12 @@ setRandomList(BuildContext context, String selectedBoard) {
         _array = Resources.indoors;
         _iconData = [];
         break;
+      case "Backyard":
+        _array = Resources.backyard;
+        break;
+      case "Car Ride":
+        _array = Resources.carRide;
+        break;
       case "Waiting Room":
         _array = Resources.waitingRoom;
         _iconData = [];
@@ -89,9 +95,11 @@ setRandomList(BuildContext context, String selectedBoard) {
     }
 
     settings.setCurrentGame(selectedList);
+
     return selectedList;
   } else {
     selectedList = settings.currentGame as List<String>;
+
     return selectedList;
   }
 }
