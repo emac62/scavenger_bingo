@@ -76,6 +76,10 @@ flutter:
     - family: CaveatBrush
       fonts:
         - asset: fonts/CaveatBrush-Regular.ttf
+
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

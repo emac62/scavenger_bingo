@@ -21,15 +21,14 @@ findOneLineWinner(
 ) {
   var settings = Provider.of<SettingsProvider>(context, listen: false);
   int gamesWon = settings.gamesWon;
-  debugPrint("findOneLineWinner called");
+
   for (var i = 0; i < Patterns.oneLine.length; i++) {
     result = Patterns.oneLine[i]
         .where((element) => !selectedTiles.contains(element))
         .toList();
     if (result.isEmpty) {
-      // debugPrint("winningPattern: $winningPattern");
       winningPattern = i;
-      debugPrint("winningPattern: $winningPattern");
+
       disableTiles = true;
       result.clear();
       gamesWon++;

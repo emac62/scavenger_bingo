@@ -109,7 +109,6 @@ class _GameBoardState extends State<GameBoard> {
   loadPrefs() {
     var settings = Provider.of<SettingsProvider>(context, listen: false);
     setState(() {
-      debugPrint("game_board loadPrefs setState");
       withSound = settings.withSound;
       selectedBoard = settings.selectedBoard;
       selectedPattern = settings.selectedPattern;
@@ -177,12 +176,7 @@ class _GameBoardState extends State<GameBoard> {
                   padding:
                       EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
                   child: canShare
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.share,
-                            size: SizeConfig.blockSizeHorizontal * 4,
-                          ),
-                          tooltip: 'Screenshot',
+                      ? TextButton.icon(
                           onPressed: () {
                             showDialog(
                                 context: context,
@@ -248,25 +242,35 @@ class _GameBoardState extends State<GameBoard> {
                                         )
                                       ],
                                     ));
-                          })
+                          },
+                          icon: Icon(
+                            Icons.share,
+                            color: Colors.yellow[50],
+                            size: SizeConfig.blockSizeHorizontal * 3.5,
+                          ),
+                          label: Text(
+                            "Share",
+                            style: TextStyle(
+                                fontFamily: "Roboto",
+                                color: Colors.yellow[50],
+                                fontSize: SizeConfig.blockSizeVertical * 1.5),
+                          ))
                       : null),
               Padding(
                 padding:
                     EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
-                child: IconButton(
+                child: TextButton.icon(
                   icon: Icon(
                     Icons.refresh,
                     size: SizeConfig.blockSizeHorizontal * 4,
+                    color: Colors.yellow[50],
                   ),
-                  tooltip: 'Restart Game',
                   onPressed: () {
                     result.clear();
                     gameWon = false;
                     selectedTiles.clear();
                     winningPattern = null;
-                    debugPrint((settingsProvider.gamesWon +
-                            settingsProvider.gamesStarted)
-                        .toString());
+
                     if ((settingsProvider.gamesWon +
                                 settingsProvider.gamesStarted) %
                             2 ==
@@ -278,6 +282,13 @@ class _GameBoardState extends State<GameBoard> {
                       MaterialPageRoute(builder: (context) => SettingsPage()),
                     );
                   },
+                  label: Text(
+                    "New Game",
+                    style: TextStyle(
+                        fontFamily: "Roboto",
+                        color: Colors.yellow[50],
+                        fontSize: SizeConfig.blockSizeVertical * 1.5),
+                  ),
                 ),
               ),
             ],

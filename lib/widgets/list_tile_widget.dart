@@ -62,7 +62,6 @@ class ListTileWidgetState extends State<ListTileWidget> {
         onTap: () {
           if (!disableTiles) {
             setState(() {
-              debugPrint("ListTileWidget onTap setState");
               if (isSelected) {
                 isSelected = !isSelected;
                 removeFromSelectedTiles(widget.index);

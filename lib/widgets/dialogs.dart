@@ -38,6 +38,8 @@ class _WinningDialogState extends State<WinningDialog> {
 
   late ConfettiController _controllerCenter;
 
+  late Image bgBingo;
+
   void loadInterstitialAd() {
     InterstitialAd.load(
         adUnitId: useTestAds
@@ -57,6 +59,14 @@ class _WinningDialogState extends State<WinningDialog> {
     super.initState();
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 5));
+
+    bgBingo = Image.asset('assets/images/winningImg.png');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(bgBingo.image, context);
     loadInterstitialAd();
   }
 
@@ -95,7 +105,7 @@ class _WinningDialogState extends State<WinningDialog> {
   @override
   Widget build(BuildContext context) {
     _controllerCenter.play();
-    if (widget.withSound) playSound('fireworks.mp3');
+
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Dialog(
@@ -125,7 +135,8 @@ class _WinningDialogState extends State<WinningDialog> {
                     true, // start again as soon as the animation is finished
                 colors: const [
                   Colors.blue,
-                  Colors.purple
+                  Colors.yellow,
+                  Color.fromRGBO(255, 253, 231, 1),
                 ], // manually specify the colors to be used
                 createParticlePath: drawStar,
               ),
@@ -141,6 +152,11 @@ class _WinningDialogState extends State<WinningDialog> {
                       stopSound();
                       Navigator.of(context).pop();
                     },
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.purple,
+                      size: SizeConfig.blockSizeHorizontal * 3.5,
+                    ),
                     title: 'Close',
                   ),
                   DialogButton(
@@ -161,6 +177,11 @@ class _WinningDialogState extends State<WinningDialog> {
                               builder: (context) => SettingsPage()),
                         );
                       },
+                      icon: Icon(
+                        Icons.refresh,
+                        color: Colors.purple,
+                        size: SizeConfig.blockSizeHorizontal * 3.5,
+                      ),
                       title: "New Game")
                 ],
               ),
@@ -185,6 +206,11 @@ class _WinningDialogState extends State<WinningDialog> {
                     );
                     Navigator.of(context).pop();
                   },
+                  icon: Icon(
+                    Icons.share,
+                    color: Colors.purple,
+                    size: SizeConfig.blockSizeHorizontal * 3.5,
+                  ),
                   title: "Share",
                 )),
             const SizedBox(
@@ -202,13 +228,15 @@ class DialogButton extends StatelessWidget {
     Key? key,
     required this.onPressed,
     required this.title,
+    required this.icon,
   }) : super(key: key);
   final VoidCallback onPressed;
   final String title;
+  final Icon icon;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
           minimumSize: SizeConfig.screenWidth < 600
               ? Size(SizeConfig.blockSizeHorizontal * 30,
@@ -224,7 +252,8 @@ class DialogButton extends StatelessWidget {
                   : SizeConfig.blockSizeVertical * 4,
               fontFamily: "CaveatBrush")),
       onPressed: onPressed,
-      child: Text(title),
+      icon: icon,
+      label: Text(title),
     );
   }
 }

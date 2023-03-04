@@ -34,7 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     loadPrefs().then((_) {
       setState(() {
-        debugPrint("settings init setState");
         withSound = withSound;
         selectedBoard = selectedBoard;
         selectedPattern = selectedPattern;
@@ -45,7 +44,6 @@ class _SettingsPageState extends State<SettingsPage> {
   loadPrefs() async {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     setState(() {
-      debugPrint("settings loadPrefs setState");
       withSound = (savedPref.getBool('withSound') ?? true);
       selectedBoard = (savedPref.getString('selectedBoard') ?? "City Walk");
       selectedPattern = (savedPref.getString('selectedPattern') ?? "One Line");
@@ -94,8 +92,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           labelStyle: TextStyle(
             color: Colors.yellow[50],
-            fontSize: SizeConfig.safeBlockHorizontal * 3.5,
-            fontWeight: FontWeight.bold,
+            fontSize: SizeConfig.safeBlockVertical * 2,
+            fontFamily: "Roboto",
             letterSpacing: -0.5,
           ),
           backgroundColor: Colors.blue,
@@ -103,7 +101,6 @@ class _SettingsPageState extends State<SettingsPage> {
           selected: settingsProvider.selectedPattern == toWin[i],
           onSelected: (bool value) {
             setState(() {
-              debugPrint("settings choice chip pattern setState");
               winIndex = i;
               selectedPattern = toWin[i];
               settingsProvider.setPattern(selectedPattern);
@@ -151,7 +148,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 selectedBoard: selectedBoard,
                 onSelectionChanged: (choice) {
                   setState(() {
-                    debugPrint("settings Card setState");
                     selectedBoard = choice;
                     settingsProvider.setBoard(selectedBoard);
                   });
@@ -233,7 +229,6 @@ class _SettingsPageState extends State<SettingsPage> {
                               thumbColor: Colors.yellow[50],
                               onChanged: (value) {
                                 setState(() {
-                                  debugPrint("settings sound setState");
                                   withSound = value;
                                   settingsProvider.setWithSound(withSound);
                                 });
@@ -281,7 +276,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               style: TextStyle(
                                 color: Colors.yellow[50],
                                 fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.safeBlockHorizontal * 3.5,
+                                fontSize: SizeConfig.safeBlockVertical * 3,
                               ),
                               minFontSize: 0,
                               stepGranularity: 0.1,
@@ -355,9 +350,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Colors.purple,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SizeConfig.safeBlockHorizontal * 2.5,
-                      letterSpacing: -0.8,
+                      fontFamily: "Roboto",
+                      fontSize: SizeConfig.safeBlockVertical * 2,
                     ),
                   ),
                 ),
@@ -370,7 +364,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           onPressed: () {
                             if (withSound) playSound('magicalSlice2.mp3');
                             setState(() {
-                              debugPrint("settings Play setState");
                               gamesStarted++;
                               settingsProvider.setGamesStarted(gamesStarted);
                               winningPattern = null;
@@ -452,8 +445,8 @@ class _CardSelectChipState extends State<CardSelectChip> {
           ),
           labelStyle: TextStyle(
             color: Colors.yellow[50],
-            fontSize: SizeConfig.safeBlockHorizontal * 3.5,
-            fontWeight: FontWeight.bold,
+            fontSize: SizeConfig.safeBlockVertical * 3,
+            // fontWeight: FontWeight.bold,
             letterSpacing: -0.5,
           ),
           backgroundColor: Colors.blue,
@@ -466,7 +459,7 @@ class _CardSelectChipState extends State<CardSelectChip> {
               widget.onSelectionChanged(choice);
 
               settingsProvider.setBoard(widget.cards[i]);
-              debugPrint("settings ChoiceChip setState");
+
               Navigator.of(context).pop();
             });
           },

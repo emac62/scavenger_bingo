@@ -53,6 +53,7 @@ class _ScavengerBingoState extends State<ScavengerBingo> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: "CaveatBrush",
         primarySwatch:
             Colors.purple, //i am set brown colour,you can set your colour here
       ),
