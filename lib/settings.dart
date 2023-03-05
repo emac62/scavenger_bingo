@@ -348,7 +348,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
                   child: AutoSizeText(
-                    "Choose the same card and the same way to win. Click 'Share' to send an image of your winning card. Only available for cards without images.",
+                    "Choose the same location and the same way to win. Click 'Share' to send an image of your winning card. Only available for cards without images.",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Colors.purple,
