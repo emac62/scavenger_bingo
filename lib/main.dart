@@ -16,6 +16,7 @@ List<String> testDeviceIDs = [
 ];
 
 bool useTestAds = false;
+bool showBannerAd = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

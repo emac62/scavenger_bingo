@@ -408,7 +408,7 @@ class _GameBoardState extends State<GameBoard> {
             ]),
           ),
         ),
-        bottomNavigationBar: bannerAdContainer);
+        bottomNavigationBar: showBannerAd ? bannerAdContainer : null);
   }
 
   void takeScreenShot() async {

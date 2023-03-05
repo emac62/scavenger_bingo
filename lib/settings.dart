@@ -13,6 +13,8 @@ import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:scavenger_hunt_bingo/widgets/game_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'main.dart';
+
 // ignore: must_be_immutable
 class SettingsPage extends StatefulWidget {
   @override
@@ -276,7 +278,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               style: TextStyle(
                                 color: Colors.yellow[50],
                                 fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.safeBlockVertical * 3,
+                                fontSize: SizeConfig.safeBlockVertical * 2,
                               ),
                               minFontSize: 0,
                               stepGranularity: 0.1,
@@ -405,7 +407,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: bannerAdContainer,
+      bottomNavigationBar: showBannerAd ? bannerAdContainer : null,
     );
   }
 }
