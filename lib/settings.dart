@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late String selectedBoard;
   late String selectedPattern;
   late bool withSound;
-  late List<String> selectedList;
+  // late List<String> selectedList;
 
   BannerAdContainer bannerAdContainer = BannerAdContainer();
 
@@ -152,6 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   setState(() {
                     selectedBoard = choice;
                     settingsProvider.setBoard(selectedBoard);
+                    setRandomList(context, selectedBoard);
                   });
                 },
               ),
@@ -168,28 +169,26 @@ class _SettingsPageState extends State<SettingsPage> {
     int gamesStarted = settingsProvider.gamesStarted;
     return Scaffold(
       key: _key,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          title: AutoSizeText(
-            "Settings",
-            style: TextStyle(
-                color: Colors.yellow[50],
-                fontFamily: 'CaveatBrush',
-                fontSize: SizeConfig.safeBlockHorizontal * 10,
-                letterSpacing: 2.5),
-          ),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.purple, Colors.blue],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight),
-            ),
-          ),
-          actions: [],
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: AutoSizeText(
+          "Settings",
+          style: TextStyle(
+              color: Colors.yellow[50],
+              fontFamily: 'CaveatBrush',
+              fontSize: SizeConfig.blockSizeVertical * 5,
+              letterSpacing: 2.5),
         ),
+        toolbarHeight: SizeConfig.blockSizeVertical * 7,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.purple, Colors.blue],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight),
+          ),
+        ),
+        actions: [],
       ),
       body: Container(
         width: SizeConfig.safeBlockHorizontal * 100,
@@ -376,9 +375,8 @@ class _SettingsPageState extends State<SettingsPage> {
                               gamesStarted++;
                               settingsProvider.setGamesStarted(gamesStarted);
                               winningPattern = null;
-                              selectedList = [];
+                              // selectedList = [];
                               disableTiles = false;
-                              setRandomList(context, selectedBoard);
                             });
                             Navigator.push(
                               context,

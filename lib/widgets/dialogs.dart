@@ -162,9 +162,11 @@ class _WinningDialogState extends State<WinningDialog> {
                   DialogButton(
                       onPressed: () {
                         stopSound();
-                        selectedTiles.clear();
-                        winningPattern = null;
-                        gameWon = false;
+                        setState(() {
+                          selectedTiles.clear();
+                          winningPattern = null;
+                          gameWon = false;
+                        });
                         debugPrint("gamesForAd: ${widget.gamesForAd}");
                         if (widget.gamesForAd % 3 == 0) {
                           debugPrint("gamesForAd divisible by 3");

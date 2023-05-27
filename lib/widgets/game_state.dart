@@ -7,7 +7,7 @@ import '../providers/settings_provider.dart';
 import 'audio.dart';
 import 'dialogs.dart';
 
-List selectedList = [];
+// List selectedList = [];
 List<int> selectedTiles = [];
 List result = [];
 bool gameWon = false;

@@ -25,13 +25,6 @@ class _BingoGridState extends State<BingoGrid> {
   List _selectedList = [];
 
   @override
-  void initState() {
-    super.initState();
-    _selectedList =
-        Provider.of<SettingsProvider>(context, listen: false).currentGame;
-  }
-
-  @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Padding(
@@ -59,6 +52,8 @@ class _BingoGridState extends State<BingoGrid> {
   ) {
     List<Widget> _itemList = [];
     var _buttonName = [];
+    _selectedList =
+        Provider.of<SettingsProvider>(context, listen: false).currentGame;
 
     if (!selectedBoard.contains("Images")) {
       _selectedList.forEach((item) {

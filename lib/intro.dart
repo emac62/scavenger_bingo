@@ -28,9 +28,10 @@ class _IntroPageState extends State<IntroPage> {
           style: TextStyle(
               color: Colors.yellow[50],
               fontFamily: 'CaveatBrush',
-              fontSize: SizeConfig.safeBlockHorizontal * 10,
+              fontSize: SizeConfig.blockSizeVertical * 5,
               letterSpacing: 2.0),
         ),
+        toolbarHeight: SizeConfig.blockSizeVertical * 7,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

@@ -158,61 +158,78 @@ class _GameBoardState extends State<GameBoard> {
     var selectedBoard = settingsProvider.selectedBoard;
     getBoardDisplay(selectedBoard);
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            title: AutoSizeText(
-              "Scavenger Bingo",
-              style: TextStyle(
-                color: Colors.yellow[50],
-                fontFamily: 'CaveatBrush',
-                fontSize: SizeConfig.blockSizeHorizontal * 8,
-              ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: AutoSizeText(
+            "Scavenger Bingo",
+            style: TextStyle(
+              color: Colors.yellow[50],
+              fontFamily: 'CaveatBrush',
+              fontSize: SizeConfig.blockSizeVertical * 5,
             ),
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.purple, Colors.blue],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight),
-              ),
+          ),
+          toolbarHeight: SizeConfig.blockSizeVertical * 7,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.blue],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight),
             ),
-            actions: <Widget>[
-              Padding(
-                  padding:
-                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
-                  child: canShare
-                      ? TextButton.icon(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                      backgroundColor: Colors.yellow[50],
-                                      title: Text(
-                                        "Share your card?",
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontFamily: 'CaveatBrush',
-                                          fontSize:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  6,
-                                        ),
+          ),
+          actions: <Widget>[
+            Padding(
+                padding:
+                    EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 3),
+                child: canShare
+                    ? TextButton.icon(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    backgroundColor: Colors.yellow[50],
+                                    title: Text(
+                                      "Share your card?",
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontFamily: 'CaveatBrush',
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal * 6,
                                       ),
-                                      content: Text(
-                                        "Choose how you want to share the image of the card or just save it to your device. Click OK to take a screenshot.",
-                                        style: TextStyle(
-                                          color: Colors.purple,
-                                          fontFamily: 'CaveatBrush',
-                                          fontSize:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  4,
-                                        ),
+                                    ),
+                                    content: Text(
+                                      "Choose how you want to share the image of the card or just save it to your device. Click OK to take a screenshot.",
+                                      style: TextStyle(
+                                        color: Colors.purple,
+                                        fontFamily: 'CaveatBrush',
+                                        fontSize:
+                                            SizeConfig.blockSizeHorizontal * 4,
                                       ),
-                                      actions: [
-                                        TextButton(
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontFamily: 'CaveatBrush',
+                                            fontSize:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    6,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    3),
+                                        child: TextButton(
                                           child: Text(
-                                            "Cancel",
+                                            "OK",
                                             style: TextStyle(
                                               color: Colors.blue,
                                               fontFamily: 'CaveatBrush',
@@ -222,84 +239,63 @@ class _GameBoardState extends State<GameBoard> {
                                             ),
                                           ),
                                           onPressed: () {
+                                            takeScreenShot();
                                             Navigator.of(context).pop();
                                           },
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: SizeConfig
-                                                      .blockSizeHorizontal *
-                                                  3),
-                                          child: TextButton(
-                                            child: Text(
-                                              "OK",
-                                              style: TextStyle(
-                                                color: Colors.blue,
-                                                fontFamily: 'CaveatBrush',
-                                                fontSize: SizeConfig
-                                                        .blockSizeHorizontal *
-                                                    6,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              takeScreenShot();
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    ));
-                          },
-                          icon: Icon(
-                            Icons.share,
-                            color: Colors.yellow[50],
-                            size: SizeConfig.blockSizeHorizontal * 3.5,
-                          ),
-                          label: Text(
-                            "Share",
-                            style: TextStyle(
-                                fontFamily: "Roboto",
-                                color: Colors.yellow[50],
-                                fontSize: SizeConfig.blockSizeVertical * 1.5),
-                          ))
-                      : null),
-              Padding(
-                padding:
-                    EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
-                child: TextButton.icon(
-                  icon: Icon(
-                    Icons.refresh,
-                    size: SizeConfig.blockSizeHorizontal * 4,
-                    color: Colors.yellow[50],
-                  ),
-                  onPressed: () {
-                    result.clear();
-                    gameWon = false;
-                    selectedTiles.clear();
-                    winningPattern = null;
+                                      )
+                                    ],
+                                  ));
+                        },
+                        icon: Icon(
+                          Icons.share,
+                          color: Colors.yellow[50],
+                          size: SizeConfig.blockSizeHorizontal * 3.5,
+                        ),
+                        label: Text(
+                          "Share",
+                          style: TextStyle(
+                              fontFamily: "Roboto",
+                              color: Colors.yellow[50],
+                              fontSize: SizeConfig.blockSizeVertical * 1.5),
+                        ))
+                    : null),
+            Padding(
+              padding:
+                  EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
+              child: TextButton.icon(
+                icon: Icon(
+                  Icons.refresh,
+                  size: SizeConfig.blockSizeHorizontal * 4,
+                  color: Colors.yellow[50],
+                ),
+                onPressed: () {
+                  result.clear();
+                  gameWon = false;
+                  selectedTiles.clear();
+                  winningPattern = null;
 
-                    if ((settingsProvider.gamesWon +
-                                settingsProvider.gamesStarted) %
-                            2 ==
-                        0) {
-                      if (isInterstitialAdReady) interstitialAd.show();
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsPage()),
-                    );
-                  },
-                  label: Text(
-                    "New Game",
-                    style: TextStyle(
-                        fontFamily: "Roboto",
-                        color: Colors.yellow[50],
-                        fontSize: SizeConfig.blockSizeVertical * 1.5),
-                  ),
+                  if ((settingsProvider.gamesWon +
+                              settingsProvider.gamesStarted) %
+                          2 ==
+                      0) {
+                    if (isInterstitialAdReady) interstitialAd.show();
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
+                },
+                label: Text(
+                  "New Game",
+                  style: TextStyle(
+                      fontFamily: "Roboto",
+                      color: Colors.yellow[50],
+                      fontSize: SizeConfig.blockSizeVertical * 1.5),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         body: Container(
           width: SizeConfig.safeBlockHorizontal * 100,
@@ -325,81 +321,67 @@ class _GameBoardState extends State<GameBoard> {
                         height: 10,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: SizeConfig.blockSizeHorizontal * 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Things found here->",
+                        padding: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.blockSizeHorizontal * 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Things found here->",
+                              style: TextStyle(
+                                  fontFamily: 'CaveatBrush',
+                                  fontSize: SizeConfig.blockSizeHorizontal * 5,
+                                  color: Colors.blue),
+                            ),
+                            Text(
+                              boardDisplay,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontFamily: 'CaveatBrush',
+                                  fontSize: SizeConfig.blockSizeHorizontal * 5,
+                                  color: Colors.purple),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.blockSizeHorizontal * 5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Find this pattern ->",
                                 style: TextStyle(
                                     fontFamily: 'CaveatBrush',
                                     fontSize:
                                         SizeConfig.blockSizeHorizontal * 5,
                                     color: Colors.blue),
                               ),
-                              Text(
-                                boardDisplay,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    fontFamily: 'CaveatBrush',
-                                    fontSize:
-                                        SizeConfig.blockSizeHorizontal * 5,
-                                    color: Colors.purple),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: SizeConfig.blockSizeHorizontal * 5),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Find this pattern ->",
-                                      style: TextStyle(
-                                          fontFamily: 'CaveatBrush',
-                                          fontSize:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  5,
-                                          color: Colors.blue),
-                                    ),
-                                  ),
-                                  Text(
-                                    settingsProvider.selectedPattern,
-                                    style: TextStyle(
-                                        fontFamily: 'CaveatBrush',
-                                        fontSize:
-                                            SizeConfig.blockSizeHorizontal * 5,
-                                        color: Colors.purple),
-                                  ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      await showDialog(
-                                          context: context,
-                                          builder: (_) => ImageDialog(
-                                                selectedPattern:
-                                                    selectedPattern,
-                                              ));
-                                    },
-                                    icon: Icon(
-                                      Icons.help,
-                                      color: Colors.purple,
-                                      size: SizeConfig.blockSizeHorizontal * 5,
-                                    ),
-                                  )
-                                ],
+                            ),
+                            Text(
+                              settingsProvider.selectedPattern,
+                              style: TextStyle(
+                                  fontFamily: 'CaveatBrush',
+                                  fontSize: SizeConfig.blockSizeHorizontal * 5,
+                                  color: Colors.purple),
+                            ),
+                            IconButton(
+                              iconSize: SizeConfig.blockSizeVertical * 3,
+                              alignment: Alignment.center,
+                              onPressed: () async {
+                                await showDialog(
+                                    context: context,
+                                    builder: (_) => ImageDialog(
+                                          selectedPattern: selectedPattern,
+                                        ));
+                              },
+                              icon: Icon(
+                                Icons.help,
+                                color: Colors.purple,
                               ),
-                            ],
-                          ),
+                            )
+                          ],
                         ),
                       )
                     ],
