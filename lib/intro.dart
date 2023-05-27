@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
@@ -22,7 +21,7 @@ class _IntroPageState extends State<IntroPage> {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
-      appBar: NewGradientAppBar(
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         title: AutoSizeText(
           "Scavenger Bingo",
@@ -32,7 +31,14 @@ class _IntroPageState extends State<IntroPage> {
               fontSize: SizeConfig.safeBlockHorizontal * 10,
               letterSpacing: 2.0),
         ),
-        gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.purple, Colors.blue],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight),
+          ),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),

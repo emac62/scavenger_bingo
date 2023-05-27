@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
@@ -160,7 +160,7 @@ class _GameBoardState extends State<GameBoard> {
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
-          child: NewGradientAppBar(
+          child: AppBar(
             automaticallyImplyLeading: false,
             title: AutoSizeText(
               "Scavenger Bingo",
@@ -170,7 +170,14 @@ class _GameBoardState extends State<GameBoard> {
                 fontSize: SizeConfig.blockSizeHorizontal * 8,
               ),
             ),
-            gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.purple, Colors.blue],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight),
+              ),
+            ),
             actions: <Widget>[
               Padding(
                   padding:

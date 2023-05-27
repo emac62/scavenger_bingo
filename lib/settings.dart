@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
@@ -170,7 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
       key: _key,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(SizeConfig.blockSizeHorizontal * 12),
-        child: NewGradientAppBar(
+        child: AppBar(
           automaticallyImplyLeading: false,
           title: AutoSizeText(
             "Settings",
@@ -180,7 +180,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 fontSize: SizeConfig.safeBlockHorizontal * 10,
                 letterSpacing: 2.5),
           ),
-          gradient: LinearGradient(colors: [Colors.purple, Colors.blue]),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.blue],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight),
+            ),
+          ),
           actions: [],
         ),
       ),
