@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../data/winning_patterns.dart';
@@ -52,7 +53,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context);
     if (gameWon) getWinPattern(settingsProvider.selectedPattern);
     var fontColor = gameWon && winPattern.contains(widget.index)
@@ -106,35 +107,31 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 ),
                 child: Center(
                     child: (widget.icon == IconData(widget.index))
-                        ? ListTile(
-                            contentPadding:
-                                EdgeInsets.only(left: 0.0, right: 0.0),
-                            dense: true,
-                            title: AutoSizeText(
-                              widget.index == 12
-                                  ? "FREE"
-                                  : widget.name.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              wrapWords: false,
-                              minFontSize: 0,
-                              stepGranularity: 0.1,
-                              style: (widget.index != 12)
-                                  ? TextStyle(
-                                      fontFamily: 'CaveatBrush',
-                                      color: fontColor,
-                                      fontSize: size.width * 0.0375)
-                                  : TextStyle(
-                                      fontFamily: 'CaveatBrush',
-                                      color: Colors.blue[100],
-                                      fontSize: size.width * 0.1),
-                            ))
+                        ? AutoSizeText(
+                            widget.index == 12
+                                ? "FREE"
+                                : widget.name.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            wrapWords: false,
+                            minFontSize: 0,
+                            style: (widget.index != 12)
+                                ? TextStyle(
+                                    fontFamily: 'CaveatBrush',
+                                    color: fontColor,
+                                    fontSize:
+                                        SizeConfig.blockSizeVertical * 1.55)
+                                : TextStyle(
+                                    fontFamily: 'CaveatBrush',
+                                    color: Colors.blue[100],
+                                    fontSize: SizeConfig.blockSizeVertical * 3),
+                          )
                         : (widget.index == 12)
                             ? AutoSizeText(
                                 "FREE",
                                 style: TextStyle(
                                     color: Colors.blue[100],
                                     fontFamily: 'CaveatBrush',
-                                    fontSize: size.width * 0.1),
+                                    fontSize: SizeConfig.blockSizeVertical * 3),
                                 textAlign: TextAlign.center,
                               )
                             : Column(
@@ -144,7 +141,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                   Icon(
                                     widget.icon,
                                     color: Colors.purple,
-                                    size: size.width * 0.05,
+                                    size: SizeConfig.blockSizeVertical * 3.5,
                                   ),
                                   Flexible(
                                     child: AutoSizeText(
@@ -154,7 +151,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                       minFontSize: 0,
                                       style: TextStyle(
                                         fontFamily: 'CaveatBrush',
-                                        fontSize: size.width * 0.03,
+                                        fontSize:
+                                            SizeConfig.blockSizeVertical * 2,
                                         color: fontColor,
                                       ),
                                     ),
