@@ -54,6 +54,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+
     var settingsProvider = Provider.of<SettingsProvider>(context);
     if (gameWon) getWinPattern(settingsProvider.selectedPattern);
     var fontColor = gameWon && winPattern.contains(widget.index)
@@ -112,26 +113,25 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                 ? "FREE"
                                 : widget.name.toUpperCase(),
                             textAlign: TextAlign.center,
-                            wrapWords: false,
-                            minFontSize: 0,
-                            style: (widget.index != 12)
-                                ? TextStyle(
-                                    fontFamily: 'CaveatBrush',
-                                    color: fontColor,
-                                    fontSize:
-                                        SizeConfig.blockSizeVertical * 1.55)
-                                : TextStyle(
-                                    fontFamily: 'CaveatBrush',
-                                    color: Colors.blue[100],
-                                    fontSize: SizeConfig.blockSizeVertical * 3),
-                          )
+                            softWrap: true,
+                            maxLines: 3,
+                            style: TextStyle(
+                                fontFamily: 'CaveatBrush',
+                                color: (widget.index != 12)
+                                    ? fontColor
+                                    : Colors.blue[100],
+                                fontSize: (widget.index == 12)
+                                    ? SizeConfig.blockSizeVertical * 4
+                                    : SizeConfig.screenWidth > 600
+                                        ? SizeConfig.blockSizeVertical * 2.5
+                                        : SizeConfig.blockSizeVertical * 1.75))
                         : (widget.index == 12)
-                            ? AutoSizeText(
+                            ? Text(
                                 "FREE",
                                 style: TextStyle(
                                     color: Colors.blue[100],
                                     fontFamily: 'CaveatBrush',
-                                    fontSize: SizeConfig.blockSizeVertical * 3),
+                                    fontSize: SizeConfig.blockSizeVertical * 4),
                                 textAlign: TextAlign.center,
                               )
                             : Column(

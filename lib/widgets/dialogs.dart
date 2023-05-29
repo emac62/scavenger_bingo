@@ -167,10 +167,8 @@ class _WinningDialogState extends State<WinningDialog> {
                           winningPattern = null;
                           gameWon = false;
                         });
-                        debugPrint("gamesForAd: ${widget.gamesForAd}");
+
                         if (widget.gamesForAd % 3 == 0) {
-                          debugPrint("gamesForAd divisible by 3");
-                          debugPrint("ad ready? : $isInterstitialAdReady");
                           if (isInterstitialAdReady) interstitialAd.show();
                         }
                         Navigator.push(

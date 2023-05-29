@@ -7,7 +7,6 @@ import 'package:scavenger_hunt_bingo/intro.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 
 List<String> testDeviceIDs = [
-  "8E3C44E0453B296DEDFBA106CDBB59CC", // Samsung S5
   "B23BF33B20AC43239D05001A504F0EF3", //iPhone8 13.0
   "77D59CAC6A854490B6A389C9B5531A12", //iPhone13 mini 15.0
   "ea230aa9edfec099faea521e541b8502", //my phone

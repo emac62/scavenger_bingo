@@ -54,8 +54,8 @@ class _IntroPageState extends State<IntroPage> {
                       width: 60,
                     ),
                     applicationName: "Scavenger Hunt Bingo",
-                    applicationVersion: "2.0.1",
-                    applicationLegalese: '©2022 borderlineBoomer',
+                    applicationVersion: "2.0.2",
+                    applicationLegalese: '©2023 borderlineBoomer',
                     children: <Widget>[
                       Padding(
                           padding: EdgeInsets.only(top: 15),

@@ -5,7 +5,12 @@ AudioPlayer player = AudioPlayer();
 void playSound(String fileName) async {
   await player.setSource(AssetSource(fileName));
   await player.play(AssetSource(fileName));
-  if (fileName != "fireworks.mp3") {
+  if (fileName == "woosh.mp3") {
+    Future.delayed(const Duration(milliseconds: 750), () {
+      player.stop();
+    });
+  }
+  if (fileName == "magicalSlice2.mp3") {
     Future.delayed(const Duration(milliseconds: 1250), () {
       player.stop();
     });

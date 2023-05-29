@@ -12,7 +12,6 @@ setRandomList(BuildContext context, String selectedBoard) {
   List<String> selectedList = settings.currentGame as List<String>;
 
   if (selectedTiles.length == 0) {
-    debugPrint("selectedTiles === 0");
     selectedList = [];
     switch (selectedBoard) {
       case "City Walk":
@@ -96,10 +95,9 @@ setRandomList(BuildContext context, String selectedBoard) {
     }
 
     settings.setCurrentGame(selectedList);
-    debugPrint("setCurrentGame: $selectedList");
+
     return selectedList;
   } else {
-    debugPrint("selectedTiles != 0");
     selectedList = settings.currentGame as List<String>;
 
     return selectedList;
