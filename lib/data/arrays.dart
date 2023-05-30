@@ -100,15 +100,15 @@ class Resources {
 
   static final List<String> waitingRoom = [
     "Chair",
-    "SideTable",
+    "Side Table",
     "Open Door",
     "Closed Door",
     "Light switch",
     "Coat rack",
+    "Coat Hanger",
     "Signage",
     "Pamphlet",
     "Poster",
-    "Receptionist",
     "Window",
     "Door stop",
     "Door knob",

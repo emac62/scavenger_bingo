@@ -54,7 +54,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-
+    debugPrint("screenWidth: ${SizeConfig.screenWidth}");
+    debugPrint("blockWidth: ${SizeConfig.safeBlockHorizontal}");
     var settingsProvider = Provider.of<SettingsProvider>(context);
     if (gameWon) getWinPattern(settingsProvider.selectedPattern);
     var fontColor = gameWon && winPattern.contains(widget.index)
@@ -108,7 +109,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 ),
                 child: Center(
                     child: (widget.icon == IconData(widget.index))
-                        ? AutoSizeText(
+                        ? Text(
                             widget.index == 12
                                 ? "FREE"
                                 : widget.name.toUpperCase(),
@@ -121,10 +122,15 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                     ? fontColor
                                     : Colors.blue[100],
                                 fontSize: (widget.index == 12)
-                                    ? SizeConfig.blockSizeVertical * 4
-                                    : SizeConfig.screenWidth > 600
-                                        ? SizeConfig.blockSizeVertical * 2.5
-                                        : SizeConfig.blockSizeVertical * 1.75))
+                                    ? SizeConfig.safeBlockHorizontal * 6.5
+                                    : SizeConfig.screenWidth < 400
+                                        ? SizeConfig.safeBlockHorizontal * 3.3
+                                        : SizeConfig.screenWidth >= 400 &&
+                                                SizeConfig.screenWidth < 500
+                                            ? SizeConfig.safeBlockHorizontal *
+                                                3.7
+                                            : SizeConfig.safeBlockHorizontal *
+                                                4))
                         : (widget.index == 12)
                             ? Text(
                                 "FREE",

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -160,8 +159,12 @@ class _GameBoardState extends State<GameBoard> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: AutoSizeText(
-            "Scavenger Bingo",
+          title: Text(
+            SizeConfig.screenWidth < 600
+                ? canShare
+                    ? "Bingo"
+                    : "Scavenger Bingo"
+                : "Scavenger Bingo",
             style: TextStyle(
               color: Colors.yellow[50],
               fontFamily: 'CaveatBrush',
