@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
@@ -23,7 +22,7 @@ class _IntroPageState extends State<IntroPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: AutoSizeText(
+        title: Text(
           "Scavenger Bingo",
           style: TextStyle(
               color: Colors.yellow[50],

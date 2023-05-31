@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
@@ -125,12 +124,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                     ? SizeConfig.safeBlockHorizontal * 6.5
                                     : SizeConfig.screenWidth < 400
                                         ? SizeConfig.safeBlockHorizontal * 3.3
-                                        : SizeConfig.screenWidth >= 400 &&
-                                                SizeConfig.screenWidth < 500
-                                            ? SizeConfig.safeBlockHorizontal *
-                                                3.7
-                                            : SizeConfig.safeBlockHorizontal *
-                                                4))
+                                        : SizeConfig.safeBlockHorizontal * 3.6))
                         : (widget.index == 12)
                             ? Text(
                                 "FREE",
@@ -150,11 +144,9 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                     size: SizeConfig.blockSizeVertical * 3.5,
                                   ),
                                   Flexible(
-                                    child: AutoSizeText(
+                                    child: Text(
                                       widget.name.toUpperCase(),
                                       textAlign: TextAlign.center,
-                                      wrapWords: false,
-                                      minFontSize: 0,
                                       style: TextStyle(
                                         fontFamily: 'CaveatBrush',
                                         fontSize:

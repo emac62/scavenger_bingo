@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 Widget bingoBanner() {
@@ -13,7 +12,7 @@ Widget bingoBanner() {
             child: Container(
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.purple)),
-                child: AutoSizeText(
+                child: Text(
                   "B",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -26,7 +25,7 @@ Widget bingoBanner() {
             child: Container(
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.purple)),
-                child: AutoSizeText(
+                child: Text(
                   "I",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -39,7 +38,7 @@ Widget bingoBanner() {
             child: Container(
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.purple)),
-                child: AutoSizeText(
+                child: Text(
                   "N",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -52,7 +51,7 @@ Widget bingoBanner() {
             child: Container(
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.purple)),
-                child: AutoSizeText(
+                child: Text(
                   "G",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -65,7 +64,7 @@ Widget bingoBanner() {
             child: Container(
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.purple)),
-                child: AutoSizeText(
+                child: Text(
                   "O",
                   textAlign: TextAlign.center,
                   style: TextStyle(

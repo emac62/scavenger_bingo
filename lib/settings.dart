@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -171,7 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
       key: _key,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: AutoSizeText(
+        title: Text(
           "Settings",
           style: TextStyle(
               color: Colors.yellow[50],
@@ -279,15 +278,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            AutoSizeText(
+                            Text(
                               settingsProvider.selectedBoard,
                               style: TextStyle(
                                 color: Colors.yellow[50],
                                 fontWeight: FontWeight.w600,
                                 fontSize: SizeConfig.safeBlockVertical * 2,
                               ),
-                              minFontSize: 0,
-                              stepGranularity: 0.1,
                               maxLines: 1,
                             ),
                             Icon(
@@ -319,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: AutoSizeText(
+                  child: Text(
                     "How would you like to win?",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -340,7 +337,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: AutoSizeText(
+                  child: Text(
                     "Playing with other adults?",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -353,7 +350,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
-                  child: AutoSizeText(
+                  child: Text(
                     "Choose the same location and the same way to win. Click 'Share' to send an image of your winning card. Only available for cards without images.",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
