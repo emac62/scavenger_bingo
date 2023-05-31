@@ -105,7 +105,8 @@ class Resources {
     "Closed Door",
     "Light switch",
     "Coat rack",
-    "Coat Hanger",
+    "Clock",
+    "Tissues",
     "Signage",
     "Pamphlet",
     "Poster",
@@ -127,7 +128,9 @@ class Resources {
     "Electrical Outlet",
     "Speaker",
     "Ambient Music",
-    "Another person"
+    "Another person",
+    "TV",
+    "Plant"
   ];
 
   static final List<String> virtual = [
