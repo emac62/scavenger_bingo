@@ -14,7 +14,7 @@ List<String> testDeviceIDs = [
   "8f4cb8307ba6019ca82bccc419afe5d0", // my iPad
 ];
 
-bool useTestAds = false;
+bool useTestAds = true;
 bool showBannerAd = true;
 
 void main() async {
@@ -53,7 +53,6 @@ class _ScavengerBingoState extends State<ScavengerBingo> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: "CaveatBrush",
         primarySwatch:
             Colors.purple, //i am set brown colour,you can set your colour here
       ),

@@ -160,11 +160,7 @@ class _GameBoardState extends State<GameBoard> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text(
-            SizeConfig.screenWidth < 600
-                ? canShare
-                    ? "Bingo"
-                    : "Scavenger Bingo"
-                : "Scavenger Bingo",
+            "BINGO",
             style: TextStyle(
               color: Colors.yellow[50],
               fontFamily: 'CaveatBrush',

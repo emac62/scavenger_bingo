@@ -93,8 +93,10 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           labelStyle: TextStyle(
             color: Colors.yellow[50],
-            fontSize: SizeConfig.safeBlockVertical * 2,
-            fontFamily: "Roboto",
+            fontSize: SizeConfig.screenWidth < 400
+                ? SizeConfig.safeBlockVertical * 2.25
+                : SizeConfig.safeBlockVertical * 2.5,
+            fontFamily: "CaveatBrush",
             letterSpacing: -0.5,
           ),
           backgroundColor: Colors.blue,
@@ -367,7 +369,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           vertical: SizeConfig.blockSizeVertical * 3),
                       child: ElevatedButton(
                           onPressed: () {
-                            if (withSound) playSound('magicalSlice2.mp3');
+                            if (withSound) playSound('magicalSlice.mov');
                             setState(() {
                               gamesStarted++;
                               settingsProvider.setGamesStarted(gamesStarted);
@@ -449,7 +451,9 @@ class _CardSelectChipState extends State<CardSelectChip> {
           ),
           labelStyle: TextStyle(
             color: Colors.yellow[50],
-            fontSize: SizeConfig.safeBlockVertical * 3,
+            fontSize: SizeConfig.screenWidth < 400
+                ? SizeConfig.safeBlockVertical * 1.75
+                : SizeConfig.safeBlockVertical * 3,
             // fontWeight: FontWeight.bold,
             letterSpacing: -0.5,
           ),

@@ -53,13 +53,14 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    debugPrint("screenWidth: ${SizeConfig.screenWidth}");
-    debugPrint("blockWidth: ${SizeConfig.safeBlockHorizontal}");
+
     var settingsProvider = Provider.of<SettingsProvider>(context);
     if (gameWon) getWinPattern(settingsProvider.selectedPattern);
     var fontColor = gameWon && winPattern.contains(widget.index)
         ? Colors.blue[50]
-        : Colors.purple;
+        : isSelected
+            ? Colors.blue[100]
+            : Colors.purple;
     return GestureDetector(
         onTap: () {
           if (!disableTiles) {
@@ -69,7 +70,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 removeFromSelectedTiles(widget.index);
               } else {
                 isSelected = !isSelected;
-                if (settingsProvider.withSound) playSound("woosh.mp3");
+                if (settingsProvider.withSound) playSound("woosh.mov");
                 addToSelectedTiles(widget.index);
               }
             });
@@ -99,31 +100,42 @@ class ListTileWidgetState extends State<ListTileWidget> {
             padding: const EdgeInsets.all(4.0),
             child: Container(
                 decoration: BoxDecoration(
-                  image: gameWon && winPattern.contains(widget.index)
-                      ? DecorationImage(
-                          image: AssetImage("assets/images/selectedImage.png"))
-                      : null,
+                  // image: gameWon && winPattern.contains(widget.index)
+                  //     ? DecorationImage(
+                  //         image: AssetImage("assets/images/selectedImage.png"))
+                  //     : null,
                   // shape: BoxShape.circle,
-                  color: isSelected ? Colors.blue : null,
+                  color: gameWon && winPattern.contains(widget.index)
+                      ? Colors.purple
+                      : isSelected
+                          ? Colors.blue
+                          : null,
                 ),
                 child: Center(
                     child: (widget.icon == IconData(widget.index))
                         ? Text(
                             widget.index == 12
                                 ? "FREE"
-                                : widget.name.toUpperCase(),
+                                : widget.name.toLowerCase(),
                             textAlign: TextAlign.center,
                             softWrap: true,
                             maxLines: 3,
                             style: TextStyle(
-                                fontFamily: 'CaveatBrush',
+                                fontWeight:
+                                    gameWon && winPattern.contains(widget.index)
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                fontFamily: (widget.index == 12)
+                                    ? 'CaveatBrush'
+                                    : 'Roboto',
+                                letterSpacing: -0.5,
                                 color: (widget.index != 12)
                                     ? fontColor
                                     : Colors.blue[100],
                                 fontSize: (widget.index == 12)
-                                    ? SizeConfig.safeBlockHorizontal * 6.5
+                                    ? SizeConfig.safeBlockHorizontal * 7
                                     : SizeConfig.screenWidth < 400
-                                        ? SizeConfig.safeBlockHorizontal * 3.3
+                                        ? SizeConfig.safeBlockHorizontal * 3
                                         : SizeConfig.safeBlockHorizontal * 3.6))
                         : (widget.index == 12)
                             ? Text(
@@ -131,7 +143,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                 style: TextStyle(
                                     color: Colors.blue[100],
                                     fontFamily: 'CaveatBrush',
-                                    fontSize: SizeConfig.blockSizeVertical * 4),
+                                    fontSize:
+                                        SizeConfig.blockSizeHorizontal * 7),
                                 textAlign: TextAlign.center,
                               )
                             : Column(
@@ -140,18 +153,20 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                 children: [
                                   Icon(
                                     widget.icon,
-                                    color: Colors.purple,
+                                    color: fontColor,
                                     size: SizeConfig.blockSizeVertical * 3.5,
                                   ),
                                   Flexible(
                                     child: Text(
-                                      widget.name.toUpperCase(),
+                                      widget.name.toLowerCase(),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontFamily: 'CaveatBrush',
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.normal,
                                         fontSize:
-                                            SizeConfig.blockSizeVertical * 2,
+                                            SizeConfig.blockSizeVertical * 1.35,
                                         color: fontColor,
+                                        letterSpacing: -0.25,
                                       ),
                                     ),
                                   )

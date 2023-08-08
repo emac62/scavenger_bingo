@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
@@ -144,7 +145,9 @@ class _IntroPageState extends State<IntroPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (settingsProvider.withSound)
-                        playSound('magicalSlice2.mp3');
+                        playSound('magicalSlice.mov');
+
+                      setRandomList(context, settingsProvider.selectedBoard);
 
                       Navigator.push(
                         context,
