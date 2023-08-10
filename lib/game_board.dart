@@ -274,11 +274,13 @@ class _GameBoardState extends State<GameBoard> {
                   selectedTiles.clear();
                   winningPattern = null;
 
-                  if ((settingsProvider.gamesWon +
-                              settingsProvider.gamesStarted) %
-                          2 ==
-                      0) {
-                    if (isInterstitialAdReady) interstitialAd.show();
+                  if (!settingsProvider.removeAds) {
+                    if ((settingsProvider.gamesWon +
+                                settingsProvider.gamesStarted) %
+                            2 ==
+                        0) {
+                      if (isInterstitialAdReady) interstitialAd.show();
+                    }
                   }
                   Navigator.push(
                     context,
@@ -396,7 +398,11 @@ class _GameBoardState extends State<GameBoard> {
             ]),
           ),
         ),
-        bottomNavigationBar: showBannerAd ? bannerAdContainer : null);
+        bottomNavigationBar: settingsProvider.removeAds
+            ? null
+            : showBannerAd
+                ? bannerAdContainer
+                : null);
   }
 
   void takeScreenShot() async {

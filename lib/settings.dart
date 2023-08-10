@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
@@ -10,6 +12,7 @@ import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 import 'package:scavenger_hunt_bingo/widgets/game_state.dart';
+import 'package:scavenger_hunt_bingo/widgets/paywall.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main.dart';
@@ -26,9 +29,18 @@ class _SettingsPageState extends State<SettingsPage> {
   late String selectedBoard;
   late String selectedPattern;
   late bool withSound;
+  int games = 0;
   // late List<String> selectedList;
 
   BannerAdContainer bannerAdContainer = BannerAdContainer();
+  final RateMyApp rateMyApp = RateMyApp(
+      preferencesPrefix: "rateMyApp_",
+      appStoreIdentifier: 'com.blB.savengerHuntBingo',
+      googlePlayIdentifier: 'com.blB.savenger_hunt_bingo',
+      minDays: 3,
+      minLaunches: 5,
+      remindDays: 7,
+      remindLaunches: 10);
 
   @override
   void initState() {
@@ -40,11 +52,56 @@ class _SettingsPageState extends State<SettingsPage> {
         selectedPattern = selectedPattern;
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await rateMyApp.init();
+      debugPrint("showRate");
+      debugPrint("showRate: $mounted, ${rateMyApp.shouldOpenDialog}, $games");
+      if (mounted && rateMyApp.shouldOpenDialog && games > 5) {
+        rateMyApp.showStarRateDialog(
+          context,
+          title: "Enjoying Bingo?",
+          message: "Please consider leaving a rating.",
+          starRatingOptions: const StarRatingOptions(initialRating: 4),
+          dialogStyle: const DialogStyle(
+              titleAlign: TextAlign.center,
+              messageAlign: TextAlign.center,
+              messagePadding: EdgeInsets.only(bottom: 20)),
+          actionsBuilder: (context, stars) {
+            return [
+              RateMyAppNoButton(rateMyApp, text: "CANCEL"),
+              TextButton(
+                onPressed: () async {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Thanks for your feedback!')),
+                  );
+                  final launchAppStore = stars! >= 4;
+
+                  const event = RateMyAppEventType.rateButtonPressed;
+
+                  await rateMyApp.callEvent(event);
+
+                  if (launchAppStore) {
+                    rateMyApp.launchStore();
+                  }
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              )
+            ];
+          },
+          onDismissed: () =>
+              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+        );
+      }
+    });
   }
 
   loadPrefs() async {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     setState(() {
+      games = (savedPref.getInt('gamesWon') ?? 0) +
+          (savedPref.getInt('gamesStarted') ?? 0);
       withSound = (savedPref.getBool('withSound') ?? true);
       selectedBoard = (savedPref.getString('selectedBoard') ?? "City Walk");
       selectedPattern = (savedPref.getString('selectedPattern') ?? "One Line");
@@ -362,6 +419,52 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical / 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Remove Ads?",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontFamily: 'CaveatBrush',
+                          fontSize: SizeConfig.safeBlockHorizontal * 7,
+                        ),
+                        maxLines: 1,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            fetchOffers(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text("Options"),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.yellow[50],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            backgroundColor: Colors.purple,
+                            side: BorderSide(
+                              color: Colors.blue,
+                              width: 2.0,
+                            ),
+                            elevation: 10,
+                            textStyle: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeConfig.safeBlockHorizontal * 4,
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
                 Container(
                   child: Center(
                     child: Padding(
@@ -411,9 +514,91 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: showBannerAd ? bannerAdContainer : null,
+      bottomNavigationBar: settingsProvider.removeAds
+          ? null
+          : showBannerAd
+              ? bannerAdContainer
+              : null,
     );
   }
+
+  Future fetchOffers(context) async {
+    final offerings = await Purchases.getOfferings();
+
+    if (offerings.current == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No Options Found")));
+    } else {
+      final packages = offerings.current!.availablePackages;
+      if (!mounted) return;
+      showModalBottomSheet(
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+          context: context,
+          builder: (context) => PaywallWidget(
+                packages: packages,
+                title: 'Purchase Options',
+                description: '',
+                onClickedPackage: (package) async {
+                  try {
+                    CustomerInfo customerInfo =
+                        await Purchases.purchasePackage(package);
+
+                    if (customerInfo.entitlements.all['no_ads']!.isActive) {
+                      if (!mounted) return;
+                      removeAds(context);
+                    }
+                  } catch (e) {
+                    debugPrint("Failed to purchase product. $e");
+                  }
+                  if (!mounted) return;
+                  Navigator.pop(context);
+                },
+              ));
+    }
+  }
+
+  void removeAds(BuildContext context) {
+    var settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    settingsProvider.setRemoveAds(true);
+  }
+
+  List<Widget> actionsBuilder(BuildContext context, double? stars) =>
+      stars == null
+          ? [buildCancelButton()]
+          : [buildOkButton(stars), buildCancelButton()];
+
+  Widget buildOkButton(double stars) => TextButton(
+        child: const Text('OK'),
+        onPressed: () async {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Thanks for your feedback!')),
+          );
+
+          final launchAppStore = stars >= 4;
+
+          const event = RateMyAppEventType.rateButtonPressed;
+
+          await rateMyApp.callEvent(event);
+
+          if (launchAppStore) {
+            rateMyApp.launchStore();
+          }
+
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+      );
+
+  Widget buildCancelButton() => RateMyAppNoButton(
+        rateMyApp,
+        text: 'CANCEL',
+      );
 }
 
 // ignore: must_be_immutable

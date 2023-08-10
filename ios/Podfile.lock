@@ -58,6 +58,14 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.2.0)
+  - purchases_flutter (5.6.0):
+    - Flutter
+    - PurchasesHybridCommon (= 5.6.0)
+  - PurchasesHybridCommon (5.6.0):
+    - RevenueCat (= 4.25.2)
+  - rate_my_app (2.0.0):
+    - Flutter
+  - RevenueCat (4.25.2)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -72,6 +80,8 @@ DEPENDENCIES:
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
+  - rate_my_app (from `.symlinks/plugins/rate_my_app/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -84,6 +94,8 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
     - PromisesObjC
+    - PurchasesHybridCommon
+    - RevenueCat
 
 EXTERNAL SOURCES:
   audioplayers_darwin:
@@ -96,6 +108,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_mobile_ads/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  purchases_flutter:
+    :path: ".symlinks/plugins/purchases_flutter/ios"
+  rate_my_app:
+    :path: ".symlinks/plugins/rate_my_app/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
@@ -115,6 +131,10 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
+  purchases_flutter: 3dc327cc188495bdbf5ed695cc6a774160b57b73
+  PurchasesHybridCommon: 45fc4487e06787e4b071510f9230e180f49a0a5f
+  rate_my_app: 80fba94c4885cd31738231b7b1f51c1ad726f5c7
+  RevenueCat: 3997b7af3ded18a59346e76f1365cae5a64f4281
   share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a

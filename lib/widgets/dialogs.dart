@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
@@ -105,7 +107,7 @@ class _WinningDialogState extends State<WinningDialog> {
   @override
   Widget build(BuildContext context) {
     _controllerCenter.play();
-
+    var settings = Provider.of<SettingsProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Dialog(
@@ -168,8 +170,10 @@ class _WinningDialogState extends State<WinningDialog> {
                           gameWon = false;
                         });
 
-                        if (widget.gamesForAd % 3 == 0) {
-                          if (isInterstitialAdReady) interstitialAd.show();
+                        if (!settings.removeAds) {
+                          if (widget.gamesForAd % 3 == 0) {
+                            if (isInterstitialAdReady) interstitialAd.show();
+                          }
                         }
                         Navigator.push(
                           context,

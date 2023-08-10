@@ -8,6 +8,8 @@ class SettingsProvider with ChangeNotifier {
   int _gamesStarted = 0;
   int _gamesWon = 0;
   List<String> _currentGame = [];
+  late bool _removeAds;
+  late bool _reviewed;
 
   SettingsProvider() {
     _withSound = true;
@@ -16,6 +18,8 @@ class SettingsProvider with ChangeNotifier {
     _gamesStarted = 0;
     _gamesWon = 0;
     _currentGame = [];
+    _removeAds = false;
+    _reviewed = false;
     loadPreferences();
   }
 
@@ -25,6 +29,8 @@ class SettingsProvider with ChangeNotifier {
   int get gamesStarted => _gamesStarted;
   int get gamesWon => _gamesWon;
   List get currentGame => _currentGame;
+  bool get removeAds => _removeAds;
+  bool get reviewed => _reviewed;
 
   void setWithSound(bool withSound) {
     _withSound = withSound;
@@ -62,6 +68,18 @@ class SettingsProvider with ChangeNotifier {
     savePreferences();
   }
 
+  void setRemoveAds(bool removeAds) {
+    _removeAds = removeAds;
+    notifyListeners();
+    savePreferences();
+  }
+
+  void setReviewed(bool reviewed) {
+    _reviewed = reviewed;
+    notifyListeners();
+    savePreferences();
+  }
+
   savePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('withSound', _withSound);
@@ -70,6 +88,8 @@ class SettingsProvider with ChangeNotifier {
     prefs.setInt('gamesWon', _gamesWon);
     prefs.setInt('gamesStarted', _gamesStarted);
     prefs.setStringList('currentGame', _currentGame);
+    prefs.setBool('removeAds', _removeAds);
+    prefs.setBool('reviewed', _reviewed);
   }
 
   loadPreferences() async {
@@ -80,6 +100,8 @@ class SettingsProvider with ChangeNotifier {
     int? gamesStarted = prefs.getInt('gamesStarted');
     int? gamesWon = prefs.getInt('gamesWon');
     List<String>? currentGame = prefs.getStringList('currentGame');
+    bool? removeAds = prefs.getBool('removeAds');
+    bool? reviewed = prefs.getBool('reviewed');
 
     if (withSound != null) setWithSound(withSound);
     if (selectedPattern != null) setPattern(selectedPattern);
@@ -87,5 +109,7 @@ class SettingsProvider with ChangeNotifier {
     if (gamesStarted != null) setGamesStarted(gamesStarted);
     if (gamesWon != null) setGamesWon(gamesWon);
     if (currentGame != null) setCurrentGame(currentGame);
+    if (removeAds != null) setRemoveAds(removeAds);
+    if (reviewed != null) setReviewed(reviewed);
   }
 }

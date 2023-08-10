@@ -29,26 +29,26 @@ packages:
     dependency: "direct main"
     description:
       name: audioplayers
-      sha256: "2f4c0da9b483b45695d01dc738e1597d7137ae40fc2fa702f13ccc10efc706a2"
+      sha256: "8e94499b5c123df14cf17c16639de5ff3373e57e537f727e367487fbb7491363"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.1.0"
   audioplayers_android:
     dependency: transitive
     description:
       name: audioplayers_android
-      sha256: "7f18bb6c7de01684444e8cba577e3c3aee0ec379897f62ad4b8259d1e22f8c61"
+      sha256: "1c12b60cc10a3b8617ca3f88b927e7e03768f470d9b4f747efd3d58a8a07ee1b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   audioplayers_darwin:
     dependency: transitive
     description:
       name: audioplayers_darwin
-      sha256: "80e341e6b2b364420516f2707271ec47f63b9b22766aa7f7d484601190c316a7"
+      sha256: "2fb6133ffcf28fb3f9d3e11f8a3ef190e5fedb2b7b95ea865b56a21d1163e670"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.1"
   audioplayers_linux:
     dependency: transitive
     description:
@@ -222,6 +222,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  flutter_rating_bar:
+    dependency: transitive
+    description:
+      name: flutter_rating_bar
+      sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -232,13 +240,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c3fd9336eb55a38cc1bbd79ab17573113a8deccd0ecbbf926cca3c62803b5c2d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   google_mobile_ads:
     dependency: "direct main"
     description:
-      name: google_mobile_ads
-      sha256: "24ee4e9546866cc15ebe565dabf6a6c485ce5fbec0645fde22799800532000f0"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/google_mobile_ads"
+      ref: HEAD
+      resolved-ref: "4272a22ca54ac884bde28cac0ab00048abe57de2"
+      url: "https://github.com/Skyost/googleads-mobile-flutter"
+    source: git
     version: "3.0.0"
   html:
     dependency: transitive
@@ -448,6 +465,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  purchases_flutter:
+    dependency: "direct main"
+    description:
+      name: purchases_flutter
+      sha256: ccdc00fa84cee2ab0aa1a17a34b9b08e4eaac22b37628c0690e63098bbe7d95d
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.6.0"
+  rate_my_app:
+    dependency: "direct main"
+    description:
+      name: rate_my_app
+      sha256: e448dc27f8e821824fe7f67c2dba22f67b18de08054efa746defd1cd1657d882
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   screenshot:
     dependency: "direct main"
     description:

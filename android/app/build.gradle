@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -61,7 +61,7 @@ android {
         }
     }
 
-     android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
+    android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
 
     buildTypes {
         release {
@@ -71,12 +71,26 @@ android {
             
         }
     }
-     bundle {
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
+
+    bundle {
         storeArchive {
             enable = false
         }
     }
-    namespace 'com.example.savenger_hunt_bingo'
+    namespace 'com.blB.savenger_hunt_bingo'
 }
 
 flutter {

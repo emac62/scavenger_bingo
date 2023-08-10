@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/intro.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
+import 'package:scavenger_hunt_bingo/widgets/purchase_api.dart';
 
 List<String> testDeviceIDs = [
   "B23BF33B20AC43239D05001A504F0EF3", //iPhone8 13.0
@@ -34,6 +35,8 @@ void main() async {
 
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  await PurchaseApi.init();
 
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => SettingsProvider())],

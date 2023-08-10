@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
     <application
-        android:label="Scavenger Hunt Bingo"
+        android:label="Bingo Hunt"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
