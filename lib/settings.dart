@@ -422,49 +422,52 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(
                   height: SizeConfig.blockSizeVertical / 10,
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Remove Ads?",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontFamily: 'CaveatBrush',
-                          fontSize: SizeConfig.safeBlockHorizontal * 7,
+                settingsProvider.removeAds
+                    ? SizedBox()
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Remove Ads?",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontFamily: 'CaveatBrush',
+                                fontSize: SizeConfig.safeBlockHorizontal * 7,
+                              ),
+                              maxLines: 1,
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  fetchOffers(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Text("Options"),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.yellow[50],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  backgroundColor: Colors.purple,
+                                  side: BorderSide(
+                                    color: Colors.blue,
+                                    width: 2.0,
+                                  ),
+                                  elevation: 10,
+                                  textStyle: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4,
+                                  ),
+                                ))
+                          ],
                         ),
-                        maxLines: 1,
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            fetchOffers(context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text("Options"),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.yellow[50],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            backgroundColor: Colors.purple,
-                            side: BorderSide(
-                              color: Colors.blue,
-                              width: 2.0,
-                            ),
-                            elevation: 10,
-                            textStyle: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeConfig.safeBlockHorizontal * 4,
-                            ),
-                          ))
-                    ],
-                  ),
-                ),
                 Container(
                   child: Center(
                     child: Padding(

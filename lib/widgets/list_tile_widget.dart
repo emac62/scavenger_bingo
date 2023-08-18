@@ -135,8 +135,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                 fontSize: (widget.index == 12)
                                     ? SizeConfig.safeBlockHorizontal * 7
                                     : SizeConfig.screenWidth < 400
-                                        ? SizeConfig.safeBlockHorizontal * 3
-                                        : SizeConfig.safeBlockHorizontal * 3.6))
+                                        ? SizeConfig.safeBlockHorizontal * 2.8
+                                        : SizeConfig.safeBlockHorizontal * 3))
                         : (widget.index == 12)
                             ? Text(
                                 "FREE",
