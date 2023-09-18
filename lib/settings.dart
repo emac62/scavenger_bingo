@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/game_board.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
+import 'package:scavenger_hunt_bingo/text_cards.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
@@ -30,6 +32,25 @@ class _SettingsPageState extends State<SettingsPage> {
   late String selectedPattern;
   late bool withSound;
   int games = 0;
+
+  List<String> textCards = [];
+  List<String> imageCards = [];
+  Box cardBox = Hive.box<BingoCard>('cards');
+
+  // final cardBox = Hive.box('cards');
+
+  separateCards() {
+    for (var i = 0; i < cardBox.length; i++) {
+      final bingoCard = cardBox.get(i) as BingoCard;
+      if (bingoCard.name.contains("Images")) {
+        imageCards.add(bingoCard.name);
+      } else {
+        if (bingoCard.name != "Create My Own") {
+          textCards.add(bingoCard.name);
+        }
+      }
+    }
+  }
   // late List<String> selectedList;
 
   BannerAdContainer bannerAdContainer = BannerAdContainer();
@@ -52,10 +73,10 @@ class _SettingsPageState extends State<SettingsPage> {
         selectedPattern = selectedPattern;
       });
     });
+    separateCards();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rateMyApp.init();
-      debugPrint("showRate");
-      debugPrint("showRate: $mounted, ${rateMyApp.shouldOpenDialog}, $games");
+
       if (mounted && rateMyApp.shouldOpenDialog && games > 5) {
         rateMyApp.showStarRateDialog(
           context,
@@ -111,26 +132,6 @@ class _SettingsPageState extends State<SettingsPage> {
   int cardIndex = 0;
   int winIndex = 0;
 
-  List<String> cards = [
-    "City Walk",
-    "Trail Walk",
-    "Stay Indoors",
-    "Family Room",
-    "Bedroom",
-    "Waiting Room",
-    "Backyard",
-    "Car Ride",
-    "Virtual Meeting",
-    "City with Images",
-    "Trail with Images",
-    "Indoors with Images",
-    "Grocery Store with Images",
-    "Classroom with Images",
-    "Restaurant with Images",
-    "Halloween",
-    "Christmas",
-  ];
-
   List<String> toWin = [
     "One Line",
     "Letter X",
@@ -173,7 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return chips;
   }
 
-  _showCardDialog() {
+  _showCardDialog(BuildContext context, List<String> cards) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -225,6 +226,7 @@ class _SettingsPageState extends State<SettingsPage> {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     int gamesStarted = settingsProvider.gamesStarted;
+    debugPrint("settings page purCards: ${settingsProvider.purchasedCards}");
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -312,7 +314,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Padding(
                   padding: EdgeInsets.only(left: 8, right: 8),
                   child: Text(
-                    "Where are you playing?",
+                    "Choose your card:",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Colors.blue,
@@ -326,48 +328,111 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: EdgeInsets.symmetric(
                       vertical: SizeConfig.blockSizeVertical * 1,
                       horizontal: SizeConfig.blockSizeHorizontal * 3),
+                  child: Wrap(
+                      spacing: 15,
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ChoiceChip(
+                          label: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Text("Text Only"),
+                          ),
+                          labelStyle: TextStyle(
+                            color: Colors.yellow[50],
+                            fontSize: SizeConfig.screenWidth < 400
+                                ? SizeConfig.safeBlockVertical * 2.25
+                                : SizeConfig.safeBlockVertical * 2.5,
+                            fontFamily: "CaveatBrush",
+                            letterSpacing: -0.5,
+                          ),
+                          backgroundColor: Colors.blue,
+                          selectedColor: Colors.purple,
+                          selected: !settingsProvider.selectedBoard
+                              .contains("Images"),
+                          onSelected: (bool value) {
+                            setState(() {
+                              _showCardDialog(context, textCards);
+                            });
+                          },
+                        ),
+                        ChoiceChip(
+                          label: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Text("Text and Images"),
+                          ),
+                          labelStyle: TextStyle(
+                            color: Colors.yellow[50],
+                            fontSize: SizeConfig.screenWidth < 400
+                                ? SizeConfig.safeBlockVertical * 2.25
+                                : SizeConfig.safeBlockVertical * 2.5,
+                            fontFamily: "CaveatBrush",
+                            letterSpacing: -0.5,
+                          ),
+                          backgroundColor: Colors.blue,
+                          selectedColor: Colors.purple,
+                          selected:
+                              settingsProvider.selectedBoard.contains("Images"),
+                          onSelected: (bool value) {
+                            setState(() {
+                              _showCardDialog(context, imageCards);
+                            });
+                          },
+                        ),
+                      ]),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: SizeConfig.blockSizeHorizontal * 3),
+                  child: Text(
+                    "Card:",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontFamily: 'CaveatBrush',
+                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+                Text(
+                  settingsProvider.selectedBoard,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.purple,
+                    fontWeight: FontWeight.w600,
+                    fontSize: SizeConfig.safeBlockVertical * 2,
+                  ),
+                  // maxLines: 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                   child: ElevatedButton(
                       onPressed: () {
-                        _showCardDialog();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => TextCards()),
+                        );
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: SizeConfig.blockSizeVertical * 1,
-                            horizontal: SizeConfig.blockSizeHorizontal * 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              settingsProvider.selectedBoard,
-                              style: TextStyle(
-                                color: Colors.yellow[50],
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.safeBlockVertical * 2,
-                              ),
-                              maxLines: 1,
-                            ),
-                            Icon(
-                              LineAwesomeIcons.angle_double_down,
-                              color: Colors.yellow[50],
-                              size: SizeConfig.safeBlockHorizontal * 6,
-                            ),
-                          ],
-                        ),
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text("Edit or create my own text only card"),
                       ),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.yellow[50],
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                         backgroundColor: Colors.purple,
                         side: BorderSide(
                           color: Colors.blue,
-                          width: 3.0,
+                          width: 2.0,
                         ),
                         elevation: 10,
                         textStyle: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 4,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                          fontSize: SizeConfig.safeBlockHorizontal * 4,
+                        ),
                       )),
                 ),
                 SizedBox(

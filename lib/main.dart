@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
 import 'package:scavenger_hunt_bingo/intro.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/purchase_api.dart';
@@ -15,7 +17,7 @@ List<String> testDeviceIDs = [
   "8f4cb8307ba6019ca82bccc419afe5d0", // my iPad
 ];
 
-bool useTestAds = false;
+bool useTestAds = true;
 bool showBannerAd = true;
 
 void main() async {
@@ -37,6 +39,10 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   await PurchaseApi.init();
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(BingoCardAdapter());
+  await Hive.openBox<BingoCard>("cards");
 
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => SettingsProvider())],

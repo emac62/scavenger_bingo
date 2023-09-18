@@ -31,7 +31,13 @@ class _BingoGridState extends State<BingoGrid> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Container(
-        color: Colors.yellow[50],
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border(
+              left: BorderSide(color: Colors.purple, width: 0.5),
+              bottom: BorderSide(color: Colors.purple, width: 0.5),
+              right: BorderSide(color: Colors.purple, width: 0.5),
+            )),
         child: GridView.count(
           shrinkWrap: true,
           crossAxisCount: 5,

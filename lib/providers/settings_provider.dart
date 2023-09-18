@@ -5,11 +5,13 @@ class SettingsProvider with ChangeNotifier {
   late bool _withSound;
   late String _selectedBoard;
   late String _selectedPattern;
-  int _gamesStarted = 0;
-  int _gamesWon = 0;
-  List<String> _currentGame = [];
+  late int _gamesStarted;
+  late int _gamesWon;
+  late List<String> _currentGame;
   late bool _removeAds;
   late bool _reviewed;
+  late List<String> _purchasedCards;
+  late bool _hiveActivated;
 
   SettingsProvider() {
     _withSound = true;
@@ -20,6 +22,8 @@ class SettingsProvider with ChangeNotifier {
     _currentGame = [];
     _removeAds = false;
     _reviewed = false;
+    _purchasedCards = [];
+    _hiveActivated = false;
     loadPreferences();
   }
 
@@ -31,6 +35,8 @@ class SettingsProvider with ChangeNotifier {
   List get currentGame => _currentGame;
   bool get removeAds => _removeAds;
   bool get reviewed => _reviewed;
+  List get purchasedCards => _purchasedCards;
+  bool get hiveActivated => _hiveActivated;
 
   void setWithSound(bool withSound) {
     _withSound = withSound;
@@ -80,6 +86,18 @@ class SettingsProvider with ChangeNotifier {
     savePreferences();
   }
 
+  setPurchasedCards(List<String> purchasedCards) {
+    _purchasedCards = purchasedCards;
+    notifyListeners();
+    savePreferences();
+  }
+
+  setHive(bool hiveActivated) {
+    _hiveActivated = hiveActivated;
+    notifyListeners();
+    savePreferences();
+  }
+
   savePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('withSound', _withSound);
@@ -90,6 +108,8 @@ class SettingsProvider with ChangeNotifier {
     prefs.setStringList('currentGame', _currentGame);
     prefs.setBool('removeAds', _removeAds);
     prefs.setBool('reviewed', _reviewed);
+    prefs.setStringList('purchasedCards', _purchasedCards);
+    prefs.setBool('hiveActivated', _hiveActivated);
   }
 
   loadPreferences() async {
@@ -102,6 +122,8 @@ class SettingsProvider with ChangeNotifier {
     List<String>? currentGame = prefs.getStringList('currentGame');
     bool? removeAds = prefs.getBool('removeAds');
     bool? reviewed = prefs.getBool('reviewed');
+    List<String>? purchasedCards = prefs.getStringList('purchasedCards');
+    bool? hiveActivated = prefs.getBool('hiveActivated');
 
     if (withSound != null) setWithSound(withSound);
     if (selectedPattern != null) setPattern(selectedPattern);
@@ -111,5 +133,7 @@ class SettingsProvider with ChangeNotifier {
     if (currentGame != null) setCurrentGame(currentGame);
     if (removeAds != null) setRemoveAds(removeAds);
     if (reviewed != null) setReviewed(reviewed);
+    if (purchasedCards != null) setPurchasedCards(purchasedCards);
+    if (hiveActivated != null) setHive(hiveActivated);
   }
 }

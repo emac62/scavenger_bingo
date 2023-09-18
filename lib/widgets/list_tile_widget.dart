@@ -94,17 +94,12 @@ class ListTileWidgetState extends State<ListTileWidget> {
         },
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.purple),
+            border: Border.all(color: Colors.purple, width: 0.75),
           ),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Container(
                 decoration: BoxDecoration(
-                  // image: gameWon && winPattern.contains(widget.index)
-                  //     ? DecorationImage(
-                  //         image: AssetImage("assets/images/selectedImage.png"))
-                  //     : null,
-                  // shape: BoxShape.circle,
                   color: gameWon && winPattern.contains(widget.index)
                       ? Colors.purple
                       : isSelected

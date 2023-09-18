@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
+
+import 'data/arrays.dart';
+import 'data/bingo_card.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({
@@ -16,6 +21,123 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> {
+  List<String> allCards = [
+    "Create My Own",
+    "Backyard",
+    "Bedroom",
+    "Car Ride",
+    "City Walk",
+    "Family Room",
+    "Trail Walk",
+    "Stay Indoors",
+    "Waiting Room",
+    "Virtual Meeting",
+    "Christmas",
+    "Halloween",
+    "City with Images",
+    "Classroom with Images",
+    "Grocery Store with Images",
+    "Indoors with Images",
+    "Restaurant with Images",
+    "Trail with Images",
+  ];
+  getResourceLists(String name) {
+    List<String> list = [];
+    switch (name) {
+      case "Create My Own":
+        list = Resources.create;
+        break;
+      case "City Walk":
+        list = Resources.city;
+        break;
+      case "Trail Walk":
+        list = Resources.trail;
+        break;
+      case "Stay Indoors":
+        list = Resources.indoors;
+        break;
+      case "Backyard":
+        list = Resources.backyard;
+        break;
+      case "Car Ride":
+        list = Resources.carRide;
+        break;
+      case "Waiting Room":
+        list = Resources.waitingRoom;
+        break;
+      case "Virtual Meeting":
+        list = Resources.virtual;
+        break;
+      case "Family Room":
+        list = Resources.familyRoom;
+        break;
+      case "Bedroom":
+        list = Resources.bedroom;
+        break;
+      case "Halloween":
+        list = Resources.halloween;
+        break;
+      case "Christmas":
+        list = Resources.christmas;
+        break;
+      case "City with Images":
+        list = Resources.cityIcons;
+        break;
+      case "Trail with Images":
+        list = Resources.trailIcons;
+        break;
+      case "Indoors with Images":
+        list = Resources.indoorIcons;
+        break;
+      case "Grocery Store with Images":
+        list = Resources.grocery;
+        break;
+      case "Classroom with Images":
+        list = Resources.classroom;
+        break;
+      case "Restaurant with Images":
+        list = Resources.restaurant;
+        break;
+    }
+    return list;
+  }
+
+  Box cardBox = Hive.box<BingoCard>('cards');
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      initialization();
+    });
+  }
+
+  void initialization() async {
+    FlutterNativeSplash.remove();
+    var settings = Provider.of<SettingsProvider>(context, listen: false);
+    bool setHive = settings.hiveActivated;
+    if (!setHive) {
+      // set up Hive
+      addArraysToHive();
+      settings.setHive(true);
+    }
+  }
+
+  void addArraysToHive() async {
+    final cardBox = await Hive.openBox<BingoCard>("cards");
+    List<String> oldList = [];
+    bool edit = true;
+
+    for (var i = 0; i < allCards.length; i++) {
+      oldList = getResourceLists(allCards[i]);
+      edit = !allCards[i].contains("Images");
+      final newCard = BingoCard(allCards[i], edit, oldList);
+
+      cardBox.add(newCard);
+    }
+    debugPrint("cardsAdded");
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
