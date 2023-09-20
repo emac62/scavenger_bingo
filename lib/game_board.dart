@@ -282,7 +282,7 @@ class _GameBoardState extends State<GameBoard> {
                       if (isInterstitialAdReady) interstitialAd.show();
                     }
                   }
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => SettingsPage()),
                   );

@@ -26,7 +26,6 @@ class _BingoGridState extends State<BingoGrid> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Grid");
     SizeConfig().init(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

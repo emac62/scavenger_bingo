@@ -226,7 +226,7 @@ class _SettingsPageState extends State<SettingsPage> {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     int gamesStarted = settingsProvider.gamesStarted;
-    debugPrint("settings page purCards: ${settingsProvider.purchasedCards}");
+
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -548,7 +548,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               // selectedList = [];
                               disableTiles = false;
                             });
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => GameBoard()),
@@ -599,6 +599,7 @@ class _SettingsPageState extends State<SettingsPage> {
           .showSnackBar(const SnackBar(content: Text("No Options Found")));
     } else {
       final packages = offerings.current!.availablePackages;
+      debugPrint("settings-> fetchOffers: ${packages.length}");
       if (!mounted) return;
       showModalBottomSheet(
           isScrollControlled: true,
@@ -607,8 +608,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   topLeft: Radius.circular(25), topRight: Radius.circular(25))),
           context: context,
           builder: (context) => PaywallWidget(
+                index: 0,
                 packages: packages,
-                title: 'Purchase Options',
+                title: 'Go Ad Free!',
                 description: '',
                 onClickedPackage: (package) async {
                   try {

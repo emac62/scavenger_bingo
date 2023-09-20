@@ -26,14 +26,14 @@ class _IntroPageState extends State<IntroPage> {
     "Backyard",
     "Bedroom",
     "Car Ride",
+    "Christmas",
     "City Walk",
     "Family Room",
-    "Trail Walk",
-    "Stay Indoors",
-    "Waiting Room",
-    "Virtual Meeting",
-    "Christmas",
     "Halloween",
+    "Stay Indoors",
+    "Trail Walk",
+    "Virtual Meeting",
+    "Waiting Room",
     "City with Images",
     "Classroom with Images",
     "Grocery Store with Images",
@@ -271,7 +271,7 @@ class _IntroPageState extends State<IntroPage> {
 
                       setRandomList(context, settingsProvider.selectedBoard);
 
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => SettingsPage()),
                       );

@@ -256,7 +256,6 @@ class _EditListState extends State<EditList> {
                                   style: TextStyle(fontSize: 12)),
                               onPressed: () {
                                 if (checkNewName(_nameController.text)) {
-                                  debugPrint("new name");
                                   List<String> purCards =
                                       settings.purchasedCards as List<String>;
                                   setState(() {
@@ -266,8 +265,7 @@ class _EditListState extends State<EditList> {
                                   });
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
-                                  debugPrint(
-                                      "purCards: ${settings.purchasedCards}");
+
                                   Navigator.pop(context);
                                 } else {
                                   showDuplicateDialog(context, "name");
@@ -391,7 +389,7 @@ class _EditListState extends State<EditList> {
   @override
   void initState() {
     getResourceList(widget.name);
-    debugPrint("index: $boxIndex, cardName: $cardName");
+
     super.initState();
   }
 
@@ -416,7 +414,6 @@ class _EditListState extends State<EditList> {
     } else {
       boxIndex = bingoCard[0].key;
     }
-    debugPrint("cardName: $cardName, boxIndex: $boxIndex");
   }
 
   @override
@@ -541,8 +538,7 @@ class _EditListState extends State<EditList> {
                     if (cardName != "Create My Own") {
                       setState(() {
                         final cardBox = Hive.box<BingoCard>("cards");
-                        debugPrint(
-                            "boxIndex: $boxIndex, cardBox length: ${cardBox.length}");
+
                         boxIndex + 1 <= cardBox.length
                             ? cardBox.putAt(
                                 boxIndex, BingoCard(cardName, true, listToEdit))
@@ -552,7 +548,7 @@ class _EditListState extends State<EditList> {
                         setRandomList(context, cardName);
                       });
 
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => SettingsPage()),
                       );

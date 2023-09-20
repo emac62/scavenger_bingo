@@ -11,3 +11,35 @@ final freeTextCards = [
   "Christmas",
   "Halloween",
 ];
+
+final inAppPurchaseTitle = [
+  "Remove Ads",
+  "Create My Own Card",
+  "Edit Backyard",
+  "Edit Bedroom",
+  "Edit Car Ride",
+  "Edit Christmas",
+  "Edit City Walk",
+  "Edit Family Room",
+  "Edit Halloween",
+  "Edit Stay Indoors",
+  "Edit Trail Walk",
+  "Edit Virtual Meeting",
+  "Edit Waiting Room",
+];
+
+final rcEntitlements = [
+  'no_ads',
+  'create',
+  'backyard',
+  'bedroom',
+  'car',
+  'christmas',
+  'city',
+  'family',
+  'halloween',
+  'indoors',
+  'trail',
+  'virtual',
+  'waiting',
+];

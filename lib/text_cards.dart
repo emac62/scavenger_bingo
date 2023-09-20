@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
+import 'package:scavenger_hunt_bingo/data/free_cards.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
+import 'package:scavenger_hunt_bingo/widgets/paywall.dart';
 
 import 'edit_list.dart';
 import 'main.dart';
@@ -54,13 +57,14 @@ class _TextCardsState extends State<TextCards> {
         textCards.add(bingoCard.name);
       }
     }
+    debugPrint("textCards: $textCards");
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
-    debugPrint("Available Cards page: ${settingsProvider.purchasedCards}");
+
     return Scaffold(
         backgroundColor: Colors.yellow[50],
         appBar: AppBar(
@@ -101,7 +105,7 @@ class _TextCardsState extends State<TextCards> {
                       if (isInterstitialAdReady) interstitialAd.show();
                     }
                   }
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => SettingsPage()),
                   );
@@ -173,7 +177,8 @@ class _TextCardsState extends State<TextCards> {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     EditList(name: textCards[index])))
-                        : showPurchaseOptions(context, textCards[index], index);
+                        : showPurchaseOptions(
+                            context, textCards[index], index + 1);
                   }),
             );
             //         );
@@ -181,153 +186,63 @@ class _TextCardsState extends State<TextCards> {
     );
   }
 
-  showPurchaseOptions(BuildContext context, String name, int index) {
-    showModalBottomSheet(
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-        context: context,
-        builder: (context) {
-          var settingsProv =
-              Provider.of<SettingsProvider>(context, listen: true);
-          return Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue, width: 3),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25)),
-                  color: Colors.yellow[50]),
-              constraints: SizeConfig.screenHeight > 750
-                  ? BoxConstraints(maxHeight: SizeConfig.blockSizeVertical * 50)
-                  : BoxConstraints(
-                      maxHeight: SizeConfig.blockSizeVertical * 75),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.blue, width: 2),
-                    color: Colors.yellow[50]),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Purchase this Card",
-                        style: TextStyle(
-                            fontSize: SizeConfig.blockSizeVertical * 5,
-                            fontFamily: "CaveatBrush",
-                            color: Colors.purple),
-                      ),
-                      const SizedBox(
-                        height: 24,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (name != "Create My Own") {
-                              List<String> purCar =
-                                  settingsProv.purchasedCards as List<String>;
-                              if (!purCar.contains(name)) {
-                                purCar.add(name);
-                                setState(() {
-                                  settingsProv.setPurchasedCards(purCar);
-                                });
-                              }
-                            }
-                            debugPrint("purchased");
-                            debugPrint(
-                                "purCards: ${settingsProv.purchasedCards}");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditList(name: textCards[index])));
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border:
-                                    Border.all(color: Colors.blue, width: 2),
-                                color: Colors.yellow[50]),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        name,
-                                        style: TextStyle(
-                                            color: Colors.purple,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                SizeConfig.blockSizeVertical *
-                                                    2.5),
-                                      ),
-                                      Text(
-                                        !name.contains("Create")
-                                            ? "\$0.99"
-                                            : "\$1.99",
-                                        style: TextStyle(
-                                            color: Colors.purple,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                SizeConfig.blockSizeVertical *
-                                                    2.5),
-                                      )
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      !name.contains("Create")
-                                          ? "Edit the items included in the $name card."
-                                          : "Create a card with at least 25 items.",
-                                      style: TextStyle(
-                                          color: Colors.purple,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              SizeConfig.blockSizeVertical *
-                                                  1.5),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.transparent, width: 1)),
-                        padding: SizeConfig.screenWidth > 500
-                            ? EdgeInsets.symmetric(
-                                horizontal: SizeConfig.blockSizeHorizontal * 15,
-                                vertical: SizeConfig.blockSizeVertical * 5)
-                            : EdgeInsets.symmetric(
-                                horizontal: SizeConfig.blockSizeHorizontal * 10,
-                                vertical: SizeConfig.blockSizeVertical * 5),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Restore Remove Ads Purchase"),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      )
-                    ],
-                  ),
-                ),
-              ));
-        });
+  Future showPurchaseOptions(
+      BuildContext context, String name, int index) async {
+    var settingsProv = Provider.of<SettingsProvider>(context, listen: false);
+    final offerings = await Purchases.getOfferings();
+
+    if (offerings.current == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No Options Found")));
+    } else {
+      final packages = offerings.current!.availablePackages;
+      debugPrint("text_cards-> showPurchaseOptions: ${packages.length}");
+      if (!mounted) return;
+      showModalBottomSheet(
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+          context: context,
+          builder: (context) {
+            return PaywallWidget(
+                title: "Purchase this Card",
+                description: '',
+                packages: packages,
+                onClickedPackage: (package) async {
+                  try {
+                    CustomerInfo customerInfo =
+                        await Purchases.purchasePackage(package);
+
+                    if (customerInfo
+                        .entitlements.all[rcEntitlements[index]]!.isActive) {
+                      if (!mounted) return;
+                      if (name != "Create My Own") {
+                        List<String> purCar =
+                            settingsProv.purchasedCards as List<String>;
+                        if (!purCar.contains(name)) {
+                          purCar.add(name);
+                          setState(() {
+                            settingsProv.setPurchasedCards(purCar);
+                          });
+                        }
+                      }
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  EditList(name: textCards[index])));
+                    }
+                  } catch (e) {
+                    debugPrint("Failed to purchase product. $e");
+                  }
+                  if (!mounted) return;
+                  Navigator.pop(context);
+                },
+                index: index);
+          });
+    }
   }
 }
