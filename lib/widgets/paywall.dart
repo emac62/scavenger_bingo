@@ -55,7 +55,7 @@ class _PaywallWidgetState extends State<PaywallWidget> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  title,
+                  widget.title,
                   style: TextStyle(
                       fontSize: SizeConfig.blockSizeVertical * 5,
                       fontFamily: "CaveatBrush",
@@ -130,6 +130,15 @@ class _PaywallWidgetState extends State<PaywallWidget> {
                         ),
                       ),
                     )),
+                widget.index == 1
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Purchasing this card will create a card named 'My Card' at the bottom of the Available Cards list. It will be unlocked for you to edit.",
+                          style: TextStyle(color: Colors.purple),
+                        ),
+                      )
+                    : Text(""),
                 SizedBox(
                   height: 10,
                 ),

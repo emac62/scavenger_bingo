@@ -121,6 +121,7 @@ class _IntroPageState extends State<IntroPage> {
       addArraysToHive();
       settings.setHive(true);
     }
+    debugPrint("Hive activated: ${settings.hiveActivated}");
   }
 
   void addArraysToHive() async {
@@ -141,7 +142,7 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var settingsProvider = Provider.of<SettingsProvider>(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -266,6 +267,7 @@ class _IntroPageState extends State<IntroPage> {
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
                   child: ElevatedButton(
                     onPressed: () {
+                      debugPrint("Start tapped");
                       if (settingsProvider.withSound)
                         playSound('magicalSlice.mov');
 

@@ -11,6 +11,7 @@ class SettingsProvider with ChangeNotifier {
   late bool _removeAds;
   late bool _reviewed;
   late List<String> _purchasedCards;
+  late List<String> _createdCards;
   late bool _hiveActivated;
 
   SettingsProvider() {
@@ -23,6 +24,7 @@ class SettingsProvider with ChangeNotifier {
     _removeAds = false;
     _reviewed = false;
     _purchasedCards = [];
+    _createdCards = [];
     _hiveActivated = false;
     loadPreferences();
   }
@@ -36,6 +38,7 @@ class SettingsProvider with ChangeNotifier {
   bool get removeAds => _removeAds;
   bool get reviewed => _reviewed;
   List get purchasedCards => _purchasedCards;
+  List get createdCards => _createdCards;
   bool get hiveActivated => _hiveActivated;
 
   void setWithSound(bool withSound) {
@@ -92,6 +95,12 @@ class SettingsProvider with ChangeNotifier {
     savePreferences();
   }
 
+  setCreatedCards(List<String> createdCards) {
+    _createdCards = createdCards;
+    notifyListeners();
+    savePreferences();
+  }
+
   setHive(bool hiveActivated) {
     _hiveActivated = hiveActivated;
     notifyListeners();
@@ -109,6 +118,7 @@ class SettingsProvider with ChangeNotifier {
     prefs.setBool('removeAds', _removeAds);
     prefs.setBool('reviewed', _reviewed);
     prefs.setStringList('purchasedCards', _purchasedCards);
+    prefs.setStringList('createdCards', _createdCards);
     prefs.setBool('hiveActivated', _hiveActivated);
   }
 
@@ -123,6 +133,7 @@ class SettingsProvider with ChangeNotifier {
     bool? removeAds = prefs.getBool('removeAds');
     bool? reviewed = prefs.getBool('reviewed');
     List<String>? purchasedCards = prefs.getStringList('purchasedCards');
+    List<String>? createdCards = prefs.getStringList('createdCards');
     bool? hiveActivated = prefs.getBool('hiveActivated');
 
     if (withSound != null) setWithSound(withSound);
@@ -134,6 +145,7 @@ class SettingsProvider with ChangeNotifier {
     if (removeAds != null) setRemoveAds(removeAds);
     if (reviewed != null) setReviewed(reviewed);
     if (purchasedCards != null) setPurchasedCards(purchasedCards);
+    if (createdCards != null) setCreatedCards(createdCards);
     if (hiveActivated != null) setHive(hiveActivated);
   }
 }

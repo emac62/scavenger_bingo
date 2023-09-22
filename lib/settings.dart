@@ -415,7 +415,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Text("Edit or create my own text only card"),
+                        child: Text("Edit or Create My Own text card"),
                       ),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.yellow[50],
@@ -475,7 +475,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
                   child: Text(
-                    "Choose the same location and the same way to win. Click 'Share' to send an image of your winning card. Only available for cards without images.",
+                    "Choose the same location (without images) and the same way to win. Click 'Share' to send an image of your winning card.",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Colors.purple,

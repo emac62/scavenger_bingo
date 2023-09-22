@@ -16,14 +16,13 @@ setRandomList(BuildContext context, String selectedBoard) {
     selectedList = [];
 
     Box cardBox = Hive.box<BingoCard>('cards');
-    late BingoCard selectedCard;
-    for (var i = 0; i < cardBox.length; i++) {
-      final bingoCard = cardBox.get(i) as BingoCard;
-      if (bingoCard.name == selectedBoard) {
-        selectedCard = bingoCard;
-      }
-    }
-    selectedList = selectedCard.items;
+
+    final selectedCard = cardBox.values
+        .where(
+          (e) => e.name == selectedBoard,
+        )
+        .toList();
+    selectedList = selectedCard[0].items;
 
     selectedList.shuffle();
     selectedList = selectedList.sublist(0, 25);

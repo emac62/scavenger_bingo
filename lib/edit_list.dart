@@ -12,7 +12,7 @@ import 'data/bingo_card.dart';
 
 class EditList extends StatefulWidget {
   const EditList({Key? key, required this.name}) : super(key: key);
-  final String name;
+  final BingoCard name;
 
   @override
   State<EditList> createState() => _EditListState();
@@ -26,6 +26,8 @@ class _EditListState extends State<EditList> {
   late List<String> listToEdit;
   late String cardName;
   late int boxIndex;
+
+  Box cardBox = Hive.box<BingoCard>('cards');
 
   void deleteItem(index) {
     setState(() {
@@ -194,8 +196,7 @@ class _EditListState extends State<EditList> {
         });
   }
 
-  void showNameDialogue(context) {
-    var settings = Provider.of<SettingsProvider>(context, listen: false);
+  void showNameDialogue(BuildContext context, SettingsProvider settings) {
     showDialog(
         context: context,
         builder: (context) {
@@ -256,12 +257,30 @@ class _EditListState extends State<EditList> {
                                   style: TextStyle(fontSize: 12)),
                               onPressed: () {
                                 if (checkNewName(_nameController.text)) {
-                                  List<String> purCards =
+                                  List<String> purchasedCards =
                                       settings.purchasedCards as List<String>;
+                                  List<String> createdCards =
+                                      settings.createdCards as List<String>;
+                                  debugPrint(
+                                      "from sp createdCards: $createdCards");
+                                  String newCardName = _nameController.text;
+                                  createdCards.remove(cardName);
+                                  debugPrint("after remove: $createdCards");
+
+                                  purchasedCards.add(newCardName);
+                                  debugPrint(
+                                      "after purCard.add: ${settings.createdCards}");
+
                                   setState(() {
-                                    cardName = _nameController.text;
-                                    purCards.add(cardName);
-                                    settings.setPurchasedCards(purCards);
+                                    settings.setCreatedCards(createdCards);
+                                    debugPrint(
+                                        "after setCreated: ${settings.createdCards}");
+                                    settings.setPurchasedCards(purchasedCards);
+                                    cardName = newCardName;
+
+                                    cardBox.putAt(boxIndex,
+                                        BingoCard(cardName, true, listToEdit));
+                                    settings.setBoard(cardName);
                                   });
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
@@ -388,8 +407,10 @@ class _EditListState extends State<EditList> {
 
   @override
   void initState() {
-    getResourceList(widget.name);
-
+    final bingoCard = widget.name;
+    cardName = bingoCard.name;
+    listToEdit = bingoCard.items;
+    boxIndex = bingoCard.key;
     super.initState();
   }
 
@@ -409,17 +430,14 @@ class _EditListState extends State<EditList> {
         cardBox.values.where((card) => card.name == name).toList();
     cardName = bingoCard[0].name;
     listToEdit = bingoCard[0].items;
-    if (cardName == "Create My Own") {
-      boxIndex = cardBox.length;
-    } else {
-      boxIndex = bingoCard[0].key;
-    }
+    boxIndex = bingoCard[0].key;
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settings = Provider.of<SettingsProvider>(context, listen: true);
+    debugPrint("cardName: $listToEdit");
     return Scaffold(
         backgroundColor: Colors.yellow[50],
         appBar: AppBar(
@@ -440,9 +458,9 @@ class _EditListState extends State<EditList> {
             ),
           ),
           actions: [
-            cardName != "Create My Own" && !freeTextCards.contains(cardName)
+            !freeTextCards.contains(cardName)
                 ? IconButton(
-                    onPressed: (() => showNameDialogue(context)),
+                    onPressed: (() => showNameDialogue(context, settings)),
                     icon: Icon(Icons.edit))
                 : SizedBox()
           ],
@@ -453,7 +471,7 @@ class _EditListState extends State<EditList> {
             shrinkWrap: true,
             physics: const ScrollPhysics(),
             children: <Widget>[
-              cardName == "Create My Own"
+              cardName.contains("My Card")
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: ElevatedButton(
@@ -468,7 +486,7 @@ class _EditListState extends State<EditList> {
                                 Colors.yellow[50], //Text Color
                           ),
                           onPressed: () {
-                            showNameDialogue(context);
+                            showNameDialogue(context, settings);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -535,26 +553,20 @@ class _EditListState extends State<EditList> {
                           borderRadius: BorderRadius.circular(15),
                           side: BorderSide(color: Colors.blue, width: 3))),
                   onPressed: () {
-                    if (cardName != "Create My Own") {
-                      setState(() {
-                        final cardBox = Hive.box<BingoCard>("cards");
+                    debugPrint("Save and Play called");
+                    setState(() {
+                      final cardBox = Hive.box<BingoCard>("cards");
+                      cardBox.putAt(
+                          boxIndex, BingoCard(cardName, true, listToEdit));
+                      settings.setBoard(cardName);
+                      setRandomList(context, cardName);
+                      debugPrint("cardBox length: ${cardBox.length}");
+                    });
 
-                        boxIndex + 1 <= cardBox.length
-                            ? cardBox.putAt(
-                                boxIndex, BingoCard(cardName, true, listToEdit))
-                            : cardBox
-                                .add(BingoCard(cardName, true, listToEdit));
-                        settings.setBoard(cardName);
-                        setRandomList(context, cardName);
-                      });
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => SettingsPage()),
-                      );
-                    } else {
-                      showChangeNameDialog(context);
-                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
                   },
                   child: Text(
                     "Save and Play",

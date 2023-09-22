@@ -38,34 +38,6 @@ class _GameBoardState extends State<GameBoard> {
 
   getBoardDisplay(selectedBoard) {
     switch (selectedBoard) {
-      case "City Walk":
-        boardDisplay = "City Walk";
-        canShare = true;
-        break;
-      case "Trail Walk":
-        boardDisplay = "Trail Walk";
-        canShare = true;
-        break;
-      case "Stay Indoors":
-        boardDisplay = "Stay Indoors";
-        canShare = true;
-        break;
-      case "Family Room":
-        boardDisplay = "Family Room";
-        canShare = true;
-        break;
-      case "Bedroom":
-        boardDisplay = "Bedroom";
-        canShare = true;
-        break;
-      case "Backyard":
-        boardDisplay = "Backyard";
-        canShare = true;
-        break;
-      case "Car Ride":
-        boardDisplay = "Car Ride";
-        canShare = true;
-        break;
       case "City with Images":
         boardDisplay = "City";
         break;
@@ -84,22 +56,7 @@ class _GameBoardState extends State<GameBoard> {
       case "Restaurant with Images":
         boardDisplay = "Restaurant";
         break;
-      case "Waiting Room":
-        boardDisplay = "Waiting Room";
-        canShare = true;
-        break;
-      case "Virtual Meeting":
-        boardDisplay = "Virtual Meeting";
-        canShare = true;
-        break;
-      case "Halloween":
-        boardDisplay = "Halloween";
-        canShare = true;
-        break;
-      case "Christmas":
-        boardDisplay = "Christmas";
-        canShare = true;
-        break;
+
       default:
         boardDisplay = selectedBoard;
     }

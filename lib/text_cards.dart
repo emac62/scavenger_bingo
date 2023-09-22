@@ -3,6 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:scavenger_hunt_bingo/data/arrays.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
 import 'package:scavenger_hunt_bingo/data/free_cards.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
@@ -44,27 +45,33 @@ class _TextCardsState extends State<TextCards> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     loadInterstitialAd();
-    getTextCards();
   }
 
   final cardBox = Hive.box<BingoCard>('cards');
-  final List<String> textCards = [];
-  getTextCards() {
-    for (var i = 0; i < cardBox.length; i++) {
-      final bingoCard = cardBox.get(i) as BingoCard;
+  // final List<String> textCards = [];
+  // getTextCards() {
+  //   for (var i = 0; i < cardBox.length; i++) {
+  //     final bingoCard = cardBox.get(i) as BingoCard;
 
-      if (!bingoCard.name.contains("Images")) {
-        textCards.add(bingoCard.name);
-      }
-    }
-    debugPrint("textCards: $textCards");
+  //     if (bingoCard.canEdit) {
+  //       textCards.add(bingoCard.name);
+  //     }
+  //   }
+  //   debugPrint("textCards: $textCards");
+  // }
+
+  @override
+  void initState() {
+    // getTextCards();
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
-
+    debugPrint("settings created cards: ${settingsProvider.createdCards}");
     return Scaffold(
         backgroundColor: Colors.yellow[50],
         appBar: AppBar(
@@ -134,8 +141,13 @@ class _TextCardsState extends State<TextCards> {
 
   _buildListView() {
     var settingsProv = Provider.of<SettingsProvider>(context, listen: true);
+
+    List textCards =
+        cardBox.values.where((element) => element.canEdit).toList();
+    debugPrint("textCards length: ${textCards.length}");
     return Scrollbar(
       child: ListView.builder(
+          shrinkWrap: true,
           itemCount: textCards.length,
           itemBuilder: (context, index) {
             return Padding(
@@ -152,38 +164,53 @@ class _TextCardsState extends State<TextCards> {
                       borderRadius: BorderRadius.circular(15),
                       side: BorderSide(color: Colors.blue, width: 2)),
                   title: Text(
-                    textCards[index],
+                    textCards[index].name,
                     style: TextStyle(
                         color: Colors.purple,
                         fontFamily: "CaveatBrush",
                         fontSize: SizeConfig.blockSizeVertical * 2.5),
                   ),
-                  trailing:
-                      settingsProv.purchasedCards.contains(textCards[index])
-                          ? Icon(
-                              Icons.play_arrow,
-                              color: Colors.purple,
-                              size: SizeConfig.blockSizeVertical * 2,
-                            )
-                          : Icon(
-                              Icons.lock,
-                              color: Colors.purple,
-                              size: SizeConfig.blockSizeVertical * 2,
-                            ),
+                  trailing: settingsProv.purchasedCards
+                              .contains(textCards[index].name) ||
+                          settingsProv.createdCards
+                              .contains(textCards[index].name)
+                      ? Icon(
+                          Icons.play_arrow,
+                          color: Colors.purple,
+                          size: SizeConfig.blockSizeVertical * 2,
+                        )
+                      : Icon(
+                          Icons.lock,
+                          color: Colors.purple,
+                          size: SizeConfig.blockSizeVertical * 2,
+                        ),
                   onTap: () {
-                    settingsProv.purchasedCards.contains(textCards[index])
+                    settingsProv.purchasedCards
+                                .contains(textCards[index].name) ||
+                            settingsProv.createdCards
+                                .contains(textCards[index].name)
                         ? Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     EditList(name: textCards[index])))
                         : showPurchaseOptions(
-                            context, textCards[index], index + 1);
+                            context, textCards[index].name, index + 1);
                   }),
             );
             //         );
           }),
     );
+  }
+
+  setMyCardItems(String name) async {
+    debugPrint("setItems called: save My Card to Hive");
+    final cardBox = await Hive.openBox<BingoCard>('cards');
+    List<String> cardItems = Resources.create;
+    bool edit = true;
+    final newCard = BingoCard(name, edit, cardItems);
+    cardBox.add(newCard);
+    debugPrint("cardBox length: ${cardBox.length}");
   }
 
   Future showPurchaseOptions(
@@ -197,7 +224,8 @@ class _TextCardsState extends State<TextCards> {
           .showSnackBar(const SnackBar(content: Text("No Options Found")));
     } else {
       final packages = offerings.current!.availablePackages;
-      debugPrint("text_cards-> showPurchaseOptions: ${packages.length}");
+      debugPrint(
+          "text_cards-> showPurchaseOptions: name: $name, index: $index");
       if (!mounted) return;
       showModalBottomSheet(
           isScrollControlled: true,
@@ -215,25 +243,35 @@ class _TextCardsState extends State<TextCards> {
                     CustomerInfo customerInfo =
                         await Purchases.purchasePackage(package);
 
-                    if (customerInfo
+                    final pkg = package.storeProduct.title
+                        .replaceAll(RegExp('\\(.*?\\)'), '');
+                    debugPrint("pkg: $pkg");
+                    if (pkg.contains("Create")) {
+                      debugPrint("create pkg");
+                      if (!mounted) return;
+                      List<String> createCar =
+                          settingsProv.createdCards as List<String>;
+                      int num = createCar.length + 1;
+                      final cardName = 'My Card $num';
+
+                      setState(() {
+                        createCar.add(cardName);
+                        settingsProv.setCreatedCards(createCar);
+                        setMyCardItems(cardName);
+                      });
+                    } else if (customerInfo
                         .entitlements.all[rcEntitlements[index]]!.isActive) {
                       if (!mounted) return;
-                      if (name != "Create My Own") {
-                        List<String> purCar =
-                            settingsProv.purchasedCards as List<String>;
-                        if (!purCar.contains(name)) {
-                          purCar.add(name);
-                          setState(() {
-                            settingsProv.setPurchasedCards(purCar);
-                          });
-                        }
-                      }
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  EditList(name: textCards[index])));
+                      List<String> purCar =
+                          settingsProv.purchasedCards as List<String>;
+                      if (!purCar.contains(name)) {
+                        purCar.add(name);
+                        setState(() {
+                          settingsProv.setPurchasedCards(purCar);
+                        });
+                        debugPrint("purCar: ${settingsProv.purchasedCards}");
+                      }
                     }
                   } catch (e) {
                     debugPrint("Failed to purchase product. $e");
