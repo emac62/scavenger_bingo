@@ -239,7 +239,7 @@ class _SettingsPageState extends State<SettingsPage> {
               fontSize: SizeConfig.blockSizeVertical * 5,
               letterSpacing: 2.5),
         ),
-        toolbarHeight: SizeConfig.blockSizeVertical * 7,
+        toolbarHeight: SizeConfig.blockSizeVertical * 6.5,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -279,7 +279,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: TextStyle(
                           color: Colors.blue,
                           fontFamily: 'CaveatBrush',
-                          fontSize: SizeConfig.safeBlockHorizontal * 7,
+                          fontSize: SizeConfig.safeBlockHorizontal * 6.5,
                         ),
                         maxLines: 1,
                       ),
@@ -319,7 +319,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(
                       color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                      fontSize: SizeConfig.safeBlockHorizontal * 6.5,
                     ),
                     maxLines: 1,
                   ),
@@ -389,7 +389,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(
                       color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                      fontSize: SizeConfig.safeBlockHorizontal * 6.5,
                     ),
                     maxLines: 1,
                   ),
@@ -446,7 +446,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(
                       color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                      fontSize: SizeConfig.safeBlockHorizontal * 6.5,
                     ),
                     maxLines: 1,
                   ),
@@ -467,7 +467,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(
                       color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                      fontSize: SizeConfig.safeBlockHorizontal * 6.5,
                     ),
                     maxLines: 1,
                   ),
@@ -500,7 +500,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               style: TextStyle(
                                 color: Colors.blue,
                                 fontFamily: 'CaveatBrush',
-                                fontSize: SizeConfig.safeBlockHorizontal * 7,
+                                fontSize: SizeConfig.safeBlockHorizontal * 6.5,
                               ),
                               maxLines: 1,
                             ),
