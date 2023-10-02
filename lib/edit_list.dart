@@ -621,7 +621,7 @@ class _EditListState extends State<EditList> {
                 color: Colors.purple,
                 size: 16,
               )),
-          listToEdit.length > 24
+          listToEdit.length > 25
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: GestureDetector(

@@ -73,70 +73,61 @@ class _TextCardsState extends State<TextCards> {
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     debugPrint("settings created cards: ${settingsProvider.createdCards}");
     return Scaffold(
-        backgroundColor: Colors.yellow[50],
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(
-            "Available Cards",
-            style: TextStyle(
-              color: Colors.yellow[50],
-              fontFamily: 'CaveatBrush',
-              fontSize: SizeConfig.blockSizeVertical * 5,
-            ),
+      backgroundColor: Colors.yellow[50],
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Available Cards",
+          style: TextStyle(
+            color: Colors.yellow[50],
+            fontFamily: 'CaveatBrush',
+            fontSize: SizeConfig.blockSizeVertical * 5,
           ),
-          toolbarHeight: SizeConfig.blockSizeVertical * 7,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.purple, Colors.blue],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight),
-            ),
+        ),
+        toolbarHeight: SizeConfig.blockSizeVertical * 7,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.purple, Colors.blue],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight),
           ),
-          actions: [
-            Padding(
-              padding:
-                  EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
-              child: IconButton(
-                icon: Icon(
-                  Icons.settings,
-                  size: SizeConfig.blockSizeHorizontal * 4,
-                  color: Colors.yellow[50],
-                ),
-                onPressed: () {
-                  if (!settingsProvider.removeAds) {
-                    if ((settingsProvider.gamesWon +
-                                settingsProvider.gamesStarted) %
-                            2 ==
-                        0) {
-                      if (isInterstitialAdReady) interstitialAd.show();
-                    }
-                  }
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
-                  );
-                },
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: SizeConfig.blockSizeHorizontal * 3),
+            child: IconButton(
+              icon: Icon(
+                Icons.settings,
+                size: SizeConfig.blockSizeHorizontal * 4,
+                color: Colors.yellow[50],
               ),
+              onPressed: () {
+                if (!settingsProvider.removeAds) {
+                  if ((settingsProvider.gamesWon +
+                              settingsProvider.gamesStarted) %
+                          2 ==
+                      0) {
+                    if (isInterstitialAdReady) interstitialAd.show();
+                  }
+                }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
             ),
-          ],
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: _buildListView(),
-            )
-          ],
-        ),
-        bottomNavigationBar: settingsProvider.removeAds
-            ? null
-            : showBannerAd
-                ? Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(color: Colors.purple, width: 2))),
-                    child: bannerAdContainer)
-                : null);
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _buildListView(),
+          )
+        ],
+      ),
+    );
   }
 
   _buildListView() {
