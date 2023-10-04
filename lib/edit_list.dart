@@ -550,7 +550,8 @@ class _EditListState extends State<EditList> {
                               child: Text(
                                 "Add another item",
                                 style: TextStyle(
-                                    fontSize: SizeConfig.blockSizeVertical * 2,
+                                    fontSize:
+                                        SizeConfig.blockSizeHorizontal * 3,
                                     color: Colors.yellow[50],
                                     fontWeight: FontWeight.bold),
                               ),
@@ -587,7 +588,7 @@ class _EditListState extends State<EditList> {
                           child: Text(
                             "Save and Play",
                             style: TextStyle(
-                                fontSize: SizeConfig.blockSizeVertical * 2,
+                                fontSize: SizeConfig.blockSizeHorizontal * 3,
                                 color: Colors.yellow[50],
                                 fontWeight: FontWeight.bold),
                           ),
