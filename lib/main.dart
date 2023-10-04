@@ -15,6 +15,7 @@ List<String> testDeviceIDs = [
   "ea230aa9edfec099faea521e541b8502", //my phone
   "4520409bc3ffb536b6e203bf9d0b0007", //old SE
   "8f4cb8307ba6019ca82bccc419afe5d0", // my iPad
+  "B148F45EC4D7035147769503E195ECF9", //Lenovo
 ];
 
 bool useTestAds = false;

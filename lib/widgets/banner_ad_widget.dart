@@ -28,6 +28,7 @@ class _BannerAdContainerState extends State<BannerAdContainer> {
           });
         },
         onAdFailedToLoad: (ad, error) {
+          debugPrint("ad widget error: $error");
           ad.dispose();
         },
       ),

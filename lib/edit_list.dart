@@ -437,7 +437,6 @@ class _EditListState extends State<EditList> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settings = Provider.of<SettingsProvider>(context, listen: true);
-    debugPrint("cardName: $listToEdit");
     return Scaffold(
         backgroundColor: Colors.yellow[50],
         appBar: AppBar(
@@ -528,53 +527,74 @@ class _EditListState extends State<EditList> {
                   itemBuilder: (BuildContext ctx, index) {
                     return itemToEdit(index);
                   }),
-              listToEdit.length < 35
-                  ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              side: BorderSide(color: Colors.blue, width: 3))),
-                      onPressed: () {
-                        showAddDialogue(context);
-                      },
-                      child: Text(
-                        "Add another item",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.yellow[50],
-                            fontWeight: FontWeight.bold),
-                      ))
-                  : const SizedBox(
-                      height: 0,
-                    ),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(color: Colors.blue, width: 3))),
-                  onPressed: () {
-                    debugPrint("Save and Play called");
-                    setState(() {
-                      final cardBox = Hive.box<BingoCard>("cards");
-                      cardBox.putAt(
-                          boxIndex, BingoCard(cardName, true, listToEdit));
-                      settings.setBoard(cardName);
-                      setRandomList(context, cardName);
-                      debugPrint("cardBox length: ${cardBox.length}");
-                    });
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.blockSizeHorizontal * 5,
+                    vertical: SizeConfig.blockSizeVertical * 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    listToEdit.length < 35
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    side: BorderSide(
+                                        color: Colors.blue, width: 3))),
+                            onPressed: () {
+                              showAddDialogue(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(
+                                "Add another item",
+                                style: TextStyle(
+                                    fontSize: SizeConfig.blockSizeVertical * 2,
+                                    color: Colors.yellow[50],
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ))
+                        : const SizedBox(
+                            height: 0,
+                          ),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                side:
+                                    BorderSide(color: Colors.blue, width: 3))),
+                        onPressed: () {
+                          debugPrint("Save and Play called");
+                          setState(() {
+                            final cardBox = Hive.box<BingoCard>("cards");
+                            cardBox.putAt(boxIndex,
+                                BingoCard(cardName, true, listToEdit));
+                            settings.setBoard(cardName);
+                            setRandomList(context, cardName);
+                            debugPrint("cardBox length: ${cardBox.length}");
+                          });
 
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsPage()),
-                    );
-                  },
-                  child: Text(
-                    "Save and Play",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.yellow[50],
-                        fontWeight: FontWeight.bold),
-                  ))
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingsPage()),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            "Save and Play",
+                            style: TextStyle(
+                                fontSize: SizeConfig.blockSizeVertical * 2,
+                                color: Colors.yellow[50],
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ))
+                  ],
+                ),
+              ),
             ],
           ),
         ));

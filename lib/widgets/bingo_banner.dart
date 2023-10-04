@@ -7,12 +7,8 @@ Widget bingoBanner() {
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.blue[100],
-            border: Border(
-              left: BorderSide(color: Colors.purple),
-              top: BorderSide(color: Colors.purple),
-              right: BorderSide(color: Colors.purple),
-            )),
+          color: Colors.blue[100],
+        ),
         child: Row(children: [
           Expanded(
             child: BannerLetter(

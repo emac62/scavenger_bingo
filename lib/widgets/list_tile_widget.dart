@@ -94,7 +94,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
         },
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.purple, width: 0.75),
+            border: Border.all(color: Colors.purple, width: 0.5),
           ),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
