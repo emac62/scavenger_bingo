@@ -14,7 +14,6 @@ import 'edit_list.dart';
 import 'main.dart';
 import 'utils/size_config.dart';
 import 'widgets/ad_helper.dart';
-import 'widgets/banner_ad_widget.dart';
 
 class TextCards extends StatefulWidget {
   const TextCards({Key? key}) : super(key: key);
@@ -26,7 +25,7 @@ class TextCards extends StatefulWidget {
 class _TextCardsState extends State<TextCards> {
   late InterstitialAd interstitialAd;
   bool isInterstitialAdReady = false;
-  BannerAdContainer bannerAdContainer = BannerAdContainer();
+
   void loadInterstitialAd() {
     InterstitialAd.load(
         adUnitId: useTestAds
@@ -47,31 +46,19 @@ class _TextCardsState extends State<TextCards> {
     loadInterstitialAd();
   }
 
-  final cardBox = Hive.box<BingoCard>('cards');
-  // final List<String> textCards = [];
-  // getTextCards() {
-  //   for (var i = 0; i < cardBox.length; i++) {
-  //     final bingoCard = cardBox.get(i) as BingoCard;
-
-  //     if (bingoCard.canEdit) {
-  //       textCards.add(bingoCard.name);
-  //     }
-  //   }
-  //   debugPrint("textCards: $textCards");
-  // }
-
   @override
-  void initState() {
-    // getTextCards();
-
-    super.initState();
+  void dispose() {
+    interstitialAd.dispose();
+    super.dispose();
   }
+
+  final cardBox = Hive.box<BingoCard>('cards');
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
-    debugPrint("settings created cards: ${settingsProvider.createdCards}");
+
     return Scaffold(
       backgroundColor: Colors.yellow[50],
       appBar: AppBar(
