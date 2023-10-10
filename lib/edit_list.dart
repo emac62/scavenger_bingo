@@ -100,6 +100,7 @@ class _EditListState extends State<EditList> {
     } else {
       setState(() {
         listToEdit[index] = item;
+        _controller.clear();
       });
     }
   }
@@ -261,26 +262,22 @@ class _EditListState extends State<EditList> {
                                       settings.purchasedCards as List<String>;
                                   List<String> createdCards =
                                       settings.createdCards as List<String>;
-                                  debugPrint(
-                                      "from sp createdCards: $createdCards");
+
                                   String newCardName = _nameController.text;
                                   createdCards.remove(cardName);
-                                  debugPrint("after remove: $createdCards");
 
                                   purchasedCards.add(newCardName);
-                                  debugPrint(
-                                      "after purCard.add: ${settings.createdCards}");
 
                                   setState(() {
                                     settings.setCreatedCards(createdCards);
-                                    debugPrint(
-                                        "after setCreated: ${settings.createdCards}");
+
                                     settings.setPurchasedCards(purchasedCards);
                                     cardName = newCardName;
 
                                     cardBox.putAt(boxIndex,
                                         BingoCard(cardName, true, listToEdit));
                                     settings.setBoard(cardName);
+                                    _nameController.clear();
                                   });
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
@@ -374,7 +371,9 @@ class _EditListState extends State<EditList> {
                                 if (!listToEdit.contains(_addController.text)) {
                                   setState(() {
                                     listToEdit.add(_addController.text);
+                                    _addController.clear();
                                   });
+
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
                                   Navigator.pop(context);

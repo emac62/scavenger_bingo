@@ -27,6 +27,7 @@ findOneLineWinner(
         .where((element) => !selectedTiles.contains(element))
         .toList();
     if (result.isEmpty) {
+      stopSound();
       winningPattern = i;
 
       disableTiles = true;
@@ -65,6 +66,7 @@ findCrossWinner(
       .where((element) => !selectedTiles.contains(element))
       .toList();
   if (result.isEmpty) {
+    stopSound();
     result.clear();
     gameWon = true;
     gamesWon++;
@@ -95,6 +97,7 @@ findFullCardWinner(
       .where((element) => !selectedTiles.contains(element))
       .toList();
   if (result.isEmpty) {
+    stopSound();
     result.clear();
     gameWon = true;
     gamesWon++;
