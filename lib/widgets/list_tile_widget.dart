@@ -32,6 +32,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
   bool isSelected = false;
   List winPattern = [];
 
+  var gameSounds = GameSounds();
+
   addToSelectedTiles(int) {
     selectedTiles.add(int);
   }
@@ -51,6 +53,12 @@ class ListTileWidgetState extends State<ListTileWidget> {
   }
 
   @override
+  void dispose() {
+    gameSounds.disposeGameSound();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
@@ -63,6 +71,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
             : Colors.purple;
     return GestureDetector(
         onTap: () {
+          if (settingsProvider.withSound) gameSounds.stopGameSound();
           if (!disableTiles) {
             setState(() {
               if (isSelected) {
@@ -70,7 +79,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 removeFromSelectedTiles(widget.index);
               } else {
                 isSelected = !isSelected;
-                if (settingsProvider.withSound) playSound("woosh.mov");
+                if (settingsProvider.withSound) gameSounds.playWoosh();
                 addToSelectedTiles(widget.index);
               }
             });

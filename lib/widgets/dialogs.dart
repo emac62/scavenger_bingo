@@ -35,12 +35,14 @@ class WinningDialog extends StatefulWidget {
 }
 
 class _WinningDialogState extends State<WinningDialog> {
-  late InterstitialAd interstitialAd;
+  InterstitialAd? interstitialAd;
   bool isInterstitialAdReady = false;
 
   late ConfettiController _controllerCenter;
 
   late Image bgBingo;
+
+  var gameSounds = GameSounds();
 
   void loadInterstitialAd() {
     InterstitialAd.load(
@@ -63,6 +65,7 @@ class _WinningDialogState extends State<WinningDialog> {
         ConfettiController(duration: const Duration(seconds: 5));
 
     bgBingo = Image.asset('assets/images/winningImg.png');
+    gameSounds.playFireworks();
   }
 
   @override
@@ -101,7 +104,8 @@ class _WinningDialogState extends State<WinningDialog> {
   void dispose() {
     super.dispose();
     _controllerCenter.dispose();
-    interstitialAd.dispose();
+    interstitialAd?.dispose();
+    gameSounds.disposeGameSound();
   }
 
   @override
@@ -110,118 +114,135 @@ class _WinningDialogState extends State<WinningDialog> {
     var settings = Provider.of<SettingsProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () => Future.value(false),
-      child: Dialog(
-        child: Container(
-          width: SizeConfig.screenWidth < 600
-              ? SizeConfig.blockSizeHorizontal * 100
-              : SizeConfig.blockSizeHorizontal * 80,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                Colors.purple,
-                Colors.blue,
-              ])),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Image.asset(
-              'assets/images/winningImg.png',
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: ConfettiWidget(
-                confettiController: _controllerCenter,
-                blastDirectionality: BlastDirectionality
-                    .explosive, // don't specify a direction, blast randomly
-                shouldLoop:
-                    true, // start again as soon as the animation is finished
-                colors: const [
-                  Colors.blue,
-                  Colors.yellow,
-                  Color.fromRGBO(255, 253, 231, 1),
-                ], // manually specify the colors to be used
-                createParticlePath: drawStar,
+      child: Container(
+        color: Colors.transparent,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: ConfettiWidget(
+                  confettiController: _controllerCenter,
+                  blastDirectionality: BlastDirectionality
+                      .explosive, // don't specify a direction, blast randomly
+                  shouldLoop:
+                      false, // start again as soon as the animation is finished
+                  colors: const [
+                    Colors.blue,
+                    Colors.yellow,
+                    Color.fromRGBO(255, 253, 231, 1),
+                  ], // manually specify the colors to be used
+                  createParticlePath: drawStar,
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: SizeConfig.blockSizeVertical * 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  DialogButton(
-                    onPressed: () {
-                      stopSound();
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.purple,
-                      size: SizeConfig.blockSizeHorizontal * 3.5,
-                    ),
-                    title: 'Close',
-                  ),
-                  DialogButton(
-                      onPressed: () {
-                        stopSound();
-                        setState(() {
-                          selectedTiles.clear();
-                          winningPattern = null;
-                          gameWon = false;
-                        });
+              Dialog(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                          Colors.purple,
+                          Colors.blue,
+                        ])),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/images/winningImg.png',
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: SizeConfig.blockSizeVertical * 3),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                DialogButton(
+                                  onPressed: () {
+                                    gameSounds.stopGameSound();
+                                    Navigator.of(context).pop();
+                                  },
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: Colors.purple,
+                                    size: SizeConfig.blockSizeHorizontal * 3.5,
+                                  ),
+                                  title: 'Close',
+                                ),
+                                DialogButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        gameSounds.stopGameSound();
+                                        selectedTiles.clear();
+                                        winningPattern = null;
+                                        gameWon = false;
+                                      });
 
-                        if (!settings.removeAds) {
-                          if (widget.gamesForAd % 3 == 0) {
-                            if (isInterstitialAdReady) interstitialAd.show();
-                          }
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SettingsPage()),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.refresh,
-                        color: Colors.purple,
-                        size: SizeConfig.blockSizeHorizontal * 3.5,
-                      ),
-                      title: "New Game")
-                ],
-              ),
-            ),
-            Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.blockSizeVertical * 3),
-                child: DialogButton(
-                  onPressed: () async {
-                    stopSound();
-                    final Size size = MediaQuery.of(context).size;
-                    final uint8List =
-                        await widget.screenshotController.capture();
-                    String tempPath = (await getTemporaryDirectory()).path;
-                    File file = File('$tempPath/Bingo.png');
-                    await file.writeAsBytes(uint8List!);
-                    await Share.shareXFiles(
-                      [XFile(file.path)],
-                      subject: "Shared from Scavenger Hunt Bingo!",
-                      sharePositionOrigin:
-                          Rect.fromLTWH(0, 0, size.width, size.height / 2),
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.share,
-                    color: Colors.purple,
-                    size: SizeConfig.blockSizeHorizontal * 3.5,
+                                      if (!settings.removeAds) {
+                                        if (widget.gamesForAd % 3 == 0) {
+                                          if (isInterstitialAdReady)
+                                            interstitialAd?.show();
+                                        }
+                                      }
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SettingsPage()),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.refresh,
+                                      color: Colors.purple,
+                                      size:
+                                          SizeConfig.blockSizeHorizontal * 3.5,
+                                    ),
+                                    title: "New Game")
+                              ],
+                            ),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: SizeConfig.blockSizeVertical * 3),
+                              child: DialogButton(
+                                onPressed: () async {
+                                  gameSounds.stopGameSound();
+                                  final Size size = MediaQuery.of(context).size;
+                                  final uint8List = await widget
+                                      .screenshotController
+                                      .capture();
+                                  String tempPath =
+                                      (await getTemporaryDirectory()).path;
+                                  File file = File('$tempPath/Bingo.png');
+                                  await file.writeAsBytes(uint8List!);
+                                  await Share.shareXFiles(
+                                    [XFile(file.path)],
+                                    subject:
+                                        "Shared from Scavenger Hunt Bingo!",
+                                    sharePositionOrigin: Rect.fromLTWH(
+                                        0, 0, size.width, size.height / 2),
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(
+                                  Icons.share,
+                                  color: Colors.purple,
+                                  size: SizeConfig.blockSizeHorizontal * 3.5,
+                                ),
+                                title: "Share",
+                              )),
+                          const SizedBox(
+                            height: 25,
+                          )
+                        ]),
                   ),
-                  title: "Share",
-                )),
-            const SizedBox(
-              height: 25,
-            )
-          ]),
-        ),
+                ),
+              ),
+            ]),
       ),
     );
   }

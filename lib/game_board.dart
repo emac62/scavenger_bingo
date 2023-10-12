@@ -7,6 +7,7 @@ import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
+import 'package:scavenger_hunt_bingo/widgets/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_grid.dart';
@@ -26,7 +27,7 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  late InterstitialAd interstitialAd;
+  InterstitialAd? interstitialAd;
   bool isInterstitialAdReady = false;
   BannerAdContainer bannerAdContainer = BannerAdContainer();
   String boardDisplay = "";
@@ -97,11 +98,13 @@ class _GameBoardState extends State<GameBoard> {
     loadInterstitialAd();
   }
 
+  var gameSounds = GameSounds();
+
   @override
   void dispose() {
     super.dispose();
-
-    interstitialAd.dispose();
+    gameSounds.disposeGameSound();
+    interstitialAd?.dispose();
   }
 
   final screenshotController = ScreenshotController();
@@ -236,7 +239,7 @@ class _GameBoardState extends State<GameBoard> {
                                 settingsProvider.gamesStarted) %
                             2 ==
                         0) {
-                      if (isInterstitialAdReady) interstitialAd.show();
+                      if (isInterstitialAdReady) interstitialAd?.show();
                     }
                   }
                   Navigator.pushReplacement(

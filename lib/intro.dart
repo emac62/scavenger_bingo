@@ -104,12 +104,20 @@ class _IntroPageState extends State<IntroPage> {
 
   Box cardBox = Hive.box<BingoCard>('cards');
 
+  var gameSounds = GameSounds();
+
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       initialization();
     });
+  }
+
+  @override
+  void dispose() {
+    // gameSounds.disposeGameSound();
+    super.dispose();
   }
 
   void initialization() async {
@@ -269,7 +277,7 @@ class _IntroPageState extends State<IntroPage> {
                     onPressed: () {
                       debugPrint("Start tapped");
                       if (settingsProvider.withSound)
-                        playSound('magicalSlice.mov');
+                        gameSounds.playMagicalSlice();
 
                       setRandomList(context, settingsProvider.selectedBoard);
 

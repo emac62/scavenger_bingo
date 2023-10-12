@@ -23,7 +23,7 @@ class TextCards extends StatefulWidget {
 }
 
 class _TextCardsState extends State<TextCards> {
-  late InterstitialAd interstitialAd;
+  InterstitialAd? interstitialAd;
   bool isInterstitialAdReady = false;
 
   void loadInterstitialAd() {
@@ -48,7 +48,7 @@ class _TextCardsState extends State<TextCards> {
 
   @override
   void dispose() {
-    interstitialAd.dispose();
+    interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -95,7 +95,7 @@ class _TextCardsState extends State<TextCards> {
                               settingsProvider.gamesStarted) %
                           2 ==
                       0) {
-                    if (isInterstitialAdReady) interstitialAd.show();
+                    if (isInterstitialAdReady) interstitialAd?.show();
                   }
                 }
                 Navigator.pushReplacement(

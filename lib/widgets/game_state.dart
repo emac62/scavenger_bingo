@@ -4,7 +4,6 @@ import 'package:screenshot/screenshot.dart';
 
 import '../data/winning_patterns.dart';
 import '../providers/settings_provider.dart';
-import 'audio.dart';
 import 'dialogs.dart';
 
 // List selectedList = [];
@@ -27,7 +26,6 @@ findOneLineWinner(
         .where((element) => !selectedTiles.contains(element))
         .toList();
     if (result.isEmpty) {
-      stopSound();
       winningPattern = i;
 
       disableTiles = true;
@@ -37,7 +35,6 @@ findOneLineWinner(
       gameWon = true;
       int gamesForAd = gamesWon + settings.gamesStarted;
 
-      if (withSound) playSound('fireworks.mp3');
       Future.delayed(const Duration(milliseconds: 1500), () {
         showDialog(
             barrierDismissible: false,
@@ -66,14 +63,13 @@ findCrossWinner(
       .where((element) => !selectedTiles.contains(element))
       .toList();
   if (result.isEmpty) {
-    stopSound();
     result.clear();
     gameWon = true;
     gamesWon++;
     settings.setGamesWon(gamesWon);
     disableTiles = true;
     int gamesForAd = gamesWon + settings.gamesStarted;
-    if (withSound) playSound('fireworks.mp3');
+
     Future.delayed(const Duration(milliseconds: 2500), () {
       showDialog(
           barrierDismissible: false,
@@ -97,14 +93,13 @@ findFullCardWinner(
       .where((element) => !selectedTiles.contains(element))
       .toList();
   if (result.isEmpty) {
-    stopSound();
     result.clear();
     gameWon = true;
     gamesWon++;
     settings.setGamesWon(gamesWon);
     disableTiles = true;
     int gamesForAd = gamesWon + settings.gamesStarted;
-    if (withSound) playSound('fireworks.mp3');
+
     Future.delayed(Duration(milliseconds: 2500), () {
       showDialog(
           barrierDismissible: false,
