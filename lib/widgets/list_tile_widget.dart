@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
+import 'package:scavenger_hunt_bingo/widgets/winning_dialog.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../data/winning_patterns.dart';
+import '../providers/controller.dart';
 import '../providers/settings_provider.dart';
 import 'audio.dart';
-
-import 'game_state.dart';
 
 class ListTileWidget extends StatefulWidget {
   final String name;
@@ -30,27 +29,9 @@ class ListTileWidget extends StatefulWidget {
 
 class ListTileWidgetState extends State<ListTileWidget> {
   bool isSelected = false;
-  List winPattern = [];
+  // List winPattern = [];
 
   var gameSounds = GameSounds();
-
-  addToSelectedTiles(int) {
-    selectedTiles.add(int);
-  }
-
-  removeFromSelectedTiles(int) {
-    selectedTiles.removeWhere((element) => element == int);
-  }
-
-  getWinPattern(pattern) {
-    if (pattern == "One Line" && winningPattern != null) {
-      winPattern = Patterns.oneLine[winningPattern];
-    } else if (pattern == "Letter X") {
-      winPattern = Patterns.cross;
-    } else if (pattern == "Full Card") {
-      winPattern = Patterns.full;
-    }
-  }
 
   @override
   void dispose() {
@@ -61,10 +42,9 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-
+    var cont = Provider.of<Controller>(context);
     var settingsProvider = Provider.of<SettingsProvider>(context);
-    if (gameWon) getWinPattern(settingsProvider.selectedPattern);
-    var fontColor = gameWon && winPattern.contains(widget.index)
+    var fontColor = cont.gameWon && cont.winPattern.contains(widget.index)
         ? Colors.blue[50]
         : isSelected
             ? Colors.blue[100]
@@ -72,32 +52,29 @@ class ListTileWidgetState extends State<ListTileWidget> {
     return GestureDetector(
         onTap: () {
           if (settingsProvider.withSound) gameSounds.stopGameSound();
-          if (!disableTiles) {
+          if (!cont.disableTiles) {
             setState(() {
               if (isSelected) {
                 isSelected = !isSelected;
-                removeFromSelectedTiles(widget.index);
+                cont.removeFromSelectedTiles(widget.index);
               } else {
                 isSelected = !isSelected;
                 if (settingsProvider.withSound) gameSounds.playWoosh();
-                addToSelectedTiles(widget.index);
+                cont.addToSelectedTiles(widget.index);
               }
             });
-
-            if (settingsProvider.selectedPattern == "One Line" &&
-                selectedTiles.length > 4) {
-              findOneLineWinner(context, settingsProvider.withSound,
-                  widget.screenshotController);
-            }
-            if (settingsProvider.selectedPattern == "Letter X" &&
-                selectedTiles.length > 8) {
-              findCrossWinner(context, settingsProvider.withSound,
-                  widget.screenshotController);
-            }
-            if (settingsProvider.selectedPattern == "Full Card" &&
-                selectedTiles.length == 25) {
-              findFullCardWinner(context, settingsProvider.withSound,
-                  widget.screenshotController);
+            cont.checkForWinner();
+            if (cont.gameWon) {
+              settingsProvider.setGamesWon(settingsProvider.gamesWon + 1);
+              int gamesForAd =
+                  settingsProvider.gamesWon + settingsProvider.gamesStarted;
+              Future.delayed(Duration(milliseconds: 2000), () {
+                Navigator.of(context).push(PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (_, __, ___) => WinningDialog(
+                        screenshotController: widget.screenshotController,
+                        gamesForAd: gamesForAd)));
+              });
             }
           }
         },
@@ -109,7 +86,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
             padding: const EdgeInsets.all(4.0),
             child: Container(
                 decoration: BoxDecoration(
-                  color: gameWon && winPattern.contains(widget.index)
+                  color: cont.gameWon && cont.winPattern.contains(widget.index)
                       ? Colors.purple
                       : isSelected
                           ? Colors.blue
@@ -125,10 +102,10 @@ class ListTileWidgetState extends State<ListTileWidget> {
                             softWrap: true,
                             maxLines: 3,
                             style: TextStyle(
-                                fontWeight:
-                                    gameWon && winPattern.contains(widget.index)
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
+                                fontWeight: cont.gameWon &&
+                                        cont.winPattern.contains(widget.index)
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                                 fontFamily: (widget.index == 12)
                                     ? 'CaveatBrush'
                                     : 'Roboto',

@@ -66,7 +66,8 @@ class _BannerAdContainerState extends State<BannerAdContainer> {
                     width: _bottomBannerAd.size.width.toDouble(),
                     child: AdWidget(ad: _bottomBannerAd),
                   )
-                : const SizedBox(
+                : Container(
+                    color: Colors.yellow[50],
                     height: 60,
                   ),
           ),

@@ -17,7 +17,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'widgets/game_state.dart';
+import 'providers/controller.dart';
 
 const int maxFailedLoadAttempts = 3;
 
@@ -115,6 +115,7 @@ class _GameBoardState extends State<GameBoard> {
 
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     var selectedBoard = settingsProvider.selectedBoard;
+    var cont = Provider.of<Controller>(context, listen: true);
     getBoardDisplay(selectedBoard);
     return Scaffold(
         appBar: AppBar(
@@ -229,10 +230,10 @@ class _GameBoardState extends State<GameBoard> {
                   color: Colors.yellow[50],
                 ),
                 onPressed: () {
-                  result.clear();
-                  gameWon = false;
-                  selectedTiles.clear();
-                  winningPattern = null;
+                  cont.clearResult();
+                  cont.resetGameWon();
+                  cont.clearSelectedTiles();
+                  cont.resetWinPattern();
 
                   if (!settingsProvider.removeAds) {
                     if ((settingsProvider.gamesWon +
