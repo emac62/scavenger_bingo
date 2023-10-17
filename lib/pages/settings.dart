@@ -7,18 +7,18 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
-import 'package:scavenger_hunt_bingo/game_board.dart';
+import 'package:scavenger_hunt_bingo/pages/game_board.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
-import 'package:scavenger_hunt_bingo/text_cards.dart';
-import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/pages/text_cards.dart';
+import 'package:scavenger_hunt_bingo/utils/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 
 import 'package:scavenger_hunt_bingo/widgets/paywall.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
-import 'providers/controller.dart';
+import '/main.dart';
+import '../providers/controller.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends StatefulWidget {
@@ -27,11 +27,11 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   var settingsProvider = SettingsProvider();
   late String selectedBoard;
   late String selectedPattern;
   late bool withSound;
+
   int games = 0;
 
   List<String> textCards = [];
@@ -153,8 +153,9 @@ class _SettingsPageState extends State<SettingsPage> {
   ];
 
   List<Widget> winChips() {
-    var settingsProvider = Provider.of<SettingsProvider>(context);
-    var cont = Provider.of<Controller>(context);
+    var settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    var cont = Provider.of<Controller>(context, listen: false);
     List<Widget> chips = [];
     for (int i = 0; i < toWin.length; i++) {
       Widget item = Padding(
@@ -194,7 +195,8 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          var settingsProvider = Provider.of<SettingsProvider>(context);
+          var settingsProvider =
+              Provider.of<SettingsProvider>(context, listen: false);
 
           //Here we will build the content of the dialog
           return AlertDialog(
@@ -248,7 +250,7 @@ class _SettingsPageState extends State<SettingsPage> {
     int gamesStarted = settingsProvider.gamesStarted;
     getFontSize();
     return Scaffold(
-      key: _key,
+      backgroundColor: Colors.yellow[50],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
@@ -278,7 +280,9 @@ class _SettingsPageState extends State<SettingsPage> {
               color: Colors.yellow[50],
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.purple,
+                  color: settingsProvider.removeAds
+                      ? Colors.transparent
+                      : Colors.purple,
                   width: 3,
                 ),
               )),

@@ -7,13 +7,13 @@ import 'package:scavenger_hunt_bingo/data/arrays.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
 import 'package:scavenger_hunt_bingo/data/free_cards.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
-import 'package:scavenger_hunt_bingo/settings.dart';
+import 'package:scavenger_hunt_bingo/pages/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/paywall.dart';
 
-import 'edit_list.dart';
-import 'main.dart';
-import 'utils/size_config.dart';
-import 'widgets/ad_helper.dart';
+import '../pages/edit_list.dart';
+import '../main.dart';
+import '../utils/size_config.dart';
+import '../utils/ad_helper.dart';
 
 class TextCards extends StatefulWidget {
   const TextCards({Key? key}) : super(key: key);
@@ -122,7 +122,7 @@ class _TextCardsState extends State<TextCards> {
 
     List textCards =
         cardBox.values.where((element) => element.canEdit).toList();
-    debugPrint("textCards length: ${textCards.length}");
+
     return Scrollbar(
       child: ListView.builder(
           shrinkWrap: true,

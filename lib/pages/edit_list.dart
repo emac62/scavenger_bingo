@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/free_cards.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
-import 'package:scavenger_hunt_bingo/settings.dart';
+import 'package:scavenger_hunt_bingo/pages/settings.dart';
 import 'package:scavenger_hunt_bingo/utils/double_check.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 
-import 'data/bingo_card.dart';
+import '../data/bingo_card.dart';
 
 class EditList extends StatefulWidget {
   const EditList({Key? key, required this.name}) : super(key: key);
@@ -182,6 +183,7 @@ class _EditListState extends State<EditList> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold)),
                               onPressed: () {
+                                _controller.clear();
                                 Navigator.pop(context);
                               },
                             ),
@@ -295,6 +297,7 @@ class _EditListState extends State<EditList> {
                               child: const Text('Cancel',
                                   style: TextStyle(fontSize: 12)),
                               onPressed: () {
+                                _nameController.clear();
                                 Navigator.pop(context);
                               },
                             ),
@@ -389,6 +392,7 @@ class _EditListState extends State<EditList> {
                               child: const Text('Cancel',
                                   style: TextStyle(fontSize: 12)),
                               onPressed: () {
+                                _addController.clear();
                                 Navigator.pop(context);
                               },
                             ),

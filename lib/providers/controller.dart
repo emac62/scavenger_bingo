@@ -65,7 +65,7 @@ class Controller extends ChangeNotifier {
         _disableTiles = true;
         _gameWon = true;
         _result.clear();
-
+        notifyListeners();
         break;
       }
     }
@@ -80,6 +80,7 @@ class Controller extends ChangeNotifier {
       _gameWon = true;
       _result.clear();
       _winPattern = Patterns.cross;
+      notifyListeners();
     }
   }
 
@@ -92,6 +93,7 @@ class Controller extends ChangeNotifier {
       _gameWon = true;
       _result.clear();
       _winPattern = Patterns.full;
+      notifyListeners();
     }
   }
 

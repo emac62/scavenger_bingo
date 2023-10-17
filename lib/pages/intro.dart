@@ -4,12 +4,12 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
-import 'package:scavenger_hunt_bingo/settings.dart';
-import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/pages/settings.dart';
+import 'package:scavenger_hunt_bingo/utils/audio.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
 
-import 'data/arrays.dart';
-import 'data/bingo_card.dart';
+import '../data/arrays.dart';
+import '../data/bingo_card.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({

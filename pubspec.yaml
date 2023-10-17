@@ -29,10 +29,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   material_dialogs: ^1.1.1
   flutter_launcher_icons: ^0.13.1
-  google_mobile_ads:
-    git:
-      url: https://github.com/Skyost/googleads-mobile-flutter
-      path: packages/google_mobile_ads
+
   audioplayers: ^5.0.0
   line_awesome_flutter: ^2.0.0
   screenshot: ^2.1.0
@@ -46,6 +43,7 @@ dependencies:
   purchases_flutter: ^5.6.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  google_mobile_ads: ^3.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
-import 'package:scavenger_hunt_bingo/widgets/winning_dialog.dart';
+import 'package:scavenger_hunt_bingo/winning_page.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../providers/controller.dart';
 import '../providers/settings_provider.dart';
-import 'audio.dart';
+import '../utils/audio.dart';
 
 class ListTileWidget extends StatefulWidget {
   final String name;
@@ -42,8 +42,8 @@ class ListTileWidgetState extends State<ListTileWidget> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var cont = Provider.of<Controller>(context);
-    var settingsProvider = Provider.of<SettingsProvider>(context);
+    var cont = Provider.of<Controller>(context, listen: true);
+    var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     var fontColor = cont.gameWon && cont.winPattern.contains(widget.index)
         ? Colors.blue[50]
         : isSelected
@@ -61,9 +61,11 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 isSelected = !isSelected;
                 if (settingsProvider.withSound) gameSounds.playWoosh();
                 cont.addToSelectedTiles(widget.index);
+
+                cont.checkForWinner();
               }
             });
-            cont.checkForWinner();
+
             if (cont.gameWon) {
               settingsProvider.setGamesWon(settingsProvider.gamesWon + 1);
               int gamesForAd =
@@ -72,6 +74,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 Navigator.of(context).push(PageRouteBuilder(
                     opaque: false,
                     pageBuilder: (_, __, ___) => WinningDialog(
+                        withSound: settingsProvider.withSound,
                         screenshotController: widget.screenshotController,
                         gamesForAd: gamesForAd)));
               });
@@ -144,8 +147,11 @@ class ListTileWidgetState extends State<ListTileWidget> {
                                       style: TextStyle(
                                         fontFamily: 'Roboto',
                                         fontWeight: FontWeight.normal,
-                                        fontSize:
-                                            SizeConfig.blockSizeVertical * 1.35,
+                                        fontSize: SizeConfig.screenWidth < 400
+                                            ? SizeConfig.safeBlockHorizontal *
+                                                2.8
+                                            : SizeConfig.safeBlockHorizontal *
+                                                3,
                                         color: fontColor,
                                         letterSpacing: -0.25,
                                       ),

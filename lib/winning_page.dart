@@ -10,23 +10,25 @@ import 'package:scavenger_hunt_bingo/widgets/dialog_button.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../main.dart';
-import '../providers/controller.dart';
-import '../providers/settings_provider.dart';
-import '../settings.dart';
-import '../utils/size_config.dart';
-import 'ad_helper.dart';
-import 'audio.dart';
+import 'main.dart';
+import 'providers/controller.dart';
+import 'providers/settings_provider.dart';
+import 'pages/settings.dart';
+import 'utils/size_config.dart';
+import 'utils/ad_helper.dart';
+import 'utils/audio.dart';
 
 class WinningDialog extends StatefulWidget {
   WinningDialog({
     Key? key,
     required this.screenshotController,
     required this.gamesForAd,
+    required this.withSound,
   }) : super(key: key);
 
   final ScreenshotController screenshotController;
   final int gamesForAd;
+  final bool withSound;
 
   @override
   State<WinningDialog> createState() => _WinningDialogState();
@@ -63,7 +65,10 @@ class _WinningDialogState extends State<WinningDialog> {
         ConfettiController(duration: const Duration(seconds: 5));
 
     bgBingo = Image.asset('assets/images/winningImg.png');
-    gameSounds.playFireworks();
+
+    Provider.of<SettingsProvider>(context, listen: false).withSound
+        ? gameSounds.playFireworks()
+        : gameSounds.stopGameSound();
   }
 
   @override

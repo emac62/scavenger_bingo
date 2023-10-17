@@ -5,10 +5,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
-import 'package:scavenger_hunt_bingo/intro.dart';
+
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/purchase_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'pages/intro.dart';
 import 'providers/controller.dart';
 
 List<String> testDeviceIDs = [
@@ -25,14 +27,16 @@ bool showBannerAd = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize().then((InitializationStatus status) {
-    print('Initialization done: ${status.adapterStatuses}');
-  });
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  bool removeAds = sp.getBool("removeAds") ?? false;
 
-  final RequestConfiguration requestConfiguration = RequestConfiguration(
-      tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-      testDeviceIds: testDeviceIDs);
-  MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+  if (!removeAds) {
+    MobileAds.instance.initialize();
+    final RequestConfiguration requestConfiguration = RequestConfiguration(
+        tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+        testDeviceIds: useTestAds ? testDeviceIDs : null);
+    MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+  }
 
   if (kReleaseMode) {
     debugPrint = (String? message, {int? wrapWidth}) {};

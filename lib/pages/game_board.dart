@@ -5,9 +5,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/main.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
-import 'package:scavenger_hunt_bingo/settings.dart';
-import 'package:scavenger_hunt_bingo/widgets/ad_helper.dart';
-import 'package:scavenger_hunt_bingo/widgets/audio.dart';
+import 'package:scavenger_hunt_bingo/pages/settings.dart';
+import 'package:scavenger_hunt_bingo/utils/ad_helper.dart';
+import 'package:scavenger_hunt_bingo/utils/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_banner.dart';
 import 'package:scavenger_hunt_bingo/widgets/bingo_grid.dart';
@@ -17,7 +17,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'providers/controller.dart';
+import '../providers/controller.dart';
 
 const int maxFailedLoadAttempts = 3;
 
