@@ -112,7 +112,7 @@ class _WinningDialogState extends State<WinningDialog> {
     var settings = Provider.of<SettingsProvider>(context, listen: false);
     var cont = Provider.of<Controller>(context, listen: false);
     return Scaffold(
-      backgroundColor: Colors.blue[50]!.withOpacity(0.5),
+      backgroundColor: const Color.fromRGBO(227, 242, 253, 0.5),
       body: SafeArea(
         child: Stack(children: [
           Align(
@@ -133,9 +133,7 @@ class _WinningDialogState extends State<WinningDialog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      'assets/images/winningImg.png',
-                    ),
+                    Image(image: bgBingo.image),
                     Padding(
                       padding: EdgeInsets.symmetric(
                           vertical: SizeConfig.blockSizeVertical * 3),
