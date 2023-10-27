@@ -65,71 +65,63 @@ class _PaywallWidgetState extends State<PaywallWidget> {
                   height: 24,
                 ),
                 Container(
+                  padding: SizeConfig.screenWidth > 500
+                      ? EdgeInsets.symmetric(
+                          horizontal: SizeConfig.blockSizeHorizontal * 15)
+                      : EdgeInsets.symmetric(horizontal: 0),
+                  child: Container(
                     decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Colors.transparent, width: 1)),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.transparent, width: 1),
-                      ),
-                      padding: SizeConfig.screenWidth > 500
-                          ? EdgeInsets.symmetric(
-                              horizontal: SizeConfig.blockSizeHorizontal * 15)
-                          : EdgeInsets.symmetric(horizontal: 0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: Colors.blue, width: 2),
-                            color: Colors.yellow[50]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: GestureDetector(
-                            onTap: () => widget.onClickedPackage(package),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          title,
-                                          style: TextStyle(
-                                              color: Colors.purple,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize:
-                                                  SizeConfig.blockSizeVertical *
-                                                      2.5),
-                                        ),
-                                        Text(
-                                          product.priceString,
-                                          style: TextStyle(
-                                              color: Colors.purple,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize:
-                                                  SizeConfig.blockSizeVertical *
-                                                      2.5),
-                                        )
-                                      ]),
-                                ),
-                                Text(
-                                  product.description,
-                                  style: TextStyle(
-                                      color: Colors.purple,
-                                      fontFamily: 'Roboto',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          SizeConfig.blockSizeVertical * 1.5),
-                                ),
-                              ],
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: Colors.blue, width: 2),
+                        color: Colors.yellow[50]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: GestureDetector(
+                        onTap: () => widget.onClickedPackage(package),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      title,
+                                      style: TextStyle(
+                                          color: Colors.purple,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              SizeConfig.blockSizeVertical *
+                                                  2.5),
+                                    ),
+                                    Text(
+                                      product.priceString,
+                                      style: TextStyle(
+                                          color: Colors.purple,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              SizeConfig.blockSizeVertical *
+                                                  2.5),
+                                    )
+                                  ]),
                             ),
-                          ),
+                            Text(
+                              product.description,
+                              style: TextStyle(
+                                  color: Colors.purple,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: SizeConfig.blockSizeVertical * 1.5),
+                            ),
+                          ],
                         ),
                       ),
-                    )),
+                    ),
+                  ),
+                ),
                 widget.index == 1
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -144,9 +136,6 @@ class _PaywallWidgetState extends State<PaywallWidget> {
                 ),
                 widget.index != 1
                     ? Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.transparent, width: 1)),
                         padding: SizeConfig.screenWidth > 500
                             ? EdgeInsets.symmetric(
                                 horizontal: SizeConfig.blockSizeHorizontal * 5)

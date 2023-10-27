@@ -13,7 +13,6 @@ import 'package:share_plus/share_plus.dart';
 import '../main.dart';
 import '../providers/controller.dart';
 import '../providers/settings_provider.dart';
-import '../pages/settings.dart';
 import '../utils/size_config.dart';
 import '../utils/ad_helper.dart';
 import '../utils/audio.dart';
@@ -59,11 +58,12 @@ class _WinningDialogState extends State<WinningDialog> {
   @override
   void initState() {
     super.initState();
-    _controllerCenter =
-        ConfettiController(duration: const Duration(seconds: 5));
-
     bgBingo = Image.asset('assets/images/winningImg.png');
-    gameSounds.playFireworks();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _controllerCenter =
+          ConfettiController(duration: const Duration(seconds: 5));
+      gameSounds.playFireworks();
+    });
   }
 
   @override
@@ -167,11 +167,9 @@ class _WinningDialogState extends State<WinningDialog> {
                                       interstitialAd?.show();
                                   }
                                 }
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SettingsPage()),
-                                );
+
+                                Navigator.popUntil(
+                                    context, ModalRoute.withName('/settings'));
                               },
                               icon: Icon(
                                 Icons.refresh,
@@ -217,7 +215,7 @@ class _WinningDialogState extends State<WinningDialog> {
             ),
           ),
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
             child: ConfettiWidget(
               confettiController: _controllerCenter,
               blastDirectionality: BlastDirectionality

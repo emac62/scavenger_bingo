@@ -29,7 +29,6 @@ class ListTileWidget extends StatefulWidget {
 
 class ListTileWidgetState extends State<ListTileWidget> {
   bool isSelected = false;
-  // List winPattern = [];
 
   var gameSounds = GameSounds();
 
@@ -70,7 +69,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
               settingsProvider.setGamesWon(settingsProvider.gamesWon + 1);
               int gamesForAd =
                   settingsProvider.gamesWon + settingsProvider.gamesStarted;
-              Future.delayed(Duration(milliseconds: 2000), () {
+              Future.delayed(Duration(milliseconds: 1500), () {
                 Navigator.of(context).push(PageRouteBuilder(
                     opaque: false,
                     pageBuilder: (_, __, ___) => WinningDialog(

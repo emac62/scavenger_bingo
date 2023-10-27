@@ -351,9 +351,11 @@ class _GameBoardState extends State<GameBoard> {
                 ),
               ),
               bingoBanner(),
-              BingoGrid(
-                selectedBoard: selectedBoard,
-                screenshotController: screenshotController,
+              Expanded(
+                child: BingoGrid(
+                  selectedBoard: selectedBoard,
+                  screenshotController: screenshotController,
+                ),
               )
               // bingoBoard(selectedBoard, screenshotController),
             ]),

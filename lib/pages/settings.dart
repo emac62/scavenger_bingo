@@ -122,6 +122,8 @@ class _SettingsPageState extends State<SettingsPage> {
   loadPrefs() async {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     setState(() {
+      getFontSize();
+      getHeadingFontSize();
       games = (savedPref.getInt('gamesWon') ?? 0) +
           (savedPref.getInt('gamesStarted') ?? 0);
       withSound = (savedPref.getBool('withSound') ?? true);
@@ -131,24 +133,29 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    getFontSize();
+    getHeadingFontSize();
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
 
-  double getFontSize() {
-    double fontSize = 0;
+  double fontSize = 0;
+  double headingFontSize = 0;
+  void getFontSize() {
     fontSize = SizeConfig.screenWidth < 500 || SizeConfig.screenHeight < 700
-        ? SizeConfig.safeBlockVertical * 2
+        ? SizeConfig.safeBlockVertical * 1.75
         : SizeConfig.safeBlockVertical * 2.5;
-    return fontSize;
   }
 
-  double getHeadingFontSize() {
-    double fontSize = 0;
-    fontSize = SizeConfig.screenWidth > 600
+  void getHeadingFontSize() {
+    headingFontSize = SizeConfig.screenWidth > 600
         ? SizeConfig.safeBlockVertical * 3.5
         : SizeConfig.safeBlockVertical * 3;
-    return fontSize;
   }
 
   int cardIndex = 0;
@@ -252,13 +259,12 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-
+    getFontSize();
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
     var cont = Provider.of<Controller>(context, listen: true);
     int gamesStarted = settingsProvider.gamesStarted;
 
     return Scaffold(
-      backgroundColor: Colors.yellow[50],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
@@ -282,9 +288,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.isPhone
-                  ? SizeConfig.blockSizeHorizontal * 3
-                  : SizeConfig.blockSizeHorizontal * 8),
+              horizontal: SizeConfig.blockSizeHorizontal * 3),
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -292,29 +296,30 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "Play sound effects?",
                     style: TextStyle(
                       color: Colors.blue,
                       fontFamily: 'CaveatBrush',
-                      fontSize: getHeadingFontSize(),
+                      fontSize: headingFontSize,
                     ),
                     maxLines: 1,
                   ),
-                  Transform.scale(
-                    scale: SizeConfig.blockSizeVertical * 0.09,
-                    child: CupertinoSwitch(
-                      value: settingsProvider.withSound,
-                      activeColor: Colors.purple,
-                      thumbColor: Colors.yellow[50],
-                      onChanged: (value) {
-                        setState(() {
-                          withSound = value;
-                          settingsProvider.setWithSound(withSound);
-                        });
-                      },
+                  RepaintBoundary(
+                    child: Transform.scale(
+                      scale: SizeConfig.blockSizeVertical * 0.09,
+                      child: CupertinoSwitch(
+                        value: settingsProvider.withSound,
+                        activeColor: Colors.purple,
+                        thumbColor: Colors.yellow[50],
+                        onChanged: (value) {
+                          setState(() {
+                            withSound = value;
+                            settingsProvider.setWithSound(withSound);
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -328,7 +333,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                   color: Colors.blue,
                   fontFamily: 'CaveatBrush',
-                  fontSize: getHeadingFontSize(),
+                  fontSize: headingFontSize,
                 ),
                 maxLines: 1,
               ),
@@ -347,7 +352,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             _showCardDialog(context, textCards);
                           });
                         }),
-                        fontSize: getFontSize()),
+                        fontSize: fontSize),
                     PurpleBtn(
                         name: "Text and Images",
                         font: "Roboto",
@@ -356,7 +361,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             _showCardDialog(context, imageCards);
                           });
                         }),
-                        fontSize: getFontSize())
+                        fontSize: fontSize)
                   ],
                 ),
               ),
@@ -368,7 +373,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     PurpleBtn(
                       name: "Create A Text Card",
                       font: "Roboto",
-                      fontSize: getFontSize(),
+                      fontSize: fontSize,
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -386,7 +391,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 builder: (context) => TextCards()),
                           );
                         },
-                        fontSize: getFontSize()),
+                        fontSize: fontSize),
                   ],
                 ),
               ),
@@ -398,7 +403,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                   color: Colors.blue,
                   fontFamily: 'CaveatBrush',
-                  fontSize: getHeadingFontSize(),
+                  fontSize: headingFontSize,
                 ),
               ),
               Container(
@@ -477,11 +482,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: SizeConfig.blockSizeVertical / 10,
-              ),
               settingsProvider.removeAds
-                  ? SizedBox()
+                  ? SizedBox(
+                      height: 10,
+                    )
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                       child: Row(
@@ -508,7 +512,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               onPressed: () {
                                 fetchOffers(context);
                               },
-                              fontSize: getFontSize()),
+                              fontSize: fontSize),
                         ],
                       ),
                     ),
@@ -527,9 +531,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           // selectedList = [];
                           cont.setDisableTiles(false);
                         });
-                        Navigator.pushReplacement(
-                          context,
+                        Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => GameBoard()),
+                          (route) => false,
                         );
                       },
                       fontSize: SizeConfig.screenWidth > 600
@@ -648,31 +652,36 @@ class PurpleBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return ElevatedButton(
-        onPressed: onPressed,
-        child: Padding(
-          padding: SizeConfig.isPhone
-              ? EdgeInsets.symmetric(horizontal: 8, vertical: 6)
-              : EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Text(name),
-        ),
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.yellow[50],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      width: SizeConfig.blockSizeHorizontal * 45,
+      child: ElevatedButton(
+          onPressed: onPressed,
+          child: Padding(
+            padding: SizeConfig.isPhone
+                ? EdgeInsets.symmetric(
+                    vertical: SizeConfig.blockSizeVertical * 1)
+                : EdgeInsets.symmetric(
+                    vertical: SizeConfig.blockSizeVertical * 1),
+            child: Text(name),
           ),
-          backgroundColor: Colors.purple,
-          side: BorderSide(
-            color: Colors.blue,
-            width: 2.0,
-          ),
-          elevation: 10,
-          textStyle: TextStyle(
-              fontFamily: font,
-              fontWeight:
-                  name == "Play Bingo" ? FontWeight.normal : FontWeight.bold,
-              fontSize: fontSize),
-        ));
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.yellow[50],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            backgroundColor: Colors.purple,
+            side: BorderSide(
+              color: Colors.blue,
+              width: 2.0,
+            ),
+            elevation: 10,
+            textStyle: TextStyle(
+                fontFamily: font,
+                fontWeight:
+                    name == "Play Bingo" ? FontWeight.normal : FontWeight.bold,
+                fontSize: fontSize),
+          )),
+    );
   }
 }
 

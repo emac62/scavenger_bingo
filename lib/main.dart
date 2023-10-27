@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
+import 'package:scavenger_hunt_bingo/pages/game_board.dart';
+import 'package:scavenger_hunt_bingo/pages/settings.dart';
 
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/widgets/purchase_api.dart';
@@ -50,11 +53,14 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(BingoCardAdapter());
   await Hive.openBox<BingoCard>("cards");
-
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => SettingsProvider()),
-    ChangeNotifierProvider(create: (_) => Controller())
-  ], child: ScavengerBingo()));
+  // debugRepaintRainbowEnabled = true;
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => SettingsProvider()),
+      ChangeNotifierProvider(create: (_) => Controller())
+    ],
+    child: ScavengerBingo(),
+  ));
 }
 
 class ScavengerBingo extends StatefulWidget {
@@ -70,10 +76,15 @@ class _ScavengerBingoState extends State<ScavengerBingo> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.yellow[50],
         primarySwatch:
             Colors.purple, //i am set brown colour,you can set your colour here
       ),
       home: IntroPage(),
+      routes: {
+        "/settings": (BuildContext context) => SettingsPage(),
+        "/gamePage": ((context) => GameBoard())
+      },
     );
   }
 }

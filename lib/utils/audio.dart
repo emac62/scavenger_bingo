@@ -10,10 +10,9 @@ class GameSounds {
     try {
       if (!isPlaying) {
         _audioPlayer.play(AssetSource("woosh.mp3"));
-        bool result = _audioPlayer.state == PlayerState.playing;
-        if (result) {
-          isPlaying = true;
-        }
+      } else {
+        _audioPlayer.stop();
+        _audioPlayer.play(AssetSource("woosh.mp3"));
       }
     } catch (e) {
       debugPrint("Error playing woosh sound: $e");
@@ -25,10 +24,9 @@ class GameSounds {
     try {
       if (!isPlaying) {
         _audioPlayer.play(AssetSource("magicalSlice2.mp3"));
-        bool result = _audioPlayer.state == PlayerState.playing;
-        if (result) {
-          isPlaying = true;
-        }
+      } else {
+        _audioPlayer.stop();
+        _audioPlayer.play(AssetSource("magicalSlice2.mp3"));
       }
     } catch (e) {
       debugPrint("Error playing start sound: $e");
