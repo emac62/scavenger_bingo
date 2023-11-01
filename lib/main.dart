@@ -23,7 +23,7 @@ List<String> testDeviceIDs = [
   "B148F45EC4D7035147769503E195ECF9", //Lenovo
 ];
 
-bool useTestAds = true;
+bool useTestAds = false;
 bool showBannerAd = true;
 
 void main() async {
