@@ -16,7 +16,8 @@ import '../utils/size_config.dart';
 import '../utils/ad_helper.dart';
 
 class TextCards extends StatefulWidget {
-  const TextCards({Key? key}) : super(key: key);
+  const TextCards({Key? key, required this.removeAds}) : super(key: key);
+  final bool removeAds;
 
   @override
   State<TextCards> createState() => _TextCardsState();
@@ -34,16 +35,20 @@ class _TextCardsState extends State<TextCards> {
         request: AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
           this.interstitialAd = ad;
-          isInterstitialAdReady = true;
+          setState(() {
+            widget.removeAds
+                ? isInterstitialAdReady = false
+                : isInterstitialAdReady = true;
+          });
         }, onAdFailedToLoad: (LoadAdError error) {
           debugPrint("Failed to Load Interstitial Ad ${error.message}");
         })); //Interstitial Ads
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
     loadInterstitialAd();
+    super.initState();
   }
 
   @override
@@ -246,6 +251,7 @@ class _TextCardsState extends State<TextCards> {
                       if (!purCar.contains(name)) {
                         purCar.add(name);
                         setState(() {
+                          debugPrint("text_card setState");
                           settingsProv.setPurchasedCards(purCar);
                         });
                         debugPrint("purCar: ${settingsProv.purchasedCards}");

@@ -27,6 +27,7 @@ class SettingsProvider with ChangeNotifier {
     _createdCards = [];
     _hiveActivated = false;
     loadPreferences();
+    debugPrint("loadPreferences in SettingsProvider()");
   }
 
   bool get withSound => _withSound;
@@ -50,6 +51,7 @@ class SettingsProvider with ChangeNotifier {
   void setBoard(String selectedBoard) {
     _selectedBoard = selectedBoard;
     notifyListeners();
+    debugPrint("notifyList: setBoard");
     savePreferences();
   }
 
@@ -92,12 +94,14 @@ class SettingsProvider with ChangeNotifier {
   setPurchasedCards(List<String> purchasedCards) {
     _purchasedCards = purchasedCards;
     notifyListeners();
+    debugPrint("notifyList: setPurchased");
     savePreferences();
   }
 
   setCreatedCards(List<String> createdCards) {
     _createdCards = createdCards;
     notifyListeners();
+    debugPrint("notifyList: setCreated");
     savePreferences();
   }
 
@@ -123,6 +127,7 @@ class SettingsProvider with ChangeNotifier {
   }
 
   loadPreferences() async {
+    debugPrint("loadPrefs called");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? withSound = prefs.getBool('withSound');
     String? selectedBoard = prefs.getString('selectedBoard');

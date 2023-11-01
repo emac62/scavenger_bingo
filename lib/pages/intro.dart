@@ -275,7 +275,6 @@ class _IntroPageState extends State<IntroPage> {
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
                   child: ElevatedButton(
                     onPressed: () {
-                      debugPrint("Start tapped");
                       if (settingsProvider.withSound)
                         gameSounds.playMagicalSlice();
 
@@ -285,6 +284,7 @@ class _IntroPageState extends State<IntroPage> {
                         context,
                         MaterialPageRoute(builder: (context) => SettingsPage()),
                       );
+                      debugPrint("Start tapped");
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),

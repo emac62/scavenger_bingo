@@ -6,16 +6,17 @@ import 'package:rate_my_app/rate_my_app.dart';
 
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
-import 'package:scavenger_hunt_bingo/data/set_random_list.dart';
 import 'package:scavenger_hunt_bingo/pages/game_board.dart';
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
 import 'package:scavenger_hunt_bingo/pages/text_cards.dart';
 import 'package:scavenger_hunt_bingo/utils/audio.dart';
 import 'package:scavenger_hunt_bingo/widgets/banner_ad_widget.dart';
 import 'package:scavenger_hunt_bingo/utils/size_config.dart';
+import 'package:scavenger_hunt_bingo/widgets/card_select_chip.dart';
 
 import 'package:scavenger_hunt_bingo/widgets/paywall.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scavenger_hunt_bingo/widgets/purple_btn.dart';
+import 'package:scavenger_hunt_bingo/widgets/win_select_chips.dart';
 
 import '/main.dart';
 import '../providers/controller.dart';
@@ -27,11 +28,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  var settingsProvider = SettingsProvider();
-  late String selectedBoard;
-  late String selectedPattern;
-  late bool withSound;
-
   int games = 0;
 
   List<String> textCards = [];
@@ -67,13 +63,9 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    loadPrefs().then((_) {
-      setState(() {
-        withSound = withSound;
-        selectedBoard = selectedBoard;
-        selectedPattern = selectedPattern;
-      });
-    });
+    debugPrint("settings init");
+    getFontSize();
+    getHeadingFontSize();
     separateCards();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rateMyApp.init();
@@ -119,31 +111,6 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  loadPrefs() async {
-    SharedPreferences savedPref = await SharedPreferences.getInstance();
-    setState(() {
-      getFontSize();
-      getHeadingFontSize();
-      games = (savedPref.getInt('gamesWon') ?? 0) +
-          (savedPref.getInt('gamesStarted') ?? 0);
-      withSound = (savedPref.getBool('withSound') ?? true);
-      selectedBoard = (savedPref.getString('selectedBoard') ?? "City Walk");
-      selectedPattern = (savedPref.getString('selectedPattern') ?? "One Line");
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    getFontSize();
-    getHeadingFontSize();
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   double fontSize = 0;
   double headingFontSize = 0;
   void getFontSize() {
@@ -158,62 +125,18 @@ class _SettingsPageState extends State<SettingsPage> {
         : SizeConfig.safeBlockVertical * 3;
   }
 
-  int cardIndex = 0;
-  int winIndex = 0;
-
   List<String> toWin = [
     "One Line",
     "Letter X",
     "Full Card",
   ];
 
-  List<Widget> winChips() {
-    var settingsProvider =
-        Provider.of<SettingsProvider>(context, listen: false);
-    var cont = Provider.of<Controller>(context, listen: false);
-    List<Widget> chips = [];
-    for (int i = 0; i < toWin.length; i++) {
-      Widget item = Padding(
-        padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
-        child: ChoiceChip(
-          label: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text(toWin[i]),
-          ),
-          labelStyle: TextStyle(
-            color: Colors.yellow[50],
-            fontSize: SizeConfig.screenWidth < 400
-                ? SizeConfig.safeBlockVertical * 2.25
-                : SizeConfig.safeBlockVertical * 2.5,
-            fontFamily: "CaveatBrush",
-            letterSpacing: -0.5,
-          ),
-          backgroundColor: Colors.blue,
-          selectedColor: Colors.purple,
-          selected: settingsProvider.selectedPattern == toWin[i],
-          onSelected: (bool value) {
-            setState(() {
-              winIndex = i;
-              selectedPattern = toWin[i];
-              settingsProvider.setPattern(selectedPattern);
-              cont.setWinningPattern(selectedPattern);
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
-  }
-
-  _showCardDialog(BuildContext context, List<String> cards) {
+  _showCardDialog(List<String> cards) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          var settingsProvider =
-              Provider.of<SettingsProvider>(context, listen: false);
-
-          //Here we will build the content of the dialog
+          var settingsProv =
+              Provider.of<SettingsProvider>(context, listen: true);
           return AlertDialog(
             backgroundColor: Colors.yellow[50],
             scrollable: true,
@@ -239,16 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
             content: SingleChildScrollView(
               child: CardSelectChip(
                 cards: cards,
-                cardIndex: cardIndex,
-                selectedBoard: selectedBoard,
-                onSelectionChanged: (choice) {
-                  setState(() {
-                    selectedBoard = choice;
-                    settingsProvider.setBoard(selectedBoard);
-
-                    setRandomList(context, selectedBoard);
-                  });
-                },
+                selectedBoard: settingsProv.selectedBoard,
               ),
             ),
             actions: <Widget>[],
@@ -260,9 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     getFontSize();
-    var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
-    var cont = Provider.of<Controller>(context, listen: true);
-    int gamesStarted = settingsProvider.gamesStarted;
+    var setProv = Provider.of<SettingsProvider>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(
@@ -289,265 +201,268 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: SizeConfig.blockSizeHorizontal * 3),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: SizeConfig.blockSizeVertical * 1,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Play sound effects?",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontFamily: 'CaveatBrush',
-                      fontSize: headingFontSize,
+          child: Consumer2<SettingsProvider, Controller>(
+              builder: (context, settingsProvider, controller, child) {
+            return Column(
+              children: <Widget>[
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical * 1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Play sound effects?",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontFamily: 'CaveatBrush',
+                        fontSize: headingFontSize,
+                      ),
+                      maxLines: 1,
                     ),
-                    maxLines: 1,
-                  ),
-                  RepaintBoundary(
-                    child: Transform.scale(
-                      scale: SizeConfig.blockSizeVertical * 0.09,
-                      child: CupertinoSwitch(
-                        value: settingsProvider.withSound,
-                        activeColor: Colors.purple,
-                        thumbColor: Colors.yellow[50],
-                        onChanged: (value) {
-                          setState(() {
-                            withSound = value;
-                            settingsProvider.setWithSound(withSound);
-                          });
-                        },
+                    RepaintBoundary(
+                      child: Transform.scale(
+                        scale: SizeConfig.blockSizeVertical * 0.09,
+                        child: CupertinoSwitch(
+                          value: settingsProvider.withSound,
+                          activeColor: Colors.purple,
+                          thumbColor: Colors.yellow[50],
+                          onChanged: (value) {
+                            setState(() {
+                              settingsProvider.setWithSound(value);
+                            });
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: SizeConfig.blockSizeVertical * 1,
-              ),
-              Text(
-                "Choose your card:",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: headingFontSize,
-                ),
-                maxLines: 1,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: SizeConfig.blockSizeVertical * 1,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    PurpleBtn(
-                        name: "Text Only",
-                        font: "Roboto",
-                        onPressed: (() {
-                          setState(() {
-                            _showCardDialog(context, textCards);
-                          });
-                        }),
-                        fontSize: fontSize),
-                    PurpleBtn(
-                        name: "Text and Images",
-                        font: "Roboto",
-                        onPressed: (() {
-                          setState(() {
-                            _showCardDialog(context, imageCards);
-                          });
-                        }),
-                        fontSize: fontSize)
                   ],
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 1),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    PurpleBtn(
-                      name: "Create A Text Card",
-                      font: "Roboto",
-                      fontSize: fontSize,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => TextCards()),
-                        );
-                      },
-                    ),
-                    PurpleBtn(
-                        name: "Edit a Text Card",
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical * 1,
+                ),
+                Text(
+                  "Choose your card:",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontFamily: 'CaveatBrush',
+                    fontSize: headingFontSize,
+                  ),
+                  maxLines: 1,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: SizeConfig.blockSizeVertical * 1,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      PurpleBtn(
+                          name: "Text Only",
+                          font: "Roboto",
+                          onPressed: (() {
+                            _showCardDialog(textCards);
+                          }),
+                          fontSize: fontSize),
+                      PurpleBtn(
+                          name: "Text and Images",
+                          font: "Roboto",
+                          onPressed: (() {
+                            _showCardDialog(imageCards);
+                          }),
+                          fontSize: fontSize)
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: SizeConfig.blockSizeVertical * 1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      PurpleBtn(
+                        name: "Create A Text Card",
                         font: "Roboto",
+                        fontSize: fontSize,
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TextCards()),
+                                builder: (context) => TextCards(
+                                      removeAds: setProv.removeAds,
+                                    )),
                           );
                         },
-                        fontSize: fontSize),
-                  ],
+                      ),
+                      PurpleBtn(
+                          name: "Edit a Text Card",
+                          font: "Roboto",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TextCards(
+                                        removeAds: setProv.removeAds,
+                                      )),
+                            );
+                          },
+                          fontSize: fontSize),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: SizeConfig.blockSizeVertical * 1,
-              ),
-              Text(
-                "Current Card:",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'CaveatBrush',
-                  fontSize: headingFontSize,
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical * 1,
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    color: Colors.blue[100],
-                    borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: SizeConfig.blockSizeHorizontal * 1,
-                      horizontal: SizeConfig.blockSizeHorizontal * 2),
-                  child: Text(
-                    settingsProvider.selectedBoard,
+                Text(
+                  "Current Card:",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontFamily: 'CaveatBrush',
+                    fontSize: headingFontSize,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.blue[100],
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: SizeConfig.blockSizeHorizontal * 1,
+                        horizontal: SizeConfig.blockSizeHorizontal * 2),
+                    child: Text(
+                      settingsProvider.selectedBoard,
 
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeConfig.screenWidth < 400
+                            ? SizeConfig.safeBlockVertical * 3
+                            : SizeConfig.safeBlockVertical * 2.5,
+                      ),
+                      // maxLines: 1,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical * 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Text(
+                    "How would you like to win?",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontFamily: 'CaveatBrush',
+                      fontSize: SizeConfig.screenWidth > 600
+                          ? SizeConfig.safeBlockVertical * 3.5
+                          : SizeConfig.safeBlockVertical * 3,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+                WinSelectChips(toWin: toWin),
+                SizedBox(
+                  height: SizeConfig.blockSizeVertical / 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Text(
+                    "Playing with other adults?",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontFamily: 'CaveatBrush',
+                      fontSize: SizeConfig.screenWidth > 600
+                          ? SizeConfig.safeBlockVertical * 3.5
+                          : SizeConfig.safeBlockVertical * 3.5,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
+                  child: Text(
+                    "Choose the same location (without images) and the same way to win. Click 'Share' to send an image of your winning card.",
+                    textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Colors.purple,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SizeConfig.screenWidth < 400
-                          ? SizeConfig.safeBlockVertical * 3
-                          : SizeConfig.safeBlockVertical * 2.5,
+                      fontFamily: "Roboto",
+                      fontSize: SizeConfig.safeBlockVertical * 1.5,
                     ),
-                    // maxLines: 1,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: SizeConfig.blockSizeVertical * 1,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                child: Text(
-                  "How would you like to win?",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontFamily: 'CaveatBrush',
-                    fontSize: SizeConfig.screenWidth > 600
-                        ? SizeConfig.safeBlockVertical * 3.5
-                        : SizeConfig.safeBlockVertical * 3,
-                  ),
-                  maxLines: 1,
-                ),
-              ),
-              Wrap(
-                  spacing: 3,
-                  direction: Axis.horizontal,
-                  alignment: WrapAlignment.center,
-                  children: winChips()),
-              SizedBox(
-                height: SizeConfig.blockSizeVertical / 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                child: Text(
-                  "Playing with other adults?",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontFamily: 'CaveatBrush',
-                    fontSize: SizeConfig.screenWidth > 600
-                        ? SizeConfig.safeBlockVertical * 3.5
-                        : SizeConfig.safeBlockVertical * 3.5,
-                  ),
-                  maxLines: 1,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
-                child: Text(
-                  "Choose the same location (without images) and the same way to win. Click 'Share' to send an image of your winning card.",
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(
-                    color: Colors.purple,
-                    fontFamily: "Roboto",
-                    fontSize: SizeConfig.safeBlockVertical * 1.5,
-                  ),
-                ),
-              ),
-              settingsProvider.removeAds
-                  ? SizedBox(
-                      height: 10,
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Remove Ads?",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontFamily: 'CaveatBrush',
-                              fontSize: SizeConfig.screenWidth > 600
-                                  ? SizeConfig.safeBlockVertical * 3.5
-                                  : SizeConfig.safeBlockVertical * 3.5,
+                settingsProvider.removeAds
+                    ? SizedBox(
+                        height: 10,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Remove Ads?",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontFamily: 'CaveatBrush',
+                                fontSize: SizeConfig.screenWidth > 600
+                                    ? SizeConfig.safeBlockVertical * 3.5
+                                    : SizeConfig.safeBlockVertical * 3.5,
+                              ),
+                              maxLines: 1,
                             ),
-                            maxLines: 1,
-                          ),
-                          SizedBox(
-                            width: SizeConfig.blockSizeHorizontal * 4,
-                          ),
-                          PurpleBtn(
-                              name: "Options",
-                              font: "Roboto",
-                              onPressed: () {
-                                fetchOffers(context);
-                              },
-                              fontSize: fontSize),
-                        ],
+                            SizedBox(
+                              width: SizeConfig.blockSizeHorizontal * 4,
+                            ),
+                            PurpleBtn(
+                                name: "Options",
+                                font: "Roboto",
+                                onPressed: () {
+                                  fetchOffers(context);
+                                },
+                                fontSize: fontSize),
+                          ],
+                        ),
+                      ),
+                Expanded(
+                  child: Container(
+                    child: Center(
+                      child: PurpleBtn(
+                        name: "Play Bingo",
+                        font: 'CaveatBrush',
+                        onPressed: () {
+                          if (settingsProvider.withSound)
+                            gameSounds.playMagicalSlice();
+                          setState(() {
+                            int started = settingsProvider.gamesStarted;
+                            settingsProvider.setGamesStarted(started++);
+                            controller.resetWinPattern();
+                            controller.setDisableTiles(false);
+                          });
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => GameBoard(
+                                      removeAds: setProv.removeAds,
+                                    )),
+                            (route) => false,
+                          );
+                        },
+                        fontSize: SizeConfig.screenWidth > 600
+                            ? SizeConfig.safeBlockVertical * 5
+                            : SizeConfig.safeBlockVertical * 4,
                       ),
                     ),
-              Expanded(
-                child: Container(
-                  child: Center(
-                    child: PurpleBtn(
-                      name: "Play Bingo",
-                      font: 'CaveatBrush',
-                      onPressed: () {
-                        if (withSound) gameSounds.playMagicalSlice();
-                        setState(() {
-                          gamesStarted++;
-                          settingsProvider.setGamesStarted(gamesStarted);
-                          cont.resetWinPattern();
-                          // selectedList = [];
-                          cont.setDisableTiles(false);
-                        });
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => GameBoard()),
-                          (route) => false,
-                        );
-                      },
-                      fontSize: SizeConfig.screenWidth > 600
-                          ? SizeConfig.safeBlockVertical * 5
-                          : SizeConfig.safeBlockVertical * 4,
-                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            );
+          }),
         ),
       ),
-      bottomNavigationBar: settingsProvider.removeAds
+      bottomNavigationBar: setProv.removeAds
           ? null
           : showBannerAd
               ? bannerAdContainer
@@ -634,123 +549,4 @@ class _SettingsPageState extends State<SettingsPage> {
         rateMyApp,
         text: 'CANCEL',
       );
-}
-
-class PurpleBtn extends StatelessWidget {
-  const PurpleBtn({
-    Key? key,
-    required this.name,
-    required this.font,
-    required this.onPressed,
-    required this.fontSize,
-  }) : super(key: key);
-  final String name;
-  final String font;
-  final VoidCallback onPressed;
-  final double fontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return SizedBox(
-      width: SizeConfig.blockSizeHorizontal * 45,
-      child: ElevatedButton(
-          onPressed: onPressed,
-          child: Padding(
-            padding: SizeConfig.isPhone
-                ? EdgeInsets.symmetric(
-                    vertical: SizeConfig.blockSizeVertical * 1)
-                : EdgeInsets.symmetric(
-                    vertical: SizeConfig.blockSizeVertical * 1),
-            child: Text(name),
-          ),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.yellow[50],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            backgroundColor: Colors.purple,
-            side: BorderSide(
-              color: Colors.blue,
-              width: 2.0,
-            ),
-            elevation: 10,
-            textStyle: TextStyle(
-                fontFamily: font,
-                fontWeight:
-                    name == "Play Bingo" ? FontWeight.normal : FontWeight.bold,
-                fontSize: fontSize),
-          )),
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class CardSelectChip extends StatefulWidget {
-  final List<String> cards;
-  int cardIndex;
-  String selectedBoard;
-  Function onSelectionChanged;
-
-  CardSelectChip(
-      {Key? key,
-      required this.cards,
-      required this.cardIndex,
-      required this.selectedBoard,
-      required this.onSelectionChanged})
-      : super(key: key);
-
-  @override
-  _CardSelectChipState createState() => _CardSelectChipState();
-}
-
-class _CardSelectChipState extends State<CardSelectChip> {
-  List<Widget> cardChips() {
-    var settingsProvider =
-        Provider.of<SettingsProvider>(context, listen: false);
-    List<Widget> chips = [];
-    var choice = widget.selectedBoard;
-    for (int i = 0; i < widget.cards.length; i++) {
-      Widget item = Padding(
-        padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
-        child: ChoiceChip(
-          label: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text(widget.cards[i]),
-          ),
-          labelStyle: TextStyle(
-            color: Colors.yellow[50],
-            fontSize: SizeConfig.screenWidth < 400
-                ? SizeConfig.safeBlockVertical * 1.75
-                : SizeConfig.safeBlockVertical * 3,
-            // fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-          ),
-          backgroundColor: Colors.blue,
-          selectedColor: Colors.purple,
-          selected: widget.cardIndex == i,
-          onSelected: (bool value) {
-            setState(() {
-              widget.cardIndex = i;
-              choice = widget.cards[i];
-              widget.onSelectionChanged(choice);
-
-              settingsProvider.setBoard(widget.cards[i]);
-
-              Navigator.of(context).pop();
-            });
-          },
-        ),
-      );
-      chips.add(item);
-    }
-    return chips;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      children: cardChips(),
-    );
-  }
 }

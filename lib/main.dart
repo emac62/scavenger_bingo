@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scavenger_hunt_bingo/data/bingo_card.dart';
-import 'package:scavenger_hunt_bingo/pages/game_board.dart';
 import 'package:scavenger_hunt_bingo/pages/settings.dart';
 
 import 'package:scavenger_hunt_bingo/providers/settings_provider.dart';
@@ -25,13 +23,14 @@ List<String> testDeviceIDs = [
   "B148F45EC4D7035147769503E195ECF9", //Lenovo
 ];
 
-bool useTestAds = false;
+bool useTestAds = true;
 bool showBannerAd = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences sp = await SharedPreferences.getInstance();
   bool removeAds = sp.getBool("removeAds") ?? false;
+  debugPrint("removeAds: $removeAds");
 
   if (!removeAds) {
     MobileAds.instance.initialize();
@@ -83,7 +82,6 @@ class _ScavengerBingoState extends State<ScavengerBingo> {
       home: IntroPage(),
       routes: {
         "/settings": (BuildContext context) => SettingsPage(),
-        "/gamePage": ((context) => GameBoard())
       },
     );
   }

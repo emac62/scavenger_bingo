@@ -39,29 +39,32 @@ class _EditListState extends State<EditList> {
   showChangeNameDialog(BuildContext context) {
     return showDialog(
       context: context,
-      builder: (context) => new AlertDialog(
-        backgroundColor: Colors.yellow[50],
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.blue, width: 5),
-            borderRadius: BorderRadius.circular(15)),
-        title: new Text(
-          'This Card needs a new name!',
-          style: TextStyle(color: Colors.purple, fontFamily: "CaveatBrush"),
-        ),
-        content: Text(
-          'Please scroll to the top and change the name of your card.',
-          style: TextStyle(color: Colors.purple),
-        ),
-        actions: <Widget>[
-          new TextButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .pop(); // dismisses only the dialog and returns nothing
-            },
-            child: new Text('OK'),
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.yellow[50],
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.blue, width: 5),
+              borderRadius: BorderRadius.circular(15)),
+          title: Text(
+            'This Card needs a new name!',
+            style: TextStyle(color: Colors.purple, fontFamily: "CaveatBrush"),
           ),
-        ],
-      ),
+          content: Text(
+            'Please scroll to the top and change the name of your card.',
+            style: TextStyle(color: Colors.purple),
+          ),
+          actions: [
+            new TextButton(
+              onPressed: () {
+                builds = 0;
+                Navigator.of(context)
+                    .pop(); // dismisses only the dialog and returns nothing
+              },
+              child: new Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -271,8 +274,10 @@ class _EditListState extends State<EditList> {
                                   purchasedCards.add(newCardName);
 
                                   setState(() {
+                                    builds = 0;
                                     settings.setCreatedCards(createdCards);
-
+                                    debugPrint(
+                                        "builds: $builds, editName: setState");
                                     settings.setPurchasedCards(purchasedCards);
                                     cardName = newCardName;
 
@@ -436,10 +441,13 @@ class _EditListState extends State<EditList> {
     boxIndex = bingoCard[0].key;
   }
 
+  int builds = 0;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     var settings = Provider.of<SettingsProvider>(context, listen: true);
+    builds++;
+    debugPrint("builds: $builds");
     return Scaffold(
         backgroundColor: Colors.yellow[50],
         appBar: AppBar(
@@ -462,144 +470,149 @@ class _EditListState extends State<EditList> {
           actions: [
             !freeTextCards.contains(cardName)
                 ? IconButton(
-                    onPressed: (() => showNameDialogue(context, settings)),
+                    onPressed: (() {
+                      builds = 0;
+                      showNameDialogue(context, settings);
+                    }),
                     icon: Icon(Icons.edit))
                 : SizedBox()
           ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: ListView(
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            children: <Widget>[
-              cardName.contains("My Card")
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(15)),
-                            disabledBackgroundColor: Theme.of(context)
-                                .primaryColor
-                                .withOpacity(.8), // Background Color
-                            disabledForegroundColor:
-                                Colors.yellow[50], //Text Color
-                          ),
-                          onPressed: () {
-                            showNameDialogue(context, settings);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Give your card a name",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.edit,
-                                size: 16,
-                              )
-                            ],
-                          )),
-                    )
-                  : SizedBox(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  listToEdit.length < 35
-                      ? "Edit any of the items below or scroll to the bottom to add more. Each list must have a minimum of 25 and a maximum of 35 items."
-                      : "This list has the maximum of 35 items. Each item below can be edited.",
-                  style: const TextStyle(fontSize: 16, color: Colors.purple),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              GridView.builder(
-                  shrinkWrap: true,
-                  physics: const ScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      childAspectRatio: 7 / 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10),
-                  itemCount: listToEdit.length,
-                  itemBuilder: (BuildContext ctx, index) {
-                    return itemToEdit(index);
-                  }),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.blockSizeHorizontal * 5,
-                    vertical: SizeConfig.blockSizeVertical * 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    listToEdit.length < 35
-                        ? ElevatedButton(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                cardName.contains("My Card")
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    side: BorderSide(
-                                        color: Colors.blue, width: 3))),
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.blue),
+                                  borderRadius: BorderRadius.circular(15)),
+                              disabledBackgroundColor: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(.8), // Background Color
+                              disabledForegroundColor:
+                                  Colors.yellow[50], //Text Color
+                            ),
                             onPressed: () {
-                              showAddDialogue(context);
+                              builds = 0;
+                              showNameDialogue(context, settings);
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                "Add another item",
-                                style: TextStyle(
-                                    fontSize:
-                                        SizeConfig.blockSizeHorizontal * 3,
-                                    color: Colors.yellow[50],
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ))
-                        : const SizedBox(
-                            height: 0,
-                          ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                side:
-                                    BorderSide(color: Colors.blue, width: 3))),
-                        onPressed: () {
-                          debugPrint("Save and Play called");
-                          setState(() {
-                            final cardBox = Hive.box<BingoCard>("cards");
-                            cardBox.putAt(boxIndex,
-                                BingoCard(cardName, true, listToEdit));
-                            settings.setBoard(cardName);
-                            setRandomList(context, cardName);
-                            debugPrint("cardBox length: ${cardBox.length}");
-                          });
-
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SettingsPage()),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            "Save and Play",
-                            style: TextStyle(
-                                fontSize: SizeConfig.blockSizeHorizontal * 3,
-                                color: Colors.yellow[50],
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ))
-                  ],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Give your card a name",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Icon(
+                                  Icons.edit,
+                                  size: 16,
+                                )
+                              ],
+                            )),
+                      )
+                    : SizedBox(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    listToEdit.length < 35
+                        ? "Edit any of the items below or scroll to the bottom to add more. Each list must have a minimum of 25 and a maximum of 35 items."
+                        : "This list has the maximum of 35 items. Each item below can be edited.",
+                    style: const TextStyle(fontSize: 16, color: Colors.purple),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-            ],
+                GridView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                            childAspectRatio: 7 / 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10),
+                    itemCount: listToEdit.length,
+                    itemBuilder: (BuildContext ctx, index) {
+                      return itemToEdit(index);
+                    }),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: SizeConfig.blockSizeHorizontal * 5,
+                      vertical: SizeConfig.blockSizeVertical * 2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      listToEdit.length < 35
+                          ? ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  elevation: 10,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      side: BorderSide(
+                                          color: Colors.blue, width: 3))),
+                              onPressed: () {
+                                showAddDialogue(context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  "Add another item",
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.blockSizeHorizontal * 3,
+                                      color: Colors.yellow[50],
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ))
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  side: BorderSide(
+                                      color: Colors.blue, width: 3))),
+                          onPressed: () {
+                            debugPrint("Save and Play called");
+                            setState(() {
+                              final cardBox = Hive.box<BingoCard>("cards");
+                              cardBox.putAt(boxIndex,
+                                  BingoCard(cardName, true, listToEdit));
+                              settings.setBoard(cardName);
+                              setRandomList(context, cardName);
+                              debugPrint("cardBox length: ${cardBox.length}");
+                            });
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SettingsPage()),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              "Save and Play",
+                              style: TextStyle(
+                                  fontSize: SizeConfig.blockSizeHorizontal * 3,
+                                  color: Colors.yellow[50],
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ));
   }

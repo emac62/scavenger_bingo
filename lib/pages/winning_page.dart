@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:scavenger_hunt_bingo/pages/settings.dart';
 import 'package:scavenger_hunt_bingo/widgets/dialog_button.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -22,10 +23,12 @@ class WinningDialog extends StatefulWidget {
     Key? key,
     required this.screenshotController,
     required this.gamesForAd,
+    required this.removeAds,
   }) : super(key: key);
 
   final ScreenshotController screenshotController;
   final int gamesForAd;
+  final bool removeAds;
 
   @override
   State<WinningDialog> createState() => _WinningDialogState();
@@ -49,7 +52,9 @@ class _WinningDialogState extends State<WinningDialog> {
         request: AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
           this.interstitialAd = ad;
-          isInterstitialAdReady = true;
+          widget.removeAds
+              ? isInterstitialAdReady = false
+              : isInterstitialAdReady = true;
         }, onAdFailedToLoad: (LoadAdError error) {
           debugPrint("Failed to Load Interstitial Ad ${error.message}");
         })); //Interstitial Ads
@@ -59,18 +64,18 @@ class _WinningDialogState extends State<WinningDialog> {
   void initState() {
     super.initState();
     bgBingo = Image.asset('assets/images/winningImg.png');
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _controllerCenter =
-          ConfettiController(duration: const Duration(seconds: 5));
-      gameSounds.playFireworks();
-    });
+
+    _controllerCenter =
+        ConfettiController(duration: const Duration(seconds: 5));
+    if (!widget.removeAds) gameSounds.playFireworks();
+
+    loadInterstitialAd();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     precacheImage(bgBingo.image, context);
-    loadInterstitialAd();
   }
 
   /// A custom Path to paint stars.
@@ -168,8 +173,11 @@ class _WinningDialogState extends State<WinningDialog> {
                                   }
                                 }
 
-                                Navigator.popUntil(
-                                    context, ModalRoute.withName('/settings'));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) =>
+                                            SettingsPage())));
                               },
                               icon: Icon(
                                 Icons.refresh,
@@ -215,7 +223,7 @@ class _WinningDialogState extends State<WinningDialog> {
             ),
           ),
           Align(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: ConfettiWidget(
               confettiController: _controllerCenter,
               blastDirectionality: BlastDirectionality

@@ -22,6 +22,9 @@ import '../providers/controller.dart';
 const int maxFailedLoadAttempts = 3;
 
 class GameBoard extends StatefulWidget {
+  final bool removeAds;
+
+  const GameBoard({Key? key, required this.removeAds}) : super(key: key);
   @override
   _GameBoardState createState() => _GameBoardState();
 }
@@ -34,7 +37,7 @@ class _GameBoardState extends State<GameBoard> {
 
   late String selectedBoard;
   late String selectedPattern;
-  late bool withSound;
+
   bool canShare = false;
 
   getBoardDisplay(selectedBoard) {
@@ -64,12 +67,13 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   loadPrefs() {
+    loadInterstitialAd();
     var settings = Provider.of<SettingsProvider>(context, listen: false);
     setState(() {
-      withSound = settings.withSound;
       selectedBoard = settings.selectedBoard;
       selectedPattern = settings.selectedPattern;
     });
+    getBoardDisplay(selectedBoard);
   }
 
   @override
@@ -86,16 +90,14 @@ class _GameBoardState extends State<GameBoard> {
         request: AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
           this.interstitialAd = ad;
-          isInterstitialAdReady = true;
+          setState(() {
+            widget.removeAds
+                ? isInterstitialAdReady = false
+                : isInterstitialAdReady = true;
+          });
         }, onAdFailedToLoad: (LoadAdError error) {
           debugPrint("Failed to Load Interstitial Ad ${error.message}");
         })); //Interstitial Ads
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    loadInterstitialAd();
   }
 
   var gameSounds = GameSounds();
@@ -112,11 +114,9 @@ class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-
     var settingsProvider = Provider.of<SettingsProvider>(context, listen: true);
-    var selectedBoard = settingsProvider.selectedBoard;
     var cont = Provider.of<Controller>(context, listen: true);
-    getBoardDisplay(selectedBoard);
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
