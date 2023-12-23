@@ -162,6 +162,10 @@ class _PaywallWidgetState extends State<PaywallWidget> {
                             if (!mounted) return;
                             Navigator.pop(context);
                           },
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              backgroundColor: Colors.purple),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -169,18 +173,23 @@ class _PaywallWidgetState extends State<PaywallWidget> {
                               children: [
                                 Text(
                                   "Restore",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.yellow[50]),
                                 ),
                                 Text(
                                   "$title",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize:
-                                          SizeConfig.safeBlockVertical * 2.5),
+                                          SizeConfig.safeBlockVertical * 2,
+                                      color: Colors.yellow[50]),
                                 ),
                                 Text(
                                   "Purchase",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.yellow[50]),
                                 )
                               ],
                             ),

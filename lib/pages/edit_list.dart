@@ -98,9 +98,12 @@ class _EditListState extends State<EditList> {
   }
 
   void editItem(String item, int index) {
+    FocusScope.of(context).requestFocus(FocusNode());
+    Navigator.pop(context);
     //check for item already in listToEdit
     if (listToEdit.contains(item)) {
       showDuplicateDialog(context, "item");
+      debugPrint("contains");
     } else {
       setState(() {
         listToEdit[index] = item;
@@ -172,9 +175,6 @@ class _EditListState extends State<EditList> {
                                       fontWeight: FontWeight.bold)),
                               onPressed: () {
                                 editItem(_controller.text, index);
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
-                                Navigator.pop(context);
                               },
                             ),
                             ElevatedButton(
@@ -455,6 +455,7 @@ class _EditListState extends State<EditList> {
           title: Text(
             "$cardName: ${listToEdit.length} items",
             style: TextStyle(
+                color: Colors.yellow[50],
                 fontFamily: "CaveatBrush",
                 fontSize: SizeConfig.blockSizeVertical * 3.5),
           ),
@@ -474,7 +475,10 @@ class _EditListState extends State<EditList> {
                       builds = 0;
                       showNameDialogue(context, settings);
                     }),
-                    icon: Icon(Icons.edit))
+                    icon: Icon(
+                      Icons.edit,
+                      color: Colors.yellow[50],
+                    ))
                 : SizedBox()
           ],
         ),
@@ -491,6 +495,8 @@ class _EditListState extends State<EditList> {
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.blue),
                                   borderRadius: BorderRadius.circular(15)),
+                              backgroundColor: Colors.purple,
+                              foregroundColor: Colors.yellow[50],
                               disabledBackgroundColor: Theme.of(context)
                                   .primaryColor
                                   .withOpacity(.8), // Background Color
@@ -552,6 +558,7 @@ class _EditListState extends State<EditList> {
                       listToEdit.length < 35
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.purple,
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
@@ -576,6 +583,7 @@ class _EditListState extends State<EditList> {
                             ),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.purple,
                               elevation: 10,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),

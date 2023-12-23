@@ -28,6 +28,7 @@ class _CardSelectChipState extends State<CardSelectChip> {
       Widget item = Padding(
         padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
         child: ChoiceChip(
+          showCheckmark: false,
           label: Padding(
             padding: const EdgeInsets.all(4.0),
             child: Text(widget.cards[i]),

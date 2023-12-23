@@ -24,6 +24,7 @@ class _WinSelectChipsState extends State<WinSelectChips> {
       Widget item = Padding(
         padding: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1),
         child: ChoiceChip(
+          showCheckmark: false,
           label: Padding(
             padding: const EdgeInsets.all(2.0),
             child: Text(widget.toWin[i]),

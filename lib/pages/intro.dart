@@ -185,7 +185,7 @@ class _IntroPageState extends State<IntroPage> {
                       width: 60,
                     ),
                     applicationName: "Scavenger Hunt Bingo",
-                    applicationVersion: "2.0.2",
+                    applicationVersion: "3.0.1",
                     applicationLegalese: '©2023 borderlineBoomer',
                     children: <Widget>[
                       Padding(
