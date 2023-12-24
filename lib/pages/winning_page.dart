@@ -24,11 +24,13 @@ class WinningDialog extends StatefulWidget {
     required this.screenshotController,
     required this.gamesForAd,
     required this.removeAds,
+    required this.withSound,
   }) : super(key: key);
 
   final ScreenshotController screenshotController;
   final int gamesForAd;
   final bool removeAds;
+  final bool withSound;
 
   @override
   State<WinningDialog> createState() => _WinningDialogState();
@@ -67,7 +69,7 @@ class _WinningDialogState extends State<WinningDialog> {
 
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 5));
-    if (!widget.removeAds) gameSounds.playFireworks();
+    if (!widget.withSound) gameSounds.playFireworks();
 
     loadInterstitialAd();
   }

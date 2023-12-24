@@ -74,6 +74,7 @@ class ListTileWidgetState extends State<ListTileWidget> {
                 showDialog(
                     context: context,
                     builder: (context) => WinningDialog(
+                        withSound: settingsProvider.withSound,
                         removeAds: settingsProvider.removeAds,
                         screenshotController: widget.screenshotController,
                         gamesForAd: gamesForAd));
