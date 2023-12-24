@@ -69,7 +69,7 @@ class _WinningDialogState extends State<WinningDialog> {
 
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 5));
-    if (!widget.withSound) gameSounds.playFireworks();
+    if (widget.withSound) gameSounds.playFireworks();
 
     loadInterstitialAd();
   }
